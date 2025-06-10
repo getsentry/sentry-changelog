@@ -1,0 +1,5 @@
+# Code Owners file
+/.github/CODEOWNERS @getsentry/security
+
+# Requiring review from security team for Content-Security-Policy changes
+/vercel.json @getsentry/security
