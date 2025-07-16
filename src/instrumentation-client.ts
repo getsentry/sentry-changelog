@@ -19,3 +19,5 @@ Sentry.init({
 if (process.env.NODE_ENV === "development") {
   Spotlight.init();
 }
+
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
