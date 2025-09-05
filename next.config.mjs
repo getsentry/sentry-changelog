@@ -1,5 +1,5 @@
-import {withSentryConfig} from '@sentry/nextjs';
-import WebpackHookPlugin from 'webpack-hook-plugin';
+import { withSentryConfig } from "@sentry/nextjs";
+import WebpackHookPlugin from "webpack-hook-plugin";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -7,12 +7,12 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  transpilePackages: ['next-mdx-remote'],
-  webpack: (config, {dev, nextRuntime}) => {
-    if (dev && nextRuntime === 'nodejs') {
+  transpilePackages: ["next-mdx-remote"],
+  webpack: (config, { dev, nextRuntime }) => {
+    if (dev && nextRuntime === "nodejs") {
       config.plugins.push(
         new WebpackHookPlugin({
-          onBuildStart: ['npx @spotlightjs/spotlight'],
+          onBuildStart: ["npx @spotlightjs/spotlight"],
         })
       );
     }
@@ -22,8 +22,8 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/',
-        destination: '/changelog',
+        source: "/",
+        destination: "/changelog",
         permanent: true,
       },
     ];
@@ -31,8 +31,8 @@ const nextConfig = {
 };
 
 export default withSentryConfig(nextConfig, {
-  org: 'sentry',
-  project: 'changelog',
+  org: "sentry",
+  project: "changelog",
 
   // Suppresses source map uploading logs during build
   silent: !process.env.CI,
@@ -44,19 +44,20 @@ export default withSentryConfig(nextConfig, {
   hideSourceMaps: true,
 
   // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: process.env.NODE_ENV === 'production',
+  disableLogger: process.env.NODE_ENV === "production",
 
   reactComponentAnnotation: {
     enabled: true,
   },
 
   unstable_sentryWebpackPluginOptions: {
-    applicationKey: 'sentry-changelog',
+    applicationKey: "sentry-changelog",
   },
 
   automaticVercelMonitors: true,
 
   _experimental: {
     thirdPartyOriginStackFrames: true,
+    useRunAfterProductionCompileHook: true, // enables turbopack sourcemap uploads
   },
 });

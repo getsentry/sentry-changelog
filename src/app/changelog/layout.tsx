@@ -1,5 +1,4 @@
-import "prism-sentry/index.css";
-import styles from "./layout.module.css";
+import "../prism-sentry.css";
 
 import { Navbar } from "@/client/components/navbar";
 import type { Metadata } from "next";
