@@ -49,3 +49,327 @@ body {
     opacity: 1;
   }
 }
+
+/* GlobalHeader Navigation Styles */
+
+/* Button Base Styles */
+.btn-new {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1rem;
+  text-transform: uppercase;
+  display: inline-flex;
+  padding: 0.75rem 1rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  height: 2.5rem;
+  user-select: none;
+  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0.125rem;
+  border-color: transparent;
+  cursor: pointer;
+  text-rendering: optimizeLegibility;
+  outline: 0;
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
+  text-decoration: none;
+}
+
+.btn-new::before {
+  content: '';
+  display: block;
+  position: absolute;
+  border-radius: 0.5rem;
+}
+
+.btn-new:hover {
+  text-decoration: none;
+}
+
+.btn-new.disabled,
+.btn-new:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Silent Button Variant */
+.btn-new.silent {
+  background-color: transparent;
+  outline: 0rem solid #6A5FC1;
+  outline-offset: 0.125rem;
+  transition: all 0.2s;
+}
+
+.btn-new.silent:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-new.silent:focus {
+  outline-width: 0.125rem;
+}
+
+.btn-new.silent.dark-mode {
+  color: white;
+}
+
+.btn-new.silent.dark-mode:hover,
+.btn-new.silent.dark-mode:active,
+.btn-new.silent.dark-mode:focus {
+  color: white !important;
+  background-color: #6A5FC1;
+}
+
+/* Primary Dark Button Variant */
+.btn-new.primary-dark {
+  background: linear-gradient(135deg, #FFAB8E 0%, #FFD08E 50%, #FFE28E 100%);
+  background-position: 98% 0;
+  background-size: 250% 100%;
+  outline: 0rem solid #FFB287;
+  outline-offset: 0.125rem;
+  transition: background-position 0.2s, outline-width 0.2s;
+  color: #1F1633;
+}
+
+.btn-new.primary-dark:hover {
+  background-position: 2% 0;
+}
+
+.btn-new.primary-dark:focus {
+  outline-width: 0.125rem;
+  background: #FFB287;
+}
+
+/* Secondary Dark Button Variant */
+.btn-new.secondary-dark {
+  background: linear-gradient(135deg, rgba(200, 56, 82, 0.1) 0%, rgba(180, 64, 146, 0.1) 50%, rgba(106, 95, 193, 0.1) 100%);
+  background-position: 98% 0;
+  background-size: 250% 100%;
+  outline: 0rem solid #FFB287;
+  outline-offset: 0.125rem;
+  transition: background-position 0.2s, outline-width 0.2s;
+  background-clip: padding-box;
+  color: white;
+  --b: 0.125rem;
+  z-index: 0;
+}
+
+.btn-new.secondary-dark::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  padding: var(--b);
+  border-radius: 0.5rem;
+  background: linear-gradient(11deg, #FA7FAA 0%, #FF9691 50%, #FFB287 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  transition: opacity 0.2s;
+}
+
+.btn-new.secondary-dark:hover {
+  background-position: 2% 0;
+}
+
+.btn-new.secondary-dark:hover::before {
+  opacity: 0;
+}
+
+.btn-new.secondary-dark:focus {
+  outline-width: 0.125rem;
+  background: #FFB287;
+}
+
+/* Secondary Light Button Variant */
+.btn-new.secondary-light {
+  background: linear-gradient(135deg, rgba(200, 56, 82, 0.1) 0%, rgba(180, 64, 146, 0.1) 50%, rgba(106, 95, 193, 0.1) 100%);
+  background-position: 98% 0;
+  background-size: 250% 100%;
+  outline: 0rem solid #FFB287;
+  outline-offset: 0.125rem;
+  transition: background-position 0.2s, outline-width 0.2s;
+  background-clip: padding-box;
+  color: #1F1633;
+  --b: 0.125rem;
+  z-index: 0;
+}
+
+.btn-new.secondary-light::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  padding: var(--b);
+  border-radius: 0.5rem;
+  background: linear-gradient(11deg, #c83852 0%, #b44092 50%, #6a5fc1 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  transition: opacity 0.2s;
+}
+
+.btn-new.secondary-light:hover {
+  background-position: 2% 0;
+}
+
+.btn-new.secondary-light:hover::before {
+  opacity: 0;
+}
+
+.btn-new.secondary-light:focus {
+  outline-width: 0.125rem;
+  background: #FFB287;
+}
+
+/* Subnav Button Variant */
+.btn-new.subnav {
+  background-color: transparent;
+  outline: 0rem solid #6A5FC1;
+  outline-offset: 0.125rem;
+  transition: all 0.2s;
+}
+
+.btn-new.subnav:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-new.subnav:focus {
+  outline-width: 0.125rem;
+}
+
+.btn-new.subnav.dark-mode {
+  color: #6A5FC1;
+}
+
+.btn-new.subnav.dark-mode:hover,
+.btn-new.subnav.dark-mode:active,
+.btn-new.subnav.dark-mode:focus {
+  color: white !important;
+  background-color: #6A5FC1;
+}
+
+@media screen and (max-width: 1151px) {
+  .btn-new.subnav.dark-mode {
+    color: white;
+  }
+}
+
+/* Chevron Styles */
+.chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform none !important;
+}
+
+[aria-expanded="true"] .chevron {
+  transform: rotate(90deg);
+}
+
+/* Desktop navigation visibility */
+@media (min-width: 1152px) {
+  #menu-toggle-button {
+    display: none !important;
+  }
+
+  #desktopNavBar {
+    display: flex !important;
+  }
+
+  #desktopNavBar li {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #desktopAuthContainer {
+    display: flex !important;
+  }
+}
+
+/* Mobile menu styles */
+#mobileMenu {
+  display: none !important;
+}
+
+#mobileMenu.nav-expanded {
+  display: block !important;
+}
+
+/* Collapsible Section Styles */
+[data-collapsible-section] {
+  margin-bottom: 0.5rem;
+}
+
+[data-collapsible-section]:last-child {
+  margin-bottom: 0;
+}
+
+[data-collapsible-section] .collapsible-trigger {
+  justify-content: flex-start !important;
+  text-align: left !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+[data-collapsible-section] .collapsible-trigger .chevron {
+  margin-left: auto !important;
+}
+
+/* Desktop: always show content and rotate chevron */
+@media (min-width: 1152px) {
+  [data-collapsible-section] [id^="content-"] {
+    display: block !important;
+  }
+
+  [data-collapsible-section] .chevron {
+    transform: rotate(90deg);
+  }
+}
+
+/* NewPill Styles */
+.new-pill {
+  background: linear-gradient(120deg, #C83852 0%, #B44092 25%, #6A5FC1 50%, #452650 55%, #452650 100%);
+  background-position: 2% 0;
+  background-size: 250% 100%;
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.75rem;
+  margin-left: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  transition: background 0.2s ease-out;
+}
+
+.new-pill:hover {
+  background-position: 98% 0;
+}
+
+/* Featured Content Styles */
+.bg-featured-light {
+  background-color: rgb(249, 248, 255);
+}
+
+/* Multi-column menu styles */
+@media (min-width: 1152px) {
+  .flex-col.xl\:flex-row > div {
+    flex: 1 1 0%;
+    min-width: 0;
+  }
+}
