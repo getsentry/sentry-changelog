@@ -104,9 +104,7 @@ export default function CollapsibleSection({
         aria-controls={`content-${sectionId}`}
         type="button"
       >
-        <span className="label font-medium text-sm leading-[18px] uppercase font-sans">
-          {title}
-        </span>
+        {title}
       </Button>
       <div id={`content-${sectionId}`}>
         <div className="pl-4">{children}</div>

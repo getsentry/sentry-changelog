@@ -19,15 +19,15 @@ export default function MobileMenu({
   isDarkMode = false,
   isOpen,
 }: MobileMenuProps) {
+  const wrapperClasses = [
+    "xl:hidden",
+    isOpen ? "fixed top-[71px]" : "absolute top-full",
+    "left-0 right-0 z-50 bg-rich-black overflow-y-scroll max-h-[calc(100vh-71px)]",
+    isOpen ? "block" : "hidden",
+  ].join(" ");
+
   return (
-    <div
-      id="mobileMenu"
-      className={`xl:hidden ${
-        isOpen ? "fixed top-[71px]" : "absolute top-full"
-      } left-0 right-0 z-50 bg-rich-black overflow-y-scroll max-h-[calc(100vh-71px)] ${
-        isOpen ? "block" : "hidden"
-      }`}
-    >
+    <div id="mobileMenu" className={wrapperClasses}>
       <Container disablePaddingTop={true} disablePaddingBottom={true}>
         <div className="mt-4">
           {menuItems.map((item, idx) => {
@@ -223,7 +223,7 @@ export default function MobileMenu({
                     variant="silent"
                     redesign={true}
                     darkMode={true}
-                    className="w-full justify-start"
+                    className="w-full !justify-start"
                   >
                     {item.cta}
                   </Button>

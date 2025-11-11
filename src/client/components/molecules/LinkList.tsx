@@ -34,20 +34,17 @@ export default function LinkList({
   hideHeadingOnMobile,
 }: LinkListProps) {
   const isDarkMode = mode === "dark";
+  const h3Classes = [
+    "text-base mb-4 font-[500]",
+    isDarkMode ? "text-white" : "text-gray-800",
+    noWrapHeading ? "whitespace-nowrap" : "",
+    hideHeadingOnMobile ? "hidden xl:block" : "",
+    "xl:pl-0 pl-5",
+  ];
 
   return (
     <div>
-      {heading && (
-        <h3
-          className={`text-base mb-4 font-[500] ${
-            isDarkMode ? "text-white" : "text-gray-800"
-          } ${noWrapHeading ? "whitespace-nowrap" : ""} ${
-            hideHeadingOnMobile ? "hidden xl:block" : ""
-          } xl:pl-0 pl-5`}
-        >
-          {heading}
-        </h3>
-      )}
+      {heading && <h3 className={h3Classes.join(" ")}>{heading}</h3>}
       <ul className="list-none p-0 m-0 grid gap-y-5 mt-4 xl:mt-0">
         {links.map(({ text, href, args, icon, class: linkClass }) => {
           const iconSrc = typeof icon === "string" ? icon : icon?.url;
@@ -59,7 +56,7 @@ export default function LinkList({
               <Link
                 href={href}
                 {...args}
-                className={`no-underline font-medium text-sm leading-[18px] uppercase whitespace-nowrap flex items-center gap-x-1.5 w-full min-h-[18px] py-0.5 hover:underline xl:w-max transition-colors duration-200 font-sans ${
+                className={`no-underline font-medium leading-[18px] uppercase whitespace-nowrap flex items-center gap-x-1.5 w-full min-h-[18px] py-0.5 hover:underline xl:w-max transition-colors duration-200 ${
                   isDarkMode
                     ? "text-white hover:text-white"
                     : "text-[#4E2A9A] hover:text-[#4E2A9A]"

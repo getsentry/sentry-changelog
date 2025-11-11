@@ -111,6 +111,7 @@ body {
   font-size: 14px;
   line-height: 18px;
   text-transform: uppercase;
+  letter-spacing: 0.0125em;
 }
 
 .btn-new.silent:hover {
@@ -131,6 +132,7 @@ body {
   font-size: 14px;
   line-height: 18px;
   text-transform: uppercase;
+  letter-spacing: 0.0125em;
 }
 
 .btn-new.silent.dark-mode:hover,
@@ -381,10 +383,6 @@ body {
   text-align: left !important;
   padding-left: 1rem !important;
   padding-right: 1rem !important;
-}
-
-[data-collapsible-section] .collapsible-trigger .chevron {
-  margin-left: auto !important;
 }
 
 /* Mobile collapsed state (default) */

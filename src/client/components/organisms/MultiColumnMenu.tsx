@@ -36,13 +36,17 @@ export default function MultiColumnMenu({
             sub.layout === "Submenu",
         );
 
+        const columnClasses = [
+          "flex flex-col self-stretch xl:flex-1",
+          !isBackgroundColumn ? "xl:px-6 xl:py-6" : "xl:p-[1.5rem]",
+          backgroundClass,
+          isBackgroundColumn && "relative xl:rounded-2xl",
+        ]
+          .filter(Boolean)
+          .join(" ");
+
         return (
-          <div
-            key={`${column.sys.id}-${index}`}
-            className={`flex flex-col self-stretch xl:flex-1 ${
-              !isBackgroundColumn ? "xl:px-6 xl:py-6" : "xl:p-[1.5rem]"
-            } ${backgroundClass} ${isBackgroundColumn ? "relative xl:rounded-2xl" : ""}`}
-          >
+          <div key={`${column.sys.id}-${index}`} className={columnClasses}>
             <div className="flex-1 flex flex-col">
               {hasSubmenus ? (
                 columnMenuItems

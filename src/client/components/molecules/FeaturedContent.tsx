@@ -27,12 +27,16 @@ export default function FeaturedContent({
 }: FeaturedContentProps) {
   const { coverImage, title, description, link, cta } = content;
 
+  const containerClasses = [
+    "flex flex-col h-full rounded-lg",
+    isDarkMode ? "bg-gray-800" : "bg-featured-light",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div
-      className={`flex flex-col h-full rounded-lg ${
-        isDarkMode ? "bg-gray-800" : "bg-featured-light"
-      } ${className || ""}`}
-    >
+    <div className={containerClasses}>
       <div className="flex flex-col gap-4 flex-1">
         {coverImage && (
           <div className="w-full h-[142px] rounded-lg overflow-hidden flex-shrink-0">
@@ -52,7 +56,7 @@ export default function FeaturedContent({
         )}
         <div className="flex flex-col gap-3 flex-1">
           <h3
-            className={`text-xl font-sans leading-tight font-semibold ${
+            className={`text-xl leading-tight ${
               isDarkMode ? "text-white" : "text-gray-900"
             }`}
           >
@@ -60,7 +64,7 @@ export default function FeaturedContent({
           </h3>
           {description && (
             <p
-              className={`text-sm font-sans flex-1 whitespace-pre-line ${
+              className={`text-sm flex-1 whitespace-pre-line ${
                 isDarkMode ? "text-gray-300" : "text-gray-700"
               }`}
             >
