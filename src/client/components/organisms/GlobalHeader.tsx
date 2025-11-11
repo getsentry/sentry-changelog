@@ -37,7 +37,8 @@ export default function GlobalHeader({
       if (
         !target.closest("[data-menu-trigger]") &&
         !target.closest("[data-menu-dropdown]") &&
-        !target.closest("#menu-toggle-button")
+        !target.closest("#menu-toggle-button") &&
+        !target.closest("#mobileMenu")
       ) {
         setIsMobileMenuOpen(false);
       }

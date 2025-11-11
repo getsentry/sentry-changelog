@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useEffect } from "react";
 import Button from "../atoms/Button";
 
 interface CollapsibleSectionProps {
@@ -13,6 +13,22 @@ interface CollapsibleSectionProps {
   children: React.ReactNode;
 }
 
+function getNestingLevel(element: Element | null): number {
+  if (!element) return 0;
+
+  let level = 0;
+  let parent = element.parentElement;
+
+  while (parent) {
+    if (parent.hasAttribute("data-collapsible-section")) {
+      level++;
+    }
+    parent = parent.parentElement;
+  }
+
+  return level;
+}
+
 export default function CollapsibleSection({
   title,
   id,
@@ -21,16 +37,54 @@ export default function CollapsibleSection({
   buttonVariant,
   children,
 }: CollapsibleSectionProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
   const sectionId =
     id || `section-${title.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
   const variant = buttonVariant || (isDarkMode ? "subnav" : "silent");
 
-  const handleToggle = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsExpanded(!isExpanded);
-  };
+  useEffect(() => {
+    const trigger = document.getElementById(`trigger-${sectionId}`);
+    if (!trigger) return;
+
+    const handleClick = (e: Event) => {
+      e.stopPropagation();
+
+      const isExpanded = trigger.getAttribute("aria-expanded") === "true";
+
+      // Only handle accordion behavior on mobile
+      if (typeof window !== "undefined" && window.innerWidth < 1152) {
+        // Accordion behavior: close sections at same level when opening one
+        if (!isExpanded) {
+          const currentSection = trigger.closest("[data-collapsible-section]");
+          const currentLevel = getNestingLevel(currentSection);
+
+          // Close all sections at the same level
+          for (const otherTrigger of document.querySelectorAll(
+            '[id^="trigger-"]',
+          )) {
+            if (otherTrigger !== trigger) {
+              const otherSection = otherTrigger.closest(
+                "[data-collapsible-section]",
+              );
+              const otherLevel = getNestingLevel(otherSection);
+
+              if (otherLevel === currentLevel) {
+                otherTrigger.setAttribute("aria-expanded", "false");
+              }
+            }
+          }
+        }
+
+        // Toggle current section
+        trigger.setAttribute("aria-expanded", String(!isExpanded));
+      }
+    };
+
+    trigger.addEventListener("click", handleClick);
+
+    return () => {
+      trigger.removeEventListener("click", handleClick);
+    };
+  }, [sectionId]);
 
   return (
     <div
@@ -46,19 +100,15 @@ export default function CollapsibleSection({
           hideOnDesktop ? "xl:hidden" : ""
         }`}
         id={`trigger-${sectionId}`}
-        aria-expanded={isExpanded}
+        aria-expanded={false}
         aria-controls={`content-${sectionId}`}
         type="button"
-        onClick={handleToggle}
       >
         <span className="label font-medium text-sm leading-[18px] uppercase font-sans">
           {title}
         </span>
       </Button>
-      <div
-        id={`content-${sectionId}`}
-        className={`xl:block ${isExpanded ? "block" : "hidden"}`}
-      >
+      <div id={`content-${sectionId}`}>
         <div className="pl-4">{children}</div>
       </div>
     </div>

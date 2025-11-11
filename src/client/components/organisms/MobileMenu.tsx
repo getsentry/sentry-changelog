@@ -22,7 +22,9 @@ export default function MobileMenu({
   return (
     <div
       id="mobileMenu"
-      className={`xl:hidden fixed top-[71px] left-0 right-0 z-50 bg-rich-black overflow-y-scroll max-h-[calc(100vh-71px)] ${
+      className={`xl:hidden ${
+        isOpen ? "fixed top-[71px]" : "absolute top-full"
+      } left-0 right-0 z-50 bg-rich-black overflow-y-scroll max-h-[calc(100vh-71px)] ${
         isOpen ? "block" : "hidden"
       }`}
     >
@@ -87,6 +89,7 @@ export default function MobileMenu({
                                         title={item.title}
                                         isDarkMode={isDarkMode}
                                         id={`mobile-${idx}-col-${colIdx}-${item.title}`}
+                                        buttonVariant="silent"
                                       >
                                         <LinkList
                                           links={item.items.map(
@@ -114,6 +117,7 @@ export default function MobileMenu({
                                         title={item.title}
                                         isDarkMode={isDarkMode}
                                         id={`mobile-${idx}-col-${colIdx}-group`}
+                                        buttonVariant="silent"
                                       >
                                         <LinkList
                                           links={item.items.map(
