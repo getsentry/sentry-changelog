@@ -39,7 +39,7 @@ export default function LinkList({
     <div>
       {heading && (
         <h3
-          className={`text-base mb-4 font-semibold ${
+          className={`text-base mb-4 font-[500] ${
             isDarkMode ? "text-white" : "text-gray-800"
           } ${noWrapHeading ? "whitespace-nowrap" : ""} ${
             hideHeadingOnMobile ? "hidden xl:block" : ""
