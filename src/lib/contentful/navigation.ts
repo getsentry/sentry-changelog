@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { contentfulClient } from "./client";
 import type {
   BlogGeneralSettingsEntry,
@@ -47,19 +48,22 @@ function transformMenuItem(
       const coverImageUrl = featuredContentFields.coverImage.fields.file.url;
       const responsiveCoverImage = generateResponsiveSrcsets(
         coverImageUrl,
-        "customerTile",
+        "featuredContentImage",
       );
 
-      transformed.featuredContent.coverImage = {
-        url: responsiveCoverImage.src,
-        srcset: responsiveCoverImage.srcset,
-        sizes: responsiveCoverImage.sizes,
-        description: featuredContentFields.coverImage.fields.description || "",
-        width:
-          featuredContentFields.coverImage.fields.file.details?.image?.width,
-        height:
-          featuredContentFields.coverImage.fields.file.details?.image?.height,
-      };
+      if (transformed.featuredContent) {
+        transformed.featuredContent.coverImage = {
+          url: responsiveCoverImage.src,
+          srcset: responsiveCoverImage.srcset,
+          sizes: responsiveCoverImage.sizes,
+          description:
+            featuredContentFields.coverImage.fields.description || "",
+          width:
+            featuredContentFields.coverImage.fields.file.details?.image?.width,
+          height:
+            featuredContentFields.coverImage.fields.file.details?.image?.height,
+        };
+      }
     }
   }
 
@@ -158,32 +162,34 @@ function transformBlogGeneralSettingsItem(item: any): BlogGeneralSettingsEntry {
   };
 }
 
-export async function getBlogGeneralSettingsByEntryTitle(
-  entryTitle: string,
-): Promise<BlogGeneralSettingsEntry | null> {
-  if (!contentfulClient) {
-    console.warn("Contentful client not initialized");
-    return null;
-  }
-
-  try {
-    const query: any = {
-      content_type: "blogGeneralSettings",
-      include: 10,
-      limit: 1,
-    };
-    query["fields.entryTitle"] = entryTitle;
-
-    const entries =
-      await contentfulClient.getEntries<BlogGeneralSettingsSkeleton>(query);
-
-    if (entries.items.length === 0) {
+export const getBlogGeneralSettingsByEntryTitle = unstable_cache(
+  async (entryTitle: string): Promise<BlogGeneralSettingsEntry | null> => {
+    if (!contentfulClient) {
+      console.warn("Contentful client not initialized");
       return null;
     }
 
-    return transformBlogGeneralSettingsItem(entries.items[0]);
-  } catch (error) {
-    console.error("Error fetching blog general settings:", error);
-    return null;
-  }
-}
+    try {
+      const query: any = {
+        content_type: "blogGeneralSettings",
+        include: 10,
+        limit: 1,
+      };
+      query["fields.entryTitle"] = entryTitle;
+
+      const entries =
+        await contentfulClient.getEntries<BlogGeneralSettingsSkeleton>(query);
+
+      if (entries.items.length === 0) {
+        return null;
+      }
+
+      return transformBlogGeneralSettingsItem(entries.items[0]);
+    } catch (error) {
+      console.error("Error fetching blog general settings:", error);
+      return null;
+    }
+  },
+  ["blog-general-settings"],
+  { tags: ["blog-general-settings"] },
+);

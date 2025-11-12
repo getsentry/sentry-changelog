@@ -5,8 +5,8 @@ type ImageConfig = {
 };
 
 const imageConfigs: Record<string, ImageConfig> = {
-  customerTile: {
-    widths: [400, 600, 800],
+  featuredContentImage: {
+    widths: [400, 600],
     quality: 85,
     format: "webp",
   },
@@ -18,7 +18,7 @@ const imageConfigs: Record<string, ImageConfig> = {
 
 export function generateResponsiveSrcsets(
   url: string,
-  configName: keyof typeof imageConfigs = "customerTile",
+  configName: keyof typeof imageConfigs = "featuredContentImage",
 ) {
   const config = imageConfigs[configName];
 
