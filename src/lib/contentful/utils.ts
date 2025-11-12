@@ -6,7 +6,7 @@ type ImageConfig = {
 
 const imageConfigs: Record<string, ImageConfig> = {
   featuredContentImage: {
-    widths: [400, 600],
+    widths: [200, 400],
     quality: 85,
     format: "webp",
   },

@@ -57,12 +57,12 @@ export default function GlobalHeader({
     <header
       className={`sticky top-0 z-50 transition-all duration-200 ${
         isDarkMode ? "bg-rich-black" : "bg-white"
-      }`}
+      } ${isMobileMenuOpen ? "xl:max-h-none max-h-screen overflow-y-auto" : ""}`}
       aria-label="Site navigation"
     >
       <Container disablePaddingTop disablePaddingBottom>
         <nav
-          className="flex flex-row items-center justify-center w-full py-4"
+          className="flex flex-row flex-wrap items-center justify-center w-full py-4 xl:flex-nowrap"
           aria-label="main"
         >
           <a
@@ -79,7 +79,7 @@ export default function GlobalHeader({
             variant="silent"
             redesign={true}
             chevron="right"
-            className="xl:hidden"
+            className="xl:hidden inline-flex"
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobileMenu"
             darkMode={isDarkMode}

@@ -32,13 +32,16 @@ module.exports = {
       }),
       fontFamily: {
         sans: [
-          'var(--font-rubik)',
+          'Rubik',
           '-apple-system',
           'BlinkMacSystemFont',
           'Segoe UI',
           'Helvetica',
           'Arial',
-          ...defaultTheme.fontFamily.sans,
+          'sans-serif',
+          'Apple Color Emoji',
+          'Segoe UI Emoji',
+          'Segoe UI Symbol',
         ],
         mono: [
           'Roboto Mono',

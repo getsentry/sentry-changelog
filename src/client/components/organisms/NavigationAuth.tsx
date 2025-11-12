@@ -11,8 +11,8 @@ export default function NavigationAuth({
   isMobile = false,
 }: NavigationAuthProps) {
   const containerClasses = isMobile
-    ? "flex flex-col xl:flex xl:flex-row xl:items-center xl:gap-2 xl:flex-shrink-0 p-4"
-    : "hidden xl:flex xl:flex-row xl:items-center xl:gap-2 xl:flex-shrink-0";
+    ? "flex flex-col xl:flex xl:flex-row xl:items-center xl:gap-4 xl:flex-shrink-0 p-4"
+    : "hidden xl:flex xl:flex-row xl:items-center xl:gap-4 xl:flex-shrink-0";
 
   const buttonClasses = isMobile
     ? "w-full xl:w-auto mb-2 xl:mb-0"
@@ -37,7 +37,7 @@ export default function NavigationAuth({
         variant="secondary-dark"
         redesign={true}
         darkMode={isDarkMode}
-        className={`${buttonClasses} ${!isMobile ? "xl:ml-2" : ""}`}
+        className={buttonClasses}
       >
         Get Demo
       </Button>
@@ -46,7 +46,7 @@ export default function NavigationAuth({
         variant="primary-dark"
         redesign={true}
         darkMode={isDarkMode}
-        className={`${buttonClasses} ${!isMobile ? "xl:ml-2" : ""}`}
+        className={buttonClasses}
       >
         Get Started
       </Button>

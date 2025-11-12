@@ -56,7 +56,7 @@ export default function FeaturedContent({
         )}
         <div className="flex flex-col gap-3 flex-1">
           <h3
-            className={`text-xl leading-tight ${
+            className={`text-xl leading-tight font-semibold ${
               isDarkMode ? "text-white" : "text-gray-900"
             }`}
           >

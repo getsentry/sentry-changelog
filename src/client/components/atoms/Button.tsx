@@ -104,7 +104,7 @@ export default function Button({
 
   const responsiveClasses = [];
   if (chevron && redesign) {
-    responsiveClasses.push("flex justify-between items-center");
+    responsiveClasses.push("flex justify-between");
     responsiveClasses.push("md:justify-center");
   }
 

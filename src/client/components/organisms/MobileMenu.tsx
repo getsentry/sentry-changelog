@@ -21,8 +21,7 @@ export default function MobileMenu({
 }: MobileMenuProps) {
   const wrapperClasses = [
     "xl:hidden",
-    isOpen ? "fixed top-[71px]" : "absolute top-full",
-    "left-0 right-0 z-50 bg-rich-black overflow-y-scroll max-h-[calc(100vh-71px)]",
+    "w-full",
     isOpen ? "block" : "hidden",
   ].join(" ");
 

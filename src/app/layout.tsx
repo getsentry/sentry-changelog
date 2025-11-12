@@ -3,15 +3,7 @@ import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import type { Metadata } from "next";
 import PlausibleProvider from "next-plausible";
-import { Rubik } from "next/font/google";
 import Script from "next/script";
-
-const rubik = Rubik({
-  weight: ["400", "500", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  variable: "--font-rubik",
-});
 
 export const metadata: Metadata = {
   title: "Home",
@@ -41,7 +33,7 @@ export default function RootLayout({
       <head>
         <PlausibleProvider domain="changelog.sentry.io" />
       </head>
-      <body className={`${rubik.variable}`}>
+      <body>
         <Theme accentColor="iris" grayColor="sand" radius="large" scaling="95%">
           {children}
         </Theme>

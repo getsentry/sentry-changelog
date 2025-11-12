@@ -4,6 +4,63 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Self-hosted Rubik fonts for optimal web vitals performance */
+
+/* Rubik Regular */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/rubik-latin-regular.woff2') format('woff2'),
+       url('/fonts/rubik-latin-regular.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Rubik Medium (500 weight) */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/rubik-latin-500.woff2') format('woff2'),
+       url('/fonts/rubik-latin-500.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Rubik Bold */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: bold;
+  font-display: swap;
+  src: url('/fonts/rubik-latin-500.woff2') format('woff2'),
+       url('/fonts/rubik-latin-500.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Rubik Italic */
+@font-face {
+  font-family: 'Rubik';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/rubik-latin-italic.woff2') format('woff2'),
+       url('/fonts/rubik-latin-italic.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Rubik Medium Italic */
+@font-face {
+  font-family: 'Rubik';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/rubik-latin-500italic.woff2') format('woff2'),
+       url('/fonts/rubik-latin-500italic.woff') format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 .fancy-border {
   transition-property: box-shadow, border-color;
   transition-duration: 0.25s;
@@ -29,11 +86,19 @@
   clip-path: polygon(0 0, 100% 0, 100% 40%, 0 100%);
 }
 
+html {
+  font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
 body {
   margin: 0;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+strong, b {
+  font-weight: 500;
 }
 
 * {
@@ -55,13 +120,12 @@ body {
 /* Button Base Styles */
 .btn-new {
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1rem;
   text-transform: uppercase;
   display: inline-flex;
   padding: 0.75rem 1rem;
   justify-content: center;
-  align-items: center;
   gap: 0.25rem;
   border-radius: 0.5rem;
   height: 2.5rem;
@@ -107,11 +171,10 @@ body {
   outline: 0rem solid #6a5fc1;
   outline-offset: 0.125rem;
   transition: all 0.2s;
-  font-weight: 500;
+  font-weight: 700;
   font-size: 14px;
-  line-height: 18px;
+  line-height: 1rem;
   text-transform: uppercase;
-  letter-spacing: 0.0125em;
 }
 
 .btn-new.silent:hover {
@@ -128,11 +191,21 @@ body {
   outline-offset: 0.125rem;
   transition: all 0.2s;
   color: white;
-  font-weight: 500;
   font-size: 14px;
-  line-height: 18px;
+  line-height: 1rem;
   text-transform: uppercase;
-  letter-spacing: 0.0125em;
+}
+
+.btn-new.silent.dark-mode.xl\:hidden {
+  background-color: rgb(239, 239, 239);
+  color: #1a1a1a;
+}
+
+.btn-new.silent.dark-mode.xl\:hidden:hover,
+.btn-new.silent.dark-mode.xl\:hidden:active,
+.btn-new.silent.dark-mode.xl\:hidden:focus {
+  background-color: rgb(239, 239, 239);
+  color: #1a1a1a !important;
 }
 
 .btn-new.silent.dark-mode:hover,
