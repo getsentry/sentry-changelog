@@ -72,9 +72,7 @@ export default function DesktopNavigation({
           item.columnsCollection.items.length > 0;
         const hasChildren = hasMenuItems || hasColumns;
         const isDropdown = isNavigationMenuItem && hasChildren;
-        const menuKey =
-          item?.cta?.toLowerCase() || item?.label?.toLowerCase() || "";
-
+        const menuKey = item.sys.id;
         return (
           <React.Fragment key={`${item.sys.id}-${idx}`}>
             <NavigationMenuItem
