@@ -37,7 +37,7 @@ export default function NavigationMenuItem({
     item.columnsCollection?.items && item.columnsCollection.items.length > 0;
   const hasChildren = hasMenuItems || hasColumns;
   const isDropdown = isNavigationMenuItem && hasChildren;
-  const menuKey = item?.cta?.toLowerCase() || item?.label?.toLowerCase() || "";
+  const menuKey = item.sys.id;
   const uniqueId = `menu-item-${menuKey}-${idx}`;
 
   const handleClick = (e: React.MouseEvent) => {
