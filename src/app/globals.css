@@ -120,7 +120,7 @@ strong, b {
 /* Button Base Styles */
 .btn-new {
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1rem;
   align-items: center;
   text-transform: uppercase;
@@ -172,9 +172,9 @@ strong, b {
   outline: 0rem solid #6a5fc1;
   outline-offset: 0.125rem;
   transition: all 0.2s;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 14px;
-  line-height: 1rem;
+  line-height: 18px;
   text-transform: uppercase;
 }
 
@@ -192,8 +192,9 @@ strong, b {
   outline-offset: 0.125rem;
   transition: all 0.2s;
   color: white;
+  font-weight: 500;
   font-size: 14px;
-  line-height: 1rem;
+  line-height: 18px;
   text-transform: uppercase;
 }
 
@@ -238,7 +239,7 @@ strong, b {
   border-color: transparent;
   border-radius: 0.5rem;
   box-shadow: none;
-  color: #1F1633;
+  color: #1f1633;
 }
 
 .btn-new.primary-dark:hover {
@@ -256,6 +257,65 @@ strong, b {
 
 .btn-new.primary-dark.dark-mode:hover {
   color: #1f1633 !important;
+}
+
+/* Primary Button Variant */
+.btn-new.primary {
+  background-color: #6a5fc1;
+  border-color: #6a5fc1;
+  color: white;
+  box-shadow: 0 2px 0 rgba(54, 45, 89, 0.1);
+}
+
+.btn-new.primary:hover {
+  background-color: #5a4fb1;
+  border-color: #5a4fb1;
+}
+
+.btn-new.primary:focus {
+  outline: 0.125rem solid #6a5fc1;
+  outline-offset: 0.125rem;
+}
+
+/* Primary Light Button Variant */
+.btn-new.primary-light {
+  background: linear-gradient(
+    120deg,
+    #c83852 0%,
+    #b44092 25%,
+    #6a5fc1 50%,
+    #452650 55%,
+    #452650 100%
+  );
+  background-position: 98% 0;
+  background-size: 250% 100%;
+  outline: 0rem solid #6a5fc1;
+  outline-offset: 0.125rem;
+  transition: background-position 0.2s, outline-width 0.2s;
+  background-color: #452650;
+  border-color: transparent;
+  color: white;
+}
+
+.btn-new.primary-light:hover {
+  background-position: 2% 0;
+}
+
+.btn-new.primary-light:focus {
+  outline-width: 0.125rem;
+  background: #6a5fc1;
+}
+
+/* Secondary Button Variant */
+.btn-new.secondary {
+  background-color: transparent;
+  border-color: #6a5fc1;
+  color: #6a5fc1;
+}
+
+.btn-new.secondary:hover {
+  background-color: #6a5fc1;
+  color: white;
 }
 
 /* Secondary Dark Button Variant */
@@ -279,7 +339,9 @@ strong, b {
   box-sizing: border-box;
   color: white;
   --b: 0.125rem;
+  position: relative;
   z-index: 0;
+  border: none;
 }
 
 .btn-new.secondary-dark::before {
@@ -329,9 +391,11 @@ strong, b {
   border: solid 0.125rem transparent;
   box-shadow: none;
   box-sizing: border-box;
-  color: #1F1633;
+  color: #1f1633;
   --b: 0.125rem;
+  position: relative;
   z-index: 0;
+  border: none;
 }
 
 .btn-new.secondary-light::before {
@@ -407,15 +471,200 @@ strong, b {
   }
 }
 
+/* Default Button Variant */
+.btn-new.default {
+  background-color: #f6f6f8;
+  border-color: #ececf1;
+  color: #362d59;
+}
+
+.btn-new.default:hover {
+  background-color: #ececf1;
+  border-color: #cfcfdb;
+}
+
+/* Quiet Button Variant */
+.btn-new.quiet {
+  background-color: transparent;
+  border-color: transparent;
+  color: #6a5fc1;
+  box-shadow: none;
+}
+
+.btn-new.quiet:hover {
+  background-color: rgba(106, 95, 193, 0.075);
+}
+
+/* Snackbar Button Variant */
+.btn-new.snackbar {
+  background: linear-gradient(
+    120deg,
+    #c83852 0%,
+    #b44092 25%,
+    #6a5fc1 50%,
+    #452650 55%,
+    #452650 100%
+  );
+  background-position: 2% 0;
+  background-size: 250% 100%;
+  outline: 0rem solid #6a5fc1;
+  outline-offset: 0.125rem;
+  transition: background 0.2s ease-out, outline-width 0.2s;
+  background-color: #452650;
+  border-color: transparent;
+  color: white;
+  font-size: 0.875rem;
+  line-height: 1rem;
+  text-transform: initial;
+}
+
+.btn-new.snackbar:hover {
+  background: #6a5fc1;
+}
+
+.btn-new.snackbar:focus {
+  outline-width: 0.125rem;
+  background: #6a5fc1;
+}
+
+/* Top Navigation Button Variant */
+.btn-new.top-navigation {
+  background: linear-gradient(
+    120deg,
+    #fa7faa 0%,
+    #ff9691 25%,
+    #ffb287 50%,
+    transparent 55%,
+    transparent 100%
+  );
+  background-position: 98% 0;
+  background-size: 250% 100%;
+  outline: 0rem solid #fa7faa;
+  outline-offset: 0.125rem;
+  transition: background-position 0.2s, outline-width 0.2s;
+  background-clip: padding-box;
+  border: solid 0.125rem transparent;
+  box-shadow: none;
+  box-sizing: border-box;
+  color: #1f1633;
+  --b: 0.125rem;
+  position: relative;
+  z-index: 0;
+  border: none;
+}
+
+.btn-new.top-navigation:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  padding: var(--b);
+  border-radius: 0.5rem;
+  background: linear-gradient(11deg, #c83852 0%, #b44092 50%, #6a5fc1 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  transition: opacity 0.2s;
+}
+
+.btn-new.top-navigation:hover {
+  background-position: 2% 0;
+}
+
+.btn-new.top-navigation:hover:before {
+  opacity: 0;
+}
+
+.btn-new.top-navigation:focus {
+  outline-width: 0.125rem;
+  background: #ffb287;
+}
+
+.btn-new.top-navigation.dark-mode {
+  background: linear-gradient(
+    120deg,
+    #c83852 0%,
+    #b44092 25%,
+    #6a5fc1 50%,
+    transparent 55%,
+    transparent 100%
+  );
+  background-position: 98% 0;
+  background-size: 250% 100%;
+  outline: 0rem solid #fa7faa;
+  outline-offset: 0.125rem;
+  transition: background-position 0.2s, outline-width 0.2s;
+  background-clip: padding-box;
+  border: solid 0.125rem transparent;
+  box-shadow: none;
+  box-sizing: border-box;
+  color: white;
+  --b: 0.125rem;
+  position: relative;
+  z-index: 0;
+  border: none;
+}
+
+.btn-new.top-navigation.dark-mode:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  padding: var(--b);
+  border-radius: 0.5rem;
+  background: linear-gradient(11deg, #fa7faa 0%, #ff9691 50%, #ffb287 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  transition: opacity 0.2s;
+}
+
+.btn-new.top-navigation.dark-mode:hover {
+  background-position: 2% 0;
+}
+
+.btn-new.top-navigation.dark-mode:hover:before {
+  opacity: 0;
+}
+
+.btn-new.top-navigation.dark-mode:focus {
+  outline-width: 0.125rem;
+  background: #ffb287;
+}
+
 /* Chevron Styles */
 .chevron {
+  position: relative;
+  flex-shrink: 0;
+  transition: margin-right 0.2s, margin-left 0.2s;
+  height: 1em;
+  width: 1em;
+  margin-left: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform none !important;
+}
+
+@media (min-width: 768px) {
+  .chevron {
+    margin-right: -0.375em;
+    margin-left: 0;
+  }
+}
+
+.btn-new .chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 [aria-expanded="true"] .chevron {
+  transform: rotate(90deg);
+}
+
+.btn-new[aria-expanded="true"] .chevron {
   transform: rotate(90deg);
 }
 
@@ -453,7 +702,7 @@ strong, b {
 }
 
 [data-collapsible-section] .collapsible-trigger {
-  justify-content: flex-start !important;
+  justify-content: space-between !important;
   text-align: left !important;
   padding-left: 1rem !important;
   padding-right: 1rem !important;
@@ -499,9 +748,7 @@ strong, b {
 }
 
 /* Override LinkList spacing inside collapsible */
-[data-collapsible-section] [id^="content-"] ul {
-  margin-top: 0.5rem !important;
-}
+
 
 [data-collapsible-section] [id^="content-"] li {
   padding-bottom: 0 !important;
@@ -545,5 +792,12 @@ strong, b {
   .flex-col.xl\:flex-row > div {
     flex: 1 1 0%;
     min-width: 0;
+  }
+}
+
+/* Desktop navigation item spacing */
+@media (min-width: 1280px) {
+  #desktopNavBar > li:not(:first-of-type) {
+    margin-left: 0.5rem !important;
   }
 }

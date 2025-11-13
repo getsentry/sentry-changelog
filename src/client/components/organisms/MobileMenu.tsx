@@ -27,7 +27,12 @@ export default function MobileMenu({
 
   return (
     <div id="mobileMenu" className={wrapperClasses}>
-      <Container disablePaddingTop={true} disablePaddingBottom={true}>
+      <Container
+        disablePaddingTop={true}
+        disablePaddingBottom={true}
+        disablePaddingLeft={true}
+        disablePaddingRight={true}
+      >
         <div className="mt-4">
           {menuItems.map((item, idx) => {
             const isNavigationMenuItem =
