@@ -252,6 +252,7 @@ export function ChangelogList({
             />
             <div className="flex space-x-4">
               <button
+                tabIndex={0}
                 type="button"
                 className={`${
                   someFilterIsActive
