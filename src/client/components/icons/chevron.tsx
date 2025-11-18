@@ -22,6 +22,7 @@ export function Chevron({
       height={height}
       viewBox="0 0 16 16"
       role="img"
+      aria-hidden="true"
       aria-label={`Chevron pointing ${direction}`}
       {...props}
       className={`${styles.chevron} ${styles[direction]} ${
