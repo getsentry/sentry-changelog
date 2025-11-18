@@ -199,7 +199,7 @@ export function ChangelogList({
   const numberOfPages = Math.ceil(filteredChangelogs.length / ENTRIES_PER_PAGE);
 
   return (
-    <div className="w-full mx-auto grid grid-cols-12 bg-gray-200">
+    <main className="w-full mx-auto grid grid-cols-12 bg-gray-200">
       <div className="hidden md:block md:col-span-2 pl-5 pt-10">
         <h3 className="text-2xl text-primary font-semibold mb-2">
           Categories:
@@ -332,6 +332,6 @@ export function ChangelogList({
             ))}
         </ul>
       </div>
-    </div>
+    </main>
   );
 }
