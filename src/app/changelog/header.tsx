@@ -32,6 +32,7 @@ export default function Header({ loading }: { loading?: boolean }) {
               rel="noreferrer"
               className="underline underline-offset-2"
             >
+              <span className="sr-only">Twitter</span>
               @SentryChangelog
             </a>
             &nbsp;to stay up to date on everything from product updates to SDK
