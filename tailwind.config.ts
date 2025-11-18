@@ -5,6 +5,9 @@ module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      screens: {
+        xl: '1152px',
+      },
       animation: {
         'fade-in': 'fadeIn 0.35s ease-in-out',
         'fade-in-left': 'fadeInLeft 0.55s ease-in-out',
@@ -29,13 +32,16 @@ module.exports = {
       }),
       fontFamily: {
         sans: [
-          'var(--font-rubik)',
+          'Rubik',
           '-apple-system',
           'BlinkMacSystemFont',
           'Segoe UI',
           'Helvetica',
           'Arial',
-          ...defaultTheme.fontFamily.sans,
+          'sans-serif',
+          'Apple Color Emoji',
+          'Segoe UI Emoji',
+          'Segoe UI Symbol',
         ],
         mono: [
           'Roboto Mono',
@@ -51,10 +57,15 @@ module.exports = {
         primary: '#362d59',
         pruple: '#8d5494',
         darkPurple: '#1F1633',
+        'rich-black': '#1F1633',
+        'featured-light': '#F9F8FF',
         'accent-purple': '#6A5FC1',
         'accent-md-violet': '#584774',
         red: '#e1567c',
         gold: '#F1B71C',
+        pink: {
+          500: '#F472B6',
+        },
       },
     },
   },
