@@ -296,7 +296,10 @@ export function ChangelogList({
           )}
         </div>
       </div>
-      <div className="hidden md:block md:col-span-2 pl-5 pt-10">
+      <nav
+        className="hidden md:block md:col-span-2 pl-5 pt-10"
+        aria-label="Jump to month and year"
+      >
         <h3 className="text-1xl text-primary font-semibold mb-2">Jump to:</h3>
         <ul>
           {sortedDatesGroupedByMonthAndYear
@@ -331,7 +334,7 @@ export function ChangelogList({
               </li>
             ))}
         </ul>
-      </div>
+      </nav>
     </main>
   );
 }
