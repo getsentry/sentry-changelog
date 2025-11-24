@@ -61,10 +61,7 @@ export default function GlobalHeader({
       aria-label="Site navigation"
     >
       <Container disablePaddingTop disablePaddingBottom>
-        <nav
-          className="flex flex-row flex-wrap items-center justify-center w-full py-4 xl:flex-nowrap"
-          aria-label="main"
-        >
+        <div className="flex flex-row flex-wrap items-center justify-center w-full py-4 xl:flex-nowrap">
           <a
             href="https://sentry.io/welcome/"
             aria-label="Welcome Page"
@@ -99,7 +96,7 @@ export default function GlobalHeader({
           <DesktopNavigation menuItems={menuItems} isDarkMode={isDarkMode} />
 
           <NavigationAuth isDarkMode={isDarkMode} isMobile={false} />
-        </nav>
+        </div>
       </Container>
     </header>
   );

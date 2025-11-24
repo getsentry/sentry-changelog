@@ -199,7 +199,7 @@ export function ChangelogList({
   const numberOfPages = Math.ceil(filteredChangelogs.length / ENTRIES_PER_PAGE);
 
   return (
-    <div className="w-full mx-auto grid grid-cols-12 bg-gray-200">
+    <main className="w-full mx-auto grid grid-cols-12 bg-gray-200">
       <div className="hidden md:block md:col-span-2 pl-5 pt-10">
         <h3 className="text-2xl text-primary font-semibold mb-2">
           Categories:
@@ -252,6 +252,7 @@ export function ChangelogList({
             />
             <div className="flex space-x-4">
               <button
+                tabIndex={0}
                 type="button"
                 className={`${
                   someFilterIsActive
@@ -295,7 +296,10 @@ export function ChangelogList({
           )}
         </div>
       </div>
-      <div className="hidden md:block md:col-span-2 pl-5 pt-10">
+      <nav
+        className="hidden md:block md:col-span-2 pl-5 pt-10"
+        aria-label="Jump to month and year"
+      >
         <h3 className="text-1xl text-primary font-semibold mb-2">Jump to:</h3>
         <ul>
           {sortedDatesGroupedByMonthAndYear
@@ -330,7 +334,7 @@ export function ChangelogList({
               </li>
             ))}
         </ul>
-      </div>
-    </div>
+      </nav>
+    </main>
   );
 }

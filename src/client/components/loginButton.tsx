@@ -20,7 +20,7 @@ export default function Component({ className = "" }) {
             <Text as="div" size="2" weight="bold">
               {session.user?.name}
             </Text>
-            <Link className={className} onClick={() => signOut()}>
+            <Link className={className} onClick={() => signOut()} tabIndex={0}>
               Sign Out
             </Link>
           </Box>

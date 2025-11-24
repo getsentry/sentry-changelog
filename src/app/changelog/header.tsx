@@ -3,7 +3,7 @@ import heroImage from "../../../public/img/hero.png";
 
 export default function Header({ loading }: { loading?: boolean }) {
   return (
-    <div className="w-full mx-auto h-96 relative bg-darkPurple">
+    <div role="banner" className="w-full mx-auto h-96 relative bg-darkPurple">
       <div className="relative w-full lg:max-w-7xl mx-auto px-4 lg:px-8 pt-8 grid grid-cols-12 items-center">
         {/* this needs to be a plain <img> next/image doesn't work here because of redirects we do */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -32,6 +32,7 @@ export default function Header({ loading }: { loading?: boolean }) {
               rel="noreferrer"
               className="underline underline-offset-2"
             >
+              <span className="sr-only">Twitter</span>
               @SentryChangelog
             </a>
             &nbsp;to stay up to date on everything from product updates to SDK
