@@ -39,7 +39,7 @@
     "@spotlightjs/spotlight": "^2.1.1",
     "import-in-the-middle": "^1.14.2",
     "js-yaml": "^4.1.0",
-    "next": "^15.5.7",
+    "next": "^15.5.9",
     "next-auth": "^4.24.5",
     "next-mdx-remote": "^4.4.1",
     "next-plausible": "^3.12.4",
