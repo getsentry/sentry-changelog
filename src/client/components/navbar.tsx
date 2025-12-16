@@ -49,14 +49,14 @@ export function Navbar() {
             title="Sentry error monitoring"
             className="flex flex-shrink-0 flex-1 items-center mr-auto"
           >
-            <a href="/">
+            <button type="button" tabIndex={0}>
               <SentryWordmarkLogo
                 width={150}
                 height={45}
                 onClick={handleLogoClick}
                 onContextMenu={handleLogoClick}
               />
-            </a>
+            </button>
           </div>
           <Button
             onClick={handleShowMenu}
