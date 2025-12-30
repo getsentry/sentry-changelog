@@ -65,7 +65,16 @@ export async function GET(request: Request) {
 
     const changelogs = await prismaClient.changelog.findMany({
       where,
-      include: { categories: { select: { id: true, name: true } } },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        summary: true,
+        image: true,
+        content: true,
+        publishedAt: true,
+        categories: { select: { id: true, name: true } },
+      },
       orderBy: { publishedAt: "desc" },
       take: limit,
       skip: offset,
