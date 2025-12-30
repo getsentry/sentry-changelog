@@ -46,19 +46,22 @@ describe("GET /api/changelogs", () => {
       expect(data).toEqual([mockChangelog]);
       expect(mockFindMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { published: true },
+          where: { published: true, deleted: false },
           take: 20,
           skip: 0,
         }),
       );
     });
 
-    it("only queries published changelogs", async () => {
+    it("only queries published and non-deleted changelogs", async () => {
       await GET(createRequest("/api/changelogs"));
 
       expect(mockFindMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: expect.objectContaining({ published: true }),
+          where: expect.objectContaining({
+            published: true,
+            deleted: false,
+          }),
         }),
       );
     });

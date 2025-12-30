@@ -51,6 +51,7 @@ export async function GET(request: Request) {
 
     const where: Prisma.ChangelogWhereInput = {
       published: true,
+      deleted: false,
       ...(category && { categories: { some: { name: category } } }),
       ...((from || to) && {
         publishedAt: {
