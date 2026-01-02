@@ -1,5 +1,5 @@
-import type { MenuItem } from "@/lib/contentful/types";
 import type React from "react";
+import type { MenuItem } from "@/lib/contentful/types";
 import CollapsibleSection from "../molecules/CollapsibleSection";
 import LinkList from "../molecules/LinkList";
 
@@ -12,7 +12,6 @@ interface MultiColumnMenuProps {
 export default function MultiColumnMenu({
   item,
   isDarkMode,
-  menuKey,
 }: MultiColumnMenuProps) {
   const columns = item.columnsCollection?.items || [];
 

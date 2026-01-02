@@ -1,12 +1,11 @@
+import { startSpan } from "@sentry/nextjs";
+import type { Element } from "hast";
 import type { Metadata } from "next";
 import { serialize } from "next-mdx-remote/serialize";
 import { Fragment } from "react";
-
-import { type ChangelogEntry, ChangelogList } from "@/client/components/list";
-import { startSpan } from "@sentry/nextjs";
-import type { Element } from "hast";
 import type { Plugin } from "unified";
 import { visit } from "unist-util-visit";
+import { type ChangelogEntry, ChangelogList } from "@/client/components/list";
 import { getChangelogs } from "../../server/utils";
 import Header from "./header";
 
@@ -32,7 +31,7 @@ export default async function Page() {
                   rehypePlugins: [
                     // Because we render the changelog entries as <a> tags, and it is not allowed to render <a> tags
                     // within other a tags, we need to strip away the <a> tags inside the previews here.
-                    // @ts-ignore
+                    // @ts-expect-error
                     stripLinks,
                   ],
                 },

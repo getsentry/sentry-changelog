@@ -1,7 +1,6 @@
 "use client";
 
 import type { MenuItem } from "@/lib/contentful/types";
-import React from "react";
 import Button from "../atoms/Button";
 import Container from "../atoms/Container";
 import CollapsibleSection from "../molecules/CollapsibleSection";

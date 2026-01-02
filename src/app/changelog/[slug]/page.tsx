@@ -1,11 +1,11 @@
 import type { Changelog } from "@prisma/client";
 import type { Metadata, ResolvingMetadata } from "next";
-import { getServerSession } from "next-auth/next";
-import { MDXRemote } from "next-mdx-remote/rsc";
 import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Fragment, Suspense } from "react";
+import { getServerSession } from "next-auth/next";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import { Suspense } from "react";
 
 import { Article } from "@/client/components/article";
 import ArticleFooter from "@/client/components/articleFooter";
@@ -23,7 +23,7 @@ export async function generateMetadata(
   let changelog: Changelog | null = null;
   try {
     changelog = await getChangelog(params.slug);
-  } catch (e) {
+  } catch (_e) {
     return { title: (await parent).title };
   }
 
@@ -50,7 +50,7 @@ const getChangelog = unstable_cache(
           categories: true,
         },
       });
-    } catch (e) {
+    } catch (_e) {
       return null;
     }
   },

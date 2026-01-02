@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { ReactNode } from "react";
 import { DateComponent } from "./date";
 import { CategoryTag } from "./tag";
@@ -23,10 +24,8 @@ export function Article({
 }: ArticleProps) {
   return (
     <article className={`bg-white rounded-lg shadow-lg mb-8 ${className}`}>
-      {/* this needs to be a plain <img> next/image doesn't work here because of redirects we do */}
       {image && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
           className="object-cover relative w-full h-64 rounded-lg rounded-b-none"
           src={image}
           alt={title}

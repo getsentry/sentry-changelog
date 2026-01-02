@@ -3,10 +3,8 @@ import heroImage from "../../../public/img/hero.png";
 
 export default function Header({ loading }: { loading?: boolean }) {
   return (
-    <div role="banner" className="w-full mx-auto h-96 relative bg-darkPurple">
+    <div className="w-full mx-auto h-96 relative bg-darkPurple">
       <div className="relative w-full lg:max-w-7xl mx-auto px-4 lg:px-8 pt-8 grid grid-cols-12 items-center">
-        {/* this needs to be a plain <img> next/image doesn't work here because of redirects we do */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <Image
           className={`justify-self-center col-span-10 hidden lg:block ${
             loading ? "animate-fade-in-left" : ""
