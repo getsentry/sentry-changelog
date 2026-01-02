@@ -1,8 +1,9 @@
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Button, Text } from "@radix-ui/themes";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getServerSession } from "next-auth/next";
 import { Fragment } from "react";
-
 import {
   deleteChangelog,
   publishChangelog,
@@ -10,8 +11,6 @@ import {
 } from "@/server/actions/changelog";
 import { authOptions } from "@/server/authOptions";
 import { prismaClient } from "@/server/prisma-client";
-import { getServerSession } from "next-auth/next";
-import { notFound } from "next/navigation";
 import Confirm from "./confirm";
 
 export default async function ChangelogsListPage() {

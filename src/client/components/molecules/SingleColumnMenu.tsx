@@ -1,5 +1,4 @@
 import type { MenuItem } from "@/lib/contentful/types";
-import React from "react";
 import LinkList from "./LinkList";
 
 interface SingleColumnMenuProps {
@@ -10,7 +9,6 @@ interface SingleColumnMenuProps {
 
 export default function SingleColumnMenu({
   item,
-  isDarkMode,
   menuKey,
 }: SingleColumnMenuProps) {
   const menuItems = item.menuItemsCollection?.items || [];

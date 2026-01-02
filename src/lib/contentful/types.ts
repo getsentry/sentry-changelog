@@ -1,4 +1,4 @@
-import type { Entry, EntryFields } from "contentful";
+import type { EntryFields } from "contentful";
 
 export interface BlogGeneralSettingsEntry {
   entryTitle?: string;

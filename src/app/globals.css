@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/suspicious/noUnknownAtRules: Tailwind config */
+/** biome-ignore-all lint/complexity/noImportantStyles: no explanation */
 @import "@radix-ui/themes/styles.css";
 
 @tailwind base;
@@ -12,7 +14,8 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("https://changelog.sentry.dev/fonts/rubik-latin-regular.woff2")
+  src:
+    url("https://changelog.sentry.dev/fonts/rubik-latin-regular.woff2")
     format("woff2"),
     url("https://changelog.sentry.dev/fonts/rubik-latin-regular.woff")
     format("woff");
@@ -28,7 +31,8 @@
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url("https://changelog.sentry.dev/fonts/rubik-latin-500.woff2")
+  src:
+    url("https://changelog.sentry.dev/fonts/rubik-latin-500.woff2")
     format("woff2"),
     url("https://changelog.sentry.dev/fonts/rubik-latin-500.woff")
     format("woff");
@@ -44,7 +48,8 @@
   font-style: normal;
   font-weight: bold;
   font-display: swap;
-  src: url("https://changelog.sentry.dev/fonts/rubik-latin-500.woff2")
+  src:
+    url("https://changelog.sentry.dev/fonts/rubik-latin-500.woff2")
     format("woff2"),
     url("https://changelog.sentry.dev/fonts/rubik-latin-500.woff")
     format("woff");
@@ -60,7 +65,8 @@
   font-style: italic;
   font-weight: 400;
   font-display: swap;
-  src: url("https://changelog.sentry.dev/fonts/rubik-latin-italic.woff2")
+  src:
+    url("https://changelog.sentry.dev/fonts/rubik-latin-italic.woff2")
     format("woff2"),
     url("https://changelog.sentry.dev/fonts/rubik-latin-italic.woff")
     format("woff");
@@ -76,7 +82,8 @@
   font-style: italic;
   font-weight: 500;
   font-display: swap;
-  src: url("https://changelog.sentry.dev/fonts/rubik-latin-500italic.woff2")
+  src:
+    url("https://changelog.sentry.dev/fonts/rubik-latin-500italic.woff2")
     format("woff2"),
     url("https://changelog.sentry.dev/fonts/rubik-latin-500italic.woff")
     format("woff");
@@ -93,8 +100,10 @@
 }
 
 .fancy-border:hover {
-  box-shadow: 0 2px 0 rgba(54, 45, 89, 0.15), -0.1875rem -0.1875rem 0 0.1875rem
-    #f2b712, 0 0 0 0.375rem #e1567c;
+  box-shadow:
+    0 2px 0 rgba(54, 45, 89, 0.15),
+    -0.1875rem -0.1875rem 0 0.1875rem #f2b712,
+    0 0 0 0.375rem #e1567c;
   text-decoration: none;
   cursor: pointer;
 }
@@ -112,9 +121,9 @@
 }
 
 html {
-  font-family: "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Helvetica", "Arial", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol";
+  font-family:
+    "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica", "Arial",
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 body {
@@ -280,7 +289,9 @@ b {
   background-size: 250% 100%;
   outline: 0rem solid #fa7faa;
   outline-offset: 0.125rem;
-  transition: background-position 0.2s, outline-width 0.2s;
+  transition:
+    background-position 0.2s,
+    outline-width 0.2s;
   border-color: transparent;
   border-radius: 0.5rem;
   box-shadow: none;
@@ -336,7 +347,9 @@ b {
   background-size: 250% 100%;
   outline: 0rem solid #6a5fc1;
   outline-offset: 0.125rem;
-  transition: background-position 0.2s, outline-width 0.2s;
+  transition:
+    background-position 0.2s,
+    outline-width 0.2s;
   background-color: #452650;
   border-color: transparent;
   color: white;
@@ -377,9 +390,10 @@ b {
   background-size: 250% 100%;
   outline: 0rem solid #fa7faa;
   outline-offset: 0.125rem;
-  transition: background-position 0.2s, outline-width 0.2s;
+  transition:
+    background-position 0.2s,
+    outline-width 0.2s;
   background-clip: padding-box;
-  border: solid 0.125rem transparent;
   box-shadow: none;
   box-sizing: border-box;
   color: white;
@@ -397,8 +411,12 @@ b {
   padding: var(--b);
   border-radius: 0.5rem;
   background: linear-gradient(11deg, #fa7faa 0%, #ff9691 50%, #ffb287 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   transition: opacity 0.2s;
@@ -431,7 +449,9 @@ b {
   background-size: 250% 100%;
   outline: 0rem solid #fa7faa;
   outline-offset: 0.125rem;
-  transition: background-position 0.2s, outline-width 0.2s;
+  transition:
+    background-position 0.2s,
+    outline-width 0.2s;
   background-clip: padding-box;
   border: solid 0.125rem transparent;
   box-shadow: none;
@@ -451,8 +471,12 @@ b {
   padding: var(--b);
   border-radius: 0.5rem;
   background: linear-gradient(11deg, #c83852 0%, #b44092 50%, #6a5fc1 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   transition: opacity 0.2s;
@@ -554,7 +578,9 @@ b {
   background-size: 250% 100%;
   outline: 0rem solid #6a5fc1;
   outline-offset: 0.125rem;
-  transition: background 0.2s ease-out, outline-width 0.2s;
+  transition:
+    background 0.2s ease-out,
+    outline-width 0.2s;
   background-color: #452650;
   border-color: transparent;
   color: white;
@@ -586,9 +612,10 @@ b {
   background-size: 250% 100%;
   outline: 0rem solid #fa7faa;
   outline-offset: 0.125rem;
-  transition: background-position 0.2s, outline-width 0.2s;
+  transition:
+    background-position 0.2s,
+    outline-width 0.2s;
   background-clip: padding-box;
-  border: solid 0.125rem transparent;
   box-shadow: none;
   box-sizing: border-box;
   color: #1f1633;
@@ -606,8 +633,12 @@ b {
   padding: var(--b);
   border-radius: 0.5rem;
   background: linear-gradient(11deg, #c83852 0%, #b44092 50%, #6a5fc1 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   transition: opacity 0.2s;
@@ -639,9 +670,10 @@ b {
   background-size: 250% 100%;
   outline: 0rem solid #fa7faa;
   outline-offset: 0.125rem;
-  transition: background-position 0.2s, outline-width 0.2s;
+  transition:
+    background-position 0.2s,
+    outline-width 0.2s;
   background-clip: padding-box;
-  border: solid 0.125rem transparent;
   box-shadow: none;
   box-sizing: border-box;
   color: white;
@@ -659,8 +691,12 @@ b {
   padding: var(--b);
   border-radius: 0.5rem;
   background: linear-gradient(11deg, #fa7faa 0%, #ff9691 50%, #ffb287 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   transition: opacity 0.2s;
@@ -683,7 +719,9 @@ b {
 .chevron {
   position: relative;
   flex-shrink: 0;
-  transition: margin-right 0.2s, margin-left 0.2s;
+  transition:
+    margin-right 0.2s,
+    margin-left 0.2s;
   height: 1em;
   width: 1em;
   margin-left: auto;

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type React from "react";
 import Link from "./Link";
 
@@ -123,10 +124,10 @@ export default function Button({
             dangerouslySetInnerHTML={{ __html: icon }}
           />
         ) : (
-          <img src={icon.url} alt="" className="icon" aria-hidden="true" />
+          <Image src={icon.url} alt="" className="icon" aria-hidden="true" />
         ))}
       {portrait && (
-        <img src={portrait} alt="" className="portrait" aria-hidden="true" />
+        <Image src={portrait} alt="" className="portrait" aria-hidden="true" />
       )}
       <span className="label">{children}</span>
       {chevron && (

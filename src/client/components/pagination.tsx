@@ -57,7 +57,7 @@ export function Pagination({
           page: Math.max(currentPage - 1, 1),
           search,
         })}
-        onClick={(e: MouseEvent) => {
+        handleClick={(e: React.MouseEvent<HTMLElement>) => {
           e.preventDefault();
           onPageNumberChange(Math.max(currentPage - 1, 1));
         }}
@@ -105,7 +105,11 @@ export function Pagination({
             }}
           >
             <button
-              className={`${page === currentPage ? "bg-darkPurple relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg  text-center align-middle font-sans text-xs font-medium uppercase text-white shadow-md  hover:shadow-lg hover:bg-darkPurple focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" : "relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 hover:bg-darkPurple/10 active:bg-darkPurple/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"}`}
+              className={`${
+                page === currentPage
+                  ? "bg-darkPurple relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg  text-center align-middle font-sans text-xs font-medium uppercase text-white shadow-md  hover:shadow-lg hover:bg-darkPurple focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  : "relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 hover:bg-darkPurple/10 active:bg-darkPurple/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+              }`}
               type="button"
             >
               <span className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
@@ -123,7 +127,7 @@ export function Pagination({
           page: currentPage + 1,
           search,
         })}
-        onClick={(e: MouseEvent) => {
+        handleClick={(e: React.MouseEvent<HTMLElement>) => {
           e.preventDefault();
           onPageNumberChange(currentPage + 1);
         }}
@@ -156,14 +160,25 @@ export function Pagination({
   );
 }
 
-// @ts-expect-error TODO(lforst): leftover from migration
-function ConditionalLink({ children, condition, onClick, ...props }) {
+interface ConditionalLinkProps extends React.PropsWithChildren {
+  condition: boolean;
+  handleClick: (e: React.MouseEvent<HTMLElement>) => void;
+  href: string;
+}
+
+function ConditionalLink({
+  children,
+  condition,
+  handleClick,
+  href,
+  ...props
+}: ConditionalLinkProps): React.ReactElement {
   return condition ? (
-    // @ts-ignore
-    <Link onClick={onClick} {...props}>
+    <Link href={href} onClick={handleClick} {...props}>
       {children}
     </Link>
   ) : (
+    // biome-ignore lint/complexity/noUselessFragments: you're wrong, biome
     <>{children}</>
   );
 }

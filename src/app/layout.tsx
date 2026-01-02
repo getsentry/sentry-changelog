@@ -3,7 +3,6 @@ import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import type { Metadata } from "next";
 import PlausibleProvider from "next-plausible";
-import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Home",

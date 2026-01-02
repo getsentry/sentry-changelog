@@ -1,18 +1,20 @@
 "use client";
 
+import type { Category } from "@prisma/client";
+import Link from "next/link";
+import { useActionState } from "react";
 import { FileUpload } from "@/client/components/fileUpload";
 import { ForwardRefEditor } from "@/client/components/forwardRefEditor";
 import { TitleSlug } from "@/client/components/titleSlug";
 import { Button } from "@/client/components/ui/Button";
 import { Select } from "@/client/components/ui/Select";
 import { createChangelog } from "@/server/actions/changelog";
-import type { Category } from "@prisma/client";
-import Link from "next/link";
-import { Fragment, useActionState } from "react";
 
 export const CreateChangelogForm = ({
   categories,
-}: { categories: Category[] }) => {
+}: {
+  categories: Category[];
+}) => {
   const [_state, formAction] = useActionState(createChangelog, {});
   return (
     <form action={formAction} className="px-2 w-full">
@@ -23,10 +25,7 @@ export const CreateChangelogForm = ({
           htmlFor="summary"
           className="block text-xs font-medium text-gray-700"
         >
-          Summary
-          <Fragment>
-            &nbsp;<span className="font-bold text-secondary">*</span>
-          </Fragment>
+          Summary &nbsp;<span className="font-bold text-secondary">*</span>
         </label>
         <textarea name="summary" className="w-full" required />
         <span className="text-xs text-gray-500 italic">

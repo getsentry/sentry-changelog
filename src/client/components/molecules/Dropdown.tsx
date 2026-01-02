@@ -1,7 +1,6 @@
 "use client";
 
 import type { MenuItem } from "@/lib/contentful/types";
-import React from "react";
 import MultiColumnMenu from "../organisms/MultiColumnMenu";
 import FeaturedContent from "./FeaturedContent";
 import SingleColumnMenu from "./SingleColumnMenu";
@@ -13,12 +12,7 @@ interface DropdownProps {
   isOpen: boolean;
 }
 
-export default function Dropdown({
-  item,
-  isDarkMode,
-  menuKey,
-  isOpen,
-}: DropdownProps) {
+export default function Dropdown({ item, menuKey, isOpen }: DropdownProps) {
   const hasFeaturedContent = !!item.featuredContent;
   const featuredContentWidth = hasFeaturedContent ? "xl:min-w-[48rem]" : "";
 

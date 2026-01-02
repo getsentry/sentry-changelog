@@ -1,4 +1,4 @@
-import React from "react";
+import Image from "next/image";
 import Button from "../atoms/Button";
 
 interface FeaturedContentProps {
@@ -40,7 +40,7 @@ export default function FeaturedContent({
       <div className="flex flex-col gap-4 flex-1">
         {coverImage && (
           <div className="w-full h-[142px] rounded-lg overflow-hidden flex-shrink-0">
-            <img
+            <Image
               src={
                 coverImage.url.startsWith("//")
                   ? `https:${coverImage.url}`

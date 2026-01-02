@@ -4,7 +4,6 @@ import { PrismaClient } from "@prisma/client";
 // database so if we don't have it as a singleton, the database might run out of connections.
 
 declare global {
-  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 

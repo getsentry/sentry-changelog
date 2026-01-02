@@ -1,9 +1,8 @@
-import { prismaClient } from "@/server/prisma-client";
-
+import { notFound } from "next/navigation";
+import { getServerSession } from "next-auth/next";
 import { CreateChangelogForm } from "@/client/components/forms/createChangelogForm";
 import { authOptions } from "@/server/authOptions";
-import { getServerSession } from "next-auth/next";
-import { notFound } from "next/navigation";
+import { prismaClient } from "@/server/prisma-client";
 
 export default async function ChangelogCreatePage() {
   const session = await getServerSession(authOptions);

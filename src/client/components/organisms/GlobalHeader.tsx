@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { MenuItem } from "@/lib/contentful/types";
-import React, { useState, useEffect } from "react";
 import Button from "../atoms/Button";
 import Container from "../atoms/Container";
 import Logo from "../atoms/Logo";
@@ -57,8 +57,9 @@ export default function GlobalHeader({
     <header
       className={`sticky top-0 z-50 transition-all duration-200 ${
         isDarkMode ? "bg-rich-black" : "bg-white"
-      } ${isMobileMenuOpen ? "xl:max-h-none max-h-screen overflow-y-auto" : ""}`}
-      aria-label="Site navigation"
+      } ${
+        isMobileMenuOpen ? "xl:max-h-none max-h-screen overflow-y-auto" : ""
+      }`}
     >
       <Container disablePaddingTop disablePaddingBottom>
         <div className="flex flex-row flex-wrap items-center justify-center w-full py-4 xl:flex-nowrap">

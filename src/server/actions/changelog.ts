@@ -1,8 +1,8 @@
 "use server";
 
-import { getServerSession } from "next-auth/next";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "../authOptions";
 import { prismaClient } from "../prisma-client";
 import type { ServerActionPayloadInterface } from "./serverActionPayload.interface";
@@ -29,7 +29,6 @@ export async function unpublishChangelog(
       data: { published: false, publishedAt: null },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("DELETE ACTION ERROR:", error);
     return { message: "Unable to unpublish changelog", success: false };
   }
@@ -57,7 +56,6 @@ export async function publishChangelog(
       data: { published: true, publishedAt: new Date().toISOString() },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("DELETE ACTION ERROR:", error);
     return { message: "Unable to publish changelog", success: false };
   }
@@ -142,7 +140,6 @@ export async function editChangelog(
       data,
     });
   } catch (error: any) {
-    // eslint-disable-next-line no-console
     console.error("EDIT ACTION ERROR:", error);
     return { message: (error as Error).message, success: false };
   }
@@ -166,7 +163,6 @@ export async function deleteChangelog(
       where: { id },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("DELETE ACTION ERROR:", error);
     return { message: "Unable to delete changelog", success: false };
   }

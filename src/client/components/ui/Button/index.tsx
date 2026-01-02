@@ -2,8 +2,8 @@ import Link, { type LinkProps } from "next/link";
 import {
   type AnchorHTMLAttributes,
   type ButtonHTMLAttributes,
-  type Ref,
   forwardRef,
+  type Ref,
 } from "react";
 
 import styles from "./styles.module.css";
