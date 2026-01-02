@@ -3,7 +3,7 @@ import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import type { Metadata } from "next";
 import PlausibleProvider from "next-plausible";
-import Script from "next/script";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -35,7 +35,7 @@ export default function RootLayout({
       </head>
       <body>
         <Theme accentColor="iris" grayColor="sand" radius="large" scaling="95%">
-          {children}
+          <NuqsAdapter>{children}</NuqsAdapter>
         </Theme>
       </body>
     </html>
