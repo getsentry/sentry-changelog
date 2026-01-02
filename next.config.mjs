@@ -40,12 +40,6 @@ export default withSentryConfig(nextConfig, {
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
 
-  unstable_sentryWebpackPluginOptions: {
-    applicationKey: "sentry-changelog",
-  },
-
-  automaticVercelMonitors: true,
-
   _experimental: {
     thirdPartyOriginStackFrames: true,
   },
