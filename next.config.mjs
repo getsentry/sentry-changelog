@@ -40,16 +40,6 @@ export default withSentryConfig(nextConfig, {
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
 
-  // Hides source maps from generated client bundles
-  hideSourceMaps: true,
-
-  // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: process.env.NODE_ENV === "production",
-
-  reactComponentAnnotation: {
-    enabled: true,
-  },
-
   unstable_sentryWebpackPluginOptions: {
     applicationKey: "sentry-changelog",
   },
@@ -58,6 +48,5 @@ export default withSentryConfig(nextConfig, {
 
   _experimental: {
     thirdPartyOriginStackFrames: true,
-    useRunAfterProductionCompileHook: true, // enables turbopack sourcemap uploads
   },
 });
