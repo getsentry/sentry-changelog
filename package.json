@@ -8,8 +8,8 @@
   "license": "FSL-1.1-Apache-2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "pnpm prisma generate && next build --turbopack",
+    "dev": "next dev",
+    "build": "pnpm prisma generate && next build",
     "start": "next start",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
