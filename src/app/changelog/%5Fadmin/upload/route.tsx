@@ -83,13 +83,13 @@ export async function GET(req: NextRequest) {
   const file = searchParams.get("file");
 
   const storage = await getStorageClient();
-  const bucket = storage.bucket(process.env.GOOGLE_BUCKET_NAME);
+  const bucket = storage.bucket(`${process.env.GOOGLE_BUCKET_NAME}`);
   const randomFilename = `${crypto.randomBytes(5).toString("base64url")}-${file}`;
   const gcsFile = bucket.file(randomFilename as string);
 
   const options = {
     expires: Date.now() + 5 * 60 * 1000, //  5 minutes,
-    fields: { "x-goog-meta-source": process.env.GOOGLE_PROJECT_ID },
+    fields: { "x-goog-meta-source": `${process.env.GOOGLE_PROJECT_ID}` },
   };
 
   const [response] = await gcsFile.generateSignedPostPolicyV4(options);
