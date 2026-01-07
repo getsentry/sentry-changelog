@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 
 import { authOptions } from "@/server/authOptions";
 import { Storage } from "@google-cloud/storage";
-import { getVercelOidcToken } from "@vercel/functions/oidc";
+import { getVercelOidcToken } from "@vercel/oidc";
 import { ExternalAccountClient } from "google-auth-library";
 import { getServerSession } from "next-auth/next";
 import type { NextRequest } from "next/server";
