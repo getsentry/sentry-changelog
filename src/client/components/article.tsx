@@ -25,14 +25,11 @@ export function Article({
   return (
     <article className={`bg-white rounded-lg shadow-lg mb-8 ${className}`}>
       {image && (
-        <div className="relative w-full h-64">
-          <Image
-            className="object-cover rounded-lg rounded-b-none"
-            src={image}
-            alt={title}
-            fill
-          />
-        </div>
+        <img
+          className="object-cover rounded-lg rounded-b-none relative w-full h-64"
+          src={image}
+          alt={title}
+        />
       )}
       <div className="p-6">
         <h3 className="text-3xl text-primary font-semibold mb-2">{title}</h3>
