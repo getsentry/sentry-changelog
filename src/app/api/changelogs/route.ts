@@ -1,7 +1,7 @@
-import { prismaClient } from "@/server/prisma-client";
 import type { Prisma } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
+import { prismaClient } from "@/server/prisma-client";
 
 const MAX_SEARCH_LENGTH = 100;
 const MAX_CATEGORY_LENGTH = 100;
