@@ -17,6 +17,7 @@ async function seed() {
         summary: "Changelog 1 summary",
         published: true,
         deleted: false,
+        image: "/img/hero.png",
       },
     });
 
@@ -32,6 +33,7 @@ async function seed() {
         summary: "Changelog 2 summary",
         published: true,
         deleted: false,
+        image: "/img/hero.png",
       },
     });
 
@@ -49,6 +51,7 @@ async function seed() {
           "Changelog 3 summary with [markdown content](https://de.wikipedia.org/wiki/Markdown)",
         published: true,
         deleted: false,
+        image: "/img/hero.png",
       },
     });
 
