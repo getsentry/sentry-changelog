@@ -43,7 +43,6 @@ function handleUploadImages(textareaEl: HTMLTextAreaElement, fileList: File[]) {
         `![${uploadedImage.originalFilename}](${uploadedImage.url})`,
       );
     } catch (err: any) {
-      // eslint-disable-next-line no-console
       console.error(err);
       replaceText(cursor, loadingText, "");
       throw err;

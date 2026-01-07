@@ -1,5 +1,5 @@
-import { getChangelogs } from "@/server/utils";
 import RSS from "rss";
+import { getChangelogs } from "@/server/utils";
 
 export async function GET() {
   const feed = new RSS({

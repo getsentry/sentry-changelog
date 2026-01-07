@@ -1,4 +1,4 @@
-import React from "react";
+import Image from "next/image";
 import Button from "../atoms/Button";
 import Link from "../atoms/Link";
 import NewPill from "../atoms/NewPill";
@@ -63,7 +63,7 @@ export default function LinkList({
                 }`}
               >
                 {iconSrc && (
-                  <img
+                  <Image
                     src={iconSrc}
                     alt=""
                     aria-hidden="true"

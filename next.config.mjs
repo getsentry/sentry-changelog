@@ -4,9 +4,6 @@ import WebpackHookPlugin from "webpack-hook-plugin";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   trailingSlash: true,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   transpilePackages: ["next-mdx-remote"],
   webpack: (config, { dev, nextRuntime }) => {
     if (dev && nextRuntime === "nodejs") {

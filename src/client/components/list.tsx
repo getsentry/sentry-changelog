@@ -1,8 +1,8 @@
 "use client";
 
 import type { Category } from "@prisma/client";
-import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import Link from "next/link";
+import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import {
   parseAsArrayOf,
   parseAsInteger,

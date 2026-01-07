@@ -1,5 +1,5 @@
-import { prismaClient } from "@/server/prisma-client";
 import { unstable_cache } from "next/cache";
+import { prismaClient } from "@/server/prisma-client";
 
 export const getChangelogs = unstable_cache(
   async () => {

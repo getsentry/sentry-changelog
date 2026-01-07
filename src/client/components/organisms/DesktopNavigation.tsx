@@ -1,7 +1,7 @@
 "use client";
 
+import React, { useCallback, useEffect, useState } from "react";
 import type { MenuItem } from "@/lib/contentful/types";
-import React, { useState, useCallback, useEffect } from "react";
 import Dropdown from "../molecules/Dropdown";
 import NavigationMenuItem from "../molecules/NavigationMenuItem";
 
