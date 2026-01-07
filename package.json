@@ -11,6 +11,8 @@
     "dev": "next dev",
     "build": "pnpm prisma generate && next build",
     "start": "next start",
+    "test": "vitest",
+    "test:run": "vitest run",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
@@ -71,6 +73,7 @@
     "@types/react-dom": "latest",
     "@types/rss": "^0.0.32",
     "@types/unist": "^3.0.3",
+    "@vitejs/plugin-react": "^5.1.2",
     "autoprefixer": "^10.4.17",
     "dotenv-cli": "^7.4.2",
     "lint-staged": "^15.2.10",
@@ -78,7 +81,8 @@
     "prisma": "^5.8.1",
     "simple-git-hooks": "^2.11.1",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.0.16"
   },
   "volta": {
     "node": "22.16.0",
