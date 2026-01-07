@@ -1,10 +1,10 @@
 import "../prism-sentry.css";
 
-import GlobalHeader from "@/client/components/organisms/GlobalHeader";
-import { getBlogGeneralSettingsByEntryTitle } from "@/lib/contentful/navigation";
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 import { Fragment, type ReactNode } from "react";
+import GlobalHeader from "@/client/components/organisms/GlobalHeader";
+import { getBlogGeneralSettingsByEntryTitle } from "@/lib/contentful/navigation";
 
 export const metadata: Metadata = {
   title: { template: "%s | Sentry Changelog", default: "Changelog" },

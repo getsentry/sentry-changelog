@@ -91,7 +91,7 @@ export function Navbar() {
                     as={type}
                     variant={variant}
                     target={target}
-                    // @ts-ignore
+                    // @ts-expect-error
                     href={to || null}
                     className="w-full !justify-start"
                     onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {

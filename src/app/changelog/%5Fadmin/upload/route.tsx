@@ -1,9 +1,8 @@
 import crypto from "node:crypto";
-
-import { authOptions } from "@/server/authOptions";
 import { Storage } from "@google-cloud/storage";
-import { getServerSession } from "next-auth/next";
 import type { NextRequest } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/server/authOptions";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);

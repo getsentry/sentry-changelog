@@ -1,14 +1,14 @@
 "use client";
 
+import type { Category, Changelog } from "@prisma/client";
+import Link from "next/link";
+import { Suspense, useActionState } from "react";
 import { FileUpload } from "@/client/components/fileUpload";
 import { ForwardRefEditor } from "@/client/components/forwardRefEditor";
 import { TitleSlug } from "@/client/components/titleSlug";
 import { Button } from "@/client/components/ui/Button";
 import { Select } from "@/client/components/ui/Select";
 import { editChangelog } from "@/server/actions/changelog";
-import type { Category, Changelog } from "@prisma/client";
-import Link from "next/link";
-import { Fragment, Suspense, useActionState } from "react";
 
 export const EditChangelogForm = ({
   changelog,
@@ -28,10 +28,7 @@ export const EditChangelogForm = ({
           htmlFor="summary"
           className="block text-xs font-medium text-gray-700"
         >
-          Summary
-          <Fragment>
-            &nbsp;<span className="font-bold text-secondary">*</span>
-          </Fragment>
+          Summary &nbsp;<span className="font-bold text-secondary">*</span>
         </label>
         <textarea name="summary" className="w-full" required>
           {changelog.summary}

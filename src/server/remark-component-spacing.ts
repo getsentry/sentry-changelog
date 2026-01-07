@@ -7,8 +7,8 @@ const affectedComponents = ["PlatformIdentifier"];
 
 const remarkComponentSpacing: Plugin<undefined[], Root> =
   () => (tree: any, _file: any) => {
-    let componentNode: Node | undefined = undefined;
-    let componentNodeParent: Node | undefined = undefined;
+    let componentNode: Node | undefined;
+    let componentNodeParent: Node | undefined;
     return visit(tree, (node, _, parent) => {
       if (componentNode) {
         if (parent === componentNodeParent) {
