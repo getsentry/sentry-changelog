@@ -25,6 +25,7 @@ export function Article({
   return (
     <article className={`bg-white rounded-lg shadow-lg mb-8 ${className}`}>
       {image && (
+        // biome-ignore lint/performance/noImgElement: <Image> does not resolve here for some reason
         <img
           className="object-cover rounded-lg rounded-b-none relative w-full h-64"
           src={image}
