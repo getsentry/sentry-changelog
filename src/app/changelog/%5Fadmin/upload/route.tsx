@@ -54,8 +54,7 @@ async function getStorageClient(): Promise<Storage> {
 
     return new Storage({
       projectId,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      authClient: authClient as any,
+      authClient,
     });
   }
 
