@@ -1,11 +1,10 @@
 import crypto from "node:crypto";
-
-import { authOptions } from "@/server/authOptions";
 import { Storage } from "@google-cloud/storage";
 import { getVercelOidcToken } from "@vercel/oidc";
 import { ExternalAccountClient } from "google-auth-library";
-import { getServerSession } from "next-auth/next";
 import type { NextRequest } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/server/authOptions";
 
 async function getStorageClient(): Promise<Storage> {
   // Use OIDC authentication on Vercel, static credentials for local dev

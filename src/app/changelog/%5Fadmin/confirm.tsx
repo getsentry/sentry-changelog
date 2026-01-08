@@ -1,7 +1,7 @@
 "use client";
 
-import type { ServerActionPayloadInterface } from "@/server/actions/serverActionPayload.interface";
 import { type PropsWithChildren, useActionState } from "react";
+import type { ServerActionPayloadInterface } from "@/server/actions/serverActionPayload.interface";
 
 export default function Confirm({
   action,
@@ -21,7 +21,6 @@ export default function Confirm({
       className="inline-block"
       onSubmit={(e) => {
         e.preventDefault();
-        // eslint-disable-next-line no-alert
         if (confirm("Are you sure?")) {
           formAction(new FormData(e.currentTarget));
         }

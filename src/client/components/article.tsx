@@ -23,11 +23,10 @@ export function Article({
 }: ArticleProps) {
   return (
     <article className={`bg-white rounded-lg shadow-lg mb-8 ${className}`}>
-      {/* this needs to be a plain <img> next/image doesn't work here because of redirects we do */}
       {image && (
-        // eslint-disable-next-line @next/next/no-img-element
+        // biome-ignore lint/performance/noImgElement: <Image> does not resolve here for some reason
         <img
-          className="object-cover relative w-full h-64 rounded-lg rounded-b-none"
+          className="object-cover rounded-lg rounded-b-none relative w-full h-64"
           src={image}
           alt={title}
         />
