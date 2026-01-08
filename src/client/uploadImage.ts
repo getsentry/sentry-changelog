@@ -14,7 +14,7 @@ export async function uploadImage(file: File) {
     body: formData,
   });
   return {
-    url: `${url}${encodeURIComponent(options.destination)}`,
+    url: `${url}${encodeURIComponent(response.fields.key)}`,
     originalFilename: file.name,
   };
 }
