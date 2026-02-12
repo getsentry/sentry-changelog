@@ -4035,8 +4035,8 @@ packages:
   preact@10.24.3:
     resolution: {integrity: sha512-Z2dPnBnMUfyQfSQ+GBdsGa16hz35YmLmtTLhM169uW944hYL6xzTYkJjC07j+Wosz733pMWx0fgON3JNw1jJQA==}
 
-  preact@10.26.8:
-    resolution: {integrity: sha512-1nMfdFjucm5hKvq0IClqZwK4FJkGXhRrQstOQ3P4vp8HxKrJEMFcY6RdBRVTdfQS/UlnX6gfbPuTvaqx/bDoeQ==}
+  preact@10.28.3:
+    resolution: {integrity: sha512-tCmoRkPQLpBeWzpmbhryairGnhW9tKV6c6gr/w+RhoRoKEJwsjzipwp//1oCpGPOchvSLaAPlpcJi9MwMmoPyA==}
 
   pretty-format@3.8.0:
     resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
@@ -8870,8 +8870,8 @@ snapshots:
       next: 16.1.6(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.89.2)
       oauth: 0.9.15
       openid-client: 5.7.1
-      preact: 10.26.8
-      preact-render-to-string: 5.2.6(preact@10.26.8)
+      preact: 10.28.3
+      preact-render-to-string: 5.2.6(preact@10.28.3)
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
       uuid: 8.3.2
@@ -9128,9 +9128,9 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
-  preact-render-to-string@5.2.6(preact@10.26.8):
+  preact-render-to-string@5.2.6(preact@10.28.3):
     dependencies:
-      preact: 10.26.8
+      preact: 10.28.3
       pretty-format: 3.8.0
 
   preact-render-to-string@6.5.11(preact@10.24.3):
@@ -9139,7 +9139,7 @@ snapshots:
 
   preact@10.24.3: {}
 
-  preact@10.26.8: {}
+  preact@10.28.3: {}
 
   pretty-format@3.8.0: {}
 
