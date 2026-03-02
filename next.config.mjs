@@ -1,21 +1,9 @@
 import { withSentryConfig } from "@sentry/nextjs";
-import WebpackHookPlugin from "webpack-hook-plugin";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   trailingSlash: true,
   transpilePackages: ["next-mdx-remote"],
-  webpack: (config, { dev, nextRuntime }) => {
-    if (dev && nextRuntime === "nodejs") {
-      config.plugins.push(
-        new WebpackHookPlugin({
-          onBuildStart: ["npx @spotlightjs/spotlight"],
-        })
-      );
-    }
-
-    return config;
-  },
   async redirects() {
     return [
       {
@@ -39,5 +27,6 @@ export default withSentryConfig(nextConfig, {
 
   _experimental: {
     thirdPartyOriginStackFrames: true,
+    turbopackApplicationKey: "sentry-changelog"
   },
 });
