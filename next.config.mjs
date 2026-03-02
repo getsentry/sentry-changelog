@@ -1,5 +1,4 @@
 import { withSentryConfig } from "@sentry/nextjs";
-import WebpackHookPlugin from "webpack-hook-plugin";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
