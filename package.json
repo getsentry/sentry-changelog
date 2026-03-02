@@ -60,8 +60,7 @@
     "sass": "^1.69.5",
     "textarea-markdown-editor": "^1.0.4",
     "unified": "10.1.2",
-    "unist-util-visit": "4.1.2",
-    "webpack-hook-plugin": "^1.0.7"
+    "unist-util-visit": "4.1.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.10",
