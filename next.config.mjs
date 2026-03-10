@@ -27,6 +27,9 @@ export default withSentryConfig(nextConfig, {
 
   _experimental: {
     thirdPartyOriginStackFrames: true,
-    turbopackApplicationKey: "sentry-changelog"
+    turbopackApplicationKey: "sentry-changelog",
+    turbopackReactComponentAnnotation: {
+      enabled: true,
+    },
   },
 });
