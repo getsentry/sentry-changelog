@@ -6,6 +6,7 @@ Sentry.init({
   tracesSampleRate: 1,
   environment: process.env.NODE_ENV,
   integrations: [
+    Sentry.nodeRuntimeMetricsIntegration(),
     Sentry.prismaIntegration({
       prismaInstrumentation: new PrismaInstrumentation(),
     }),
