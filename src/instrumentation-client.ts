@@ -9,6 +9,7 @@ Sentry.init({
   replaysSessionSampleRate: 0.1,
   integrations: [
     Sentry.replayIntegration(),
+    Sentry.spanStreamingIntegration(),
     Sentry.thirdPartyErrorFilterIntegration({
       filterKeys: ["sentry-changelog"],
       behaviour: "apply-tag-if-contains-third-party-frames",
