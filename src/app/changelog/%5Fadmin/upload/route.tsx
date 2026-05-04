@@ -43,7 +43,7 @@ async function getStorageClient(): Promise<Storage> {
         token_lifetime_seconds: 3600,
       },
       subject_token_supplier: {
-        getSubjectToken: getVercelOidcToken,
+        getSubjectToken: () => getVercelOidcToken(),
       },
     });
 
