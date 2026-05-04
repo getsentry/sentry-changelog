@@ -20,7 +20,7 @@ export default function MultiColumnMenu({
       className="flex flex-col xl:flex-row flex-1"
       style={{ "--column-count": columns.length } as React.CSSProperties}
     >
-      {columns.map((column: MenuItem, index: number) => {
+      {columns.map((column: MenuItem) => {
         const columnMenuItems = column.menuItemsCollection?.items || [];
         const isBackgroundColumn = column.className?.includes("bg-");
 
@@ -45,7 +45,7 @@ export default function MultiColumnMenu({
           .join(" ");
 
         return (
-          <div key={`${column.sys.id}-${index}`} className={columnClasses}>
+          <div key={column.sys.id} className={columnClasses}>
             <div className="flex-1 flex flex-col">
               {hasSubmenus ? (
                 columnMenuItems
@@ -54,11 +54,8 @@ export default function MultiColumnMenu({
                       subItem.__typename === "ContentfulNavigationMenuItem" &&
                       subItem.layout === "Submenu",
                   )
-                  .map((subItem: MenuItem, subIdx: number) => (
-                    <div
-                      key={`${subItem.sys.id}-${subIdx}`}
-                      className="xl:mb-2"
-                    >
+                  .map((subItem: MenuItem) => (
+                    <div key={subItem.sys.id} className="xl:mb-2">
                       <div className="xl:hidden">
                         <CollapsibleSection
                           title={subItem.label || ""}

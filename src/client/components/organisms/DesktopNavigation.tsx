@@ -74,7 +74,7 @@ export default function DesktopNavigation({
         const isDropdown = isNavigationMenuItem && hasChildren;
         const menuKey = item.sys.id;
         return (
-          <React.Fragment key={`${item.sys.id}-${idx}`}>
+          <React.Fragment key={item.sys.id}>
             <NavigationMenuItem
               item={item}
               isDarkMode={isDarkMode}

@@ -2,7 +2,7 @@
 
 export async function uploadImage(file: File) {
   const result = await fetch(`/changelog/_admin/upload?file=${file.name}`);
-  const { response, options } = await result.json();
+  const { response } = await result.json();
   const { url, fields } = response;
   const formData = new FormData();
   for (const [key, value] of Object.entries({ ...fields, file })) {

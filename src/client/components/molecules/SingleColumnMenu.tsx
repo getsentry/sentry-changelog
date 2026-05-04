@@ -25,8 +25,8 @@ export default function SingleColumnMenu({
         <div className="pl-4 lg:pl-0 mb-6 lg:mb-0 flex-1 flex flex-col">
           {hasSubmenus ? (
             <div className="flex flex-col gap-y-4 lg:gap-y-1">
-              {menuItems.map((menuItem: MenuItem, idx) => (
-                <div key={`${menuItem.sys.id}-${idx}`} className="mb-4 lg:mb-2">
+              {menuItems.map((menuItem: MenuItem) => (
+                <div key={menuItem.sys.id} className="mb-4 lg:mb-2">
                   {menuItem.__typename === "NavigationMenuItem" &&
                   menuItem.layout === "Submenu" ? (
                     <LinkList

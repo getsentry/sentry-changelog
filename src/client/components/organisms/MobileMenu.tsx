@@ -33,23 +33,24 @@ export default function MobileMenu({
         disablePaddingRight={true}
       >
         <div className="mt-4">
-          {menuItems.map((item, idx) => {
+          {menuItems.map((item) => {
             const isNavigationMenuItem =
               item.__typename === "ContentfulNavigationMenuItem";
+            const itemId = item.sys.id;
 
             return (
-              <div key={`${item.sys.id}-${idx}`} className="mb-4">
+              <div key={itemId} className="mb-4">
                 {isNavigationMenuItem ? (
                   <CollapsibleSection
                     title={item.cta || item.label || ""}
                     isDarkMode={isDarkMode}
-                    id={item.contentful_id || `mobile-${idx}`}
+                    id={item.contentful_id || `mobile-${itemId}`}
                     hideOnDesktop={true}
                   >
                     {item.layout === "Multi-Column" ? (
                       <div>
                         {(item.columnsCollection?.items || []).map(
-                          (column: MenuItem, colIdx: number) => {
+                          (column: MenuItem) => {
                             const flattenedItems: any[] = [];
                             const menuItems =
                               column.menuItemsCollection?.items || [];
@@ -83,15 +84,15 @@ export default function MobileMenu({
                             }
 
                             return (
-                              <div key={`${column.sys.id}-${colIdx}`}>
+                              <div key={column.sys.id}>
                                 {flattenedItems.map((item: any) => {
                                   if (item.type === "submenu") {
                                     return (
                                       <CollapsibleSection
-                                        key={`submenu-${idx}-${colIdx}-${item.title}`}
+                                        key={`submenu-${itemId}-${column.sys.id}-${item.title}`}
                                         title={item.title}
                                         isDarkMode={isDarkMode}
-                                        id={`mobile-${idx}-col-${colIdx}-${item.title}`}
+                                        id={`mobile-${itemId}-col-${column.sys.id}-${item.title}`}
                                         buttonVariant="silent"
                                       >
                                         <LinkList
@@ -116,10 +117,10 @@ export default function MobileMenu({
                                   if (item.type === "group") {
                                     return (
                                       <CollapsibleSection
-                                        key={`group-${idx}-${colIdx}-${item.title}`}
+                                        key={`group-${itemId}-${column.sys.id}-${item.title}`}
                                         title={item.title}
                                         isDarkMode={isDarkMode}
-                                        id={`mobile-${idx}-col-${colIdx}-group`}
+                                        id={`mobile-${itemId}-col-${column.sys.id}-group`}
                                         buttonVariant="silent"
                                       >
                                         <LinkList
@@ -158,11 +159,8 @@ export default function MobileMenu({
                         if (hasSubmenus) {
                           return (
                             <div>
-                              {menuItems.map((menuItem: MenuItem, mIdx) => (
-                                <div
-                                  key={`${menuItem.sys.id}-${mIdx}`}
-                                  className="mb-4"
-                                >
+                              {menuItems.map((menuItem: MenuItem) => (
+                                <div key={menuItem.sys.id} className="mb-4">
                                   {menuItem.layout === "Submenu" ? (
                                     <LinkList
                                       heading={menuItem.label}
