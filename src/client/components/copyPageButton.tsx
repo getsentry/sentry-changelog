@@ -24,9 +24,11 @@ export function CopyPageButton({ title, slug, content }: CopyPageButtonProps) {
 
   async function handleCopy() {
     const header = `# ${title}\n\nSource: ${pageUrl}\n\n`;
-    await navigator.clipboard.writeText(header + content).catch(() => {});
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(header + content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (_e) {}
   }
 
   return (
