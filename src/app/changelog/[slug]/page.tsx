@@ -11,7 +11,6 @@ import { CopyPageButton } from "@/client/components/copyPageButton";
 import { DateComponent } from "@/client/components/date";
 import { ShareButtons } from "@/client/components/shareButtons";
 import { TableOfContents } from "@/client/components/tableOfContents";
-import { CategoryTag } from "@/client/components/tag";
 import { authOptions } from "@/server/authOptions";
 import { mdxOptions } from "@/server/mdxOptions";
 import { prismaClient } from "@/server/prisma-client";
@@ -141,15 +140,6 @@ export default async function ChangelogEntry(props: {
         <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-12">
           {/* Main content */}
           <div>
-            {/* Category tags */}
-            {changelog.categories.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {changelog.categories.map((cat) => (
-                  <CategoryTag key={cat.id} text={cat.name} />
-                ))}
-              </div>
-            )}
-
             {/* Title */}
             <h1 className="text-3xl sm:text-4xl font-bold text-blog-text leading-tight mb-4">
               {changelog.title}
@@ -231,13 +221,6 @@ export default async function ChangelogEntry(props: {
                     />
                   )}
                   <div className="p-4">
-                    {entry.categories.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-2">
-                        {entry.categories.map((cat) => (
-                          <CategoryTag key={cat.id} text={cat.name} />
-                        ))}
-                      </div>
-                    )}
                     <h3 className="text-sm font-semibold text-blog-text group-hover:text-blog-accent transition-colors duration-150 line-clamp-2">
                       {entry.title}
                     </h3>

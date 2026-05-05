@@ -160,9 +160,7 @@ export function ChangelogList({
               slug={changelog.slug}
               date={changelog.publishedAt}
               title={changelog.title}
-              tags={changelog.categories.map(
-                (category: Category) => category.name,
-              )}
+              tags={[]}
               image={changelog.image}
             >
               <MDXRemote {...changelog.mdxSummary} />
@@ -263,36 +261,6 @@ export function ChangelogList({
               </div>
             </div>
           </div>
-
-          {/* Row 2: category pills */}
-          {Object.keys(allChangelogCategories).length > 0 && (
-            <div className="flex items-center gap-2 overflow-x-auto">
-              {Object.values(allChangelogCategories)
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((category) => (
-                  <button
-                    key={category.id}
-                    type="button"
-                    onClick={() => {
-                      const next = selectedCategoriesIds.includes(category.id)
-                        ? selectedCategoriesIds.filter(
-                            (id) => id !== category.id,
-                          )
-                        : [...selectedCategoriesIds, category.id];
-                      setSelectedCategoriesIds(next.length === 0 ? null : next);
-                      setPageParam(null);
-                    }}
-                    className={`flex-shrink-0 text-xs px-2.5 py-1 rounded-full border transition-colors duration-150 ${
-                      selectedCategoriesIds.includes(category.id)
-                        ? "bg-[#fd44b0] border-[#fd44b0] text-white"
-                        : "border-white/20 text-white/60 hover:text-white hover:border-white/40"
-                    }`}
-                  >
-                    {category.name}
-                  </button>
-                ))}
-            </div>
-          )}
         </div>
 
         {/* Two-column layout on desktop */}
