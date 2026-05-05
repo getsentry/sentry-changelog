@@ -70,9 +70,7 @@ export function TableOfContents({
             <a
               href={`#${heading.id}`}
               className={`text-sm leading-snug transition-colors duration-150 hover:text-blog-accent ${
-                activeId === heading.id
-                  ? "toc-link-active"
-                  : "text-blog-muted"
+                activeId === heading.id ? "toc-link-active" : "text-blog-muted"
               }`}
               onClick={(e) => {
                 e.preventDefault();

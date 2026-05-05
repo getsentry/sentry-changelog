@@ -6,12 +6,11 @@ import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { Suspense } from "react";
-
+import ArticleFooter from "@/client/components/articleFooter";
+import { DateComponent } from "@/client/components/date";
 import { ShareButtons } from "@/client/components/shareButtons";
 import { TableOfContents } from "@/client/components/tableOfContents";
 import { CategoryTag } from "@/client/components/tag";
-import ArticleFooter from "@/client/components/articleFooter";
-import { DateComponent } from "@/client/components/date";
 import { authOptions } from "@/server/authOptions";
 import { mdxOptions } from "@/server/mdxOptions";
 import { prismaClient } from "@/server/prisma-client";
@@ -164,7 +163,9 @@ export default async function ChangelogEntry(props: {
               )}
               {readTime && (
                 <>
-                  <span className="text-blog-border" aria-hidden="true">·</span>
+                  <span className="text-blog-border" aria-hidden="true">
+                    ·
+                  </span>
                   <span className="text-sm text-blog-muted">{readTime}</span>
                 </>
               )}
