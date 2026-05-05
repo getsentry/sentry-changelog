@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prismaClient } from "@/server/prisma-client";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const changelogs = await prismaClient.changelog.findMany({

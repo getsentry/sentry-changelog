@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prismaClient } from "@/server/prisma-client";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export async function GET(
   _request: Request,
