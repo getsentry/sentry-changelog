@@ -172,12 +172,14 @@ export function ChangelogList({
       );
     });
 
-  const visibleMonths = sortedDatesGroupedByMonthAndYear.filter((monthAndYear) =>
-    filteredChangelogsWithoutMonthFilter.some(
-      (changelog) =>
-        changelogEntryPublishDateToAddressableTag(new Date(changelog.publishedAt)) ===
-        monthAndYear,
-    ),
+  const visibleMonths = sortedDatesGroupedByMonthAndYear.filter(
+    (monthAndYear) =>
+      filteredChangelogsWithoutMonthFilter.some(
+        (changelog) =>
+          changelogEntryPublishDateToAddressableTag(
+            new Date(changelog.publishedAt),
+          ) === monthAndYear,
+      ),
   );
 
   return (
