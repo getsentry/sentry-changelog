@@ -1,23 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function ShareButtons({ title, slug }: { title: string; slug: string }) {
   const [copied, setCopied] = useState(false);
+  const [url, setUrl] = useState(`https://sentry.io/changelog/${slug}`);
 
-  const url =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/changelog/${slug}`
-      : `https://sentry.io/changelog/${slug}`;
+  useEffect(() => {
+    setUrl(`${window.location.origin}/changelog/${slug}`);
+  }, [slug]);
 
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
 
   function handleCopy() {
-    navigator.clipboard.writeText(url).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => {});
   }
 
   return (

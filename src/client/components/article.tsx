@@ -60,25 +60,36 @@ export function Article({
   );
 }
 
-export function LoadingArticle() {
+export function LoadingArticle({
+  variant = "dark",
+}: {
+  variant?: "dark" | "light";
+}) {
+  const sk = variant === "light" ? "bg-gray-200" : "bg-white/10";
+  const border =
+    variant === "light" ? "border-gray-200" : "border-white/[0.07]";
+  const bg = variant === "light" ? "bg-white" : "bg-white/[0.03]";
+
   return (
-    <article className="rounded-xl border border-white/[0.07] bg-white/[0.03] mb-5 overflow-hidden">
+    <article
+      className={`rounded-xl border ${border} ${bg} mb-5 overflow-hidden`}
+    >
       <div
-        className="w-full bg-white/10 animate-pulse"
+        className={`w-full ${sk} animate-pulse`}
         style={{ aspectRatio: "2/1" }}
       />
       <div className="p-5">
         <div className="flex gap-2 mb-2">
-          <div className="h-3 bg-white/10 w-16 animate-pulse rounded" />
-          <div className="h-3 bg-white/10 w-12 animate-pulse rounded" />
+          <div className={`h-3 ${sk} w-16 animate-pulse rounded`} />
+          <div className={`h-3 ${sk} w-12 animate-pulse rounded`} />
         </div>
-        <div className="h-5 bg-white/10 w-3/4 animate-pulse rounded mb-2" />
+        <div className={`h-5 ${sk} w-3/4 animate-pulse rounded mb-2`} />
         <div className="space-y-1.5 mb-4">
-          <div className="h-4 bg-white/10 animate-pulse rounded" />
-          <div className="h-4 bg-white/10 animate-pulse rounded w-5/6" />
-          <div className="h-4 bg-white/10 animate-pulse rounded w-4/6" />
+          <div className={`h-4 ${sk} animate-pulse rounded`} />
+          <div className={`h-4 ${sk} animate-pulse rounded w-5/6`} />
+          <div className={`h-4 ${sk} animate-pulse rounded w-4/6`} />
         </div>
-        <div className="h-3 bg-white/10 w-24 animate-pulse rounded" />
+        <div className={`h-3 ${sk} w-24 animate-pulse rounded`} />
       </div>
     </article>
   );

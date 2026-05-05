@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface CopyPageButtonProps {
   title: string;
@@ -11,33 +11,31 @@ interface CopyPageButtonProps {
 export function CopyPageButton({ title, slug, content }: CopyPageButtonProps) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [pageUrl, setPageUrl] = useState(`https://sentry.io/changelog/${slug}`);
 
-  const pageUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/changelog/${slug}`
-      : `https://sentry.io/changelog/${slug}`;
+  useEffect(() => {
+    setPageUrl(`${window.location.origin}/changelog/${slug}`);
+  }, [slug]);
 
-  const markdownUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/api/changelog/${slug}/markdown`
-      : `https://sentry.io/api/changelog/${slug}/markdown`;
-
+  const markdownUrl = `/api/changelog/${slug}/markdown`;
   const aiPrompt = encodeURIComponent(
     `Ask questions about this Sentry changelog entry: ${pageUrl}`,
   );
 
   function handleCopyMarkdown() {
     const header = `# ${title}\n\nSource: ${pageUrl}\n\n`;
-    navigator.clipboard.writeText(header + content).then(() => {
-      setCopied(true);
-      setOpen(false);
-      setTimeout(() => setCopied(false), 2000);
-    });
+    navigator.clipboard
+      .writeText(header + content)
+      .then(() => {
+        setCopied(true);
+        setOpen(false);
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => {});
   }
 
   return (
-    <div className="relative z-50" ref={containerRef}>
+    <div className="relative z-50">
       {/* Split button */}
       <div className="flex items-center rounded-lg border border-blog-border overflow-hidden text-sm text-blog-muted">
         <button

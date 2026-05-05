@@ -16,11 +16,14 @@ export function CopyChangelogButton() {
     setLoading(true);
     try {
       const res = await fetch(markdownUrl);
+      if (!res.ok) return;
       const text = await res.text();
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setOpen(false);
       setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard or fetch error — fail silently
     } finally {
       setLoading(false);
     }

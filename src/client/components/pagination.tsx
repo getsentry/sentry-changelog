@@ -65,7 +65,7 @@ export function Pagination({
       >
         <button
           disabled={!navigationToPrevPageAllowed}
-          className="hidden md:flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-darkPurple/10 active:bg-darkPurple disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+          className="hidden md:flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-white uppercase align-middle transition-all rounded-lg select-none hover:bg-darkPurple/10 active:bg-darkPurple disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
           type="button"
         >
           <svg
@@ -108,7 +108,7 @@ export function Pagination({
               className={`${
                 page === currentPage
                   ? "bg-darkPurple relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg  text-center align-middle font-sans text-xs font-medium uppercase text-white shadow-md  hover:shadow-lg hover:bg-darkPurple focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  : "relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 hover:bg-darkPurple/10 active:bg-darkPurple/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  : "relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-white hover:bg-darkPurple/10 active:bg-darkPurple/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
               }`}
               type="button"
             >
@@ -135,7 +135,7 @@ export function Pagination({
       >
         <button
           disabled={!navigationToNextPageAllowed}
-          className="hidden md:flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle rounded-lg select-none hover:bg-darkPurple/10 active:bg-darkPurple/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+          className="hidden md:flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-white uppercase align-middle rounded-lg select-none hover:bg-darkPurple/10 active:bg-darkPurple/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
           type="button"
         >
           Next

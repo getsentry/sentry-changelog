@@ -164,9 +164,11 @@ export default async function ChangelogEntry(props: {
               )}
               {readTime && (
                 <>
-                  <span className="text-blog-border" aria-hidden="true">
-                    ·
-                  </span>
+                  {changelog.publishedAt && (
+                    <span className="text-blog-border" aria-hidden="true">
+                      ·
+                    </span>
+                  )}
                   <span className="text-sm text-blog-muted">{readTime}</span>
                 </>
               )}
