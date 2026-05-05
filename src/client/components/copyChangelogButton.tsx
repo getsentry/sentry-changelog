@@ -71,7 +71,7 @@ export function CopyChangelogButton() {
           onClick={() => setOpen((v) => !v)}
           aria-label="More options"
           aria-expanded={open}
-          className="px-2 py-1.5 hover:bg-white/10 transition-colors duration-150"
+          className="px-2 self-stretch flex items-center hover:bg-white/10 transition-colors duration-150"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -216,6 +216,21 @@ export function ChangelogList({
 
           {/* Search + Reset */}
           <div className="flex items-center gap-2 flex-shrink-0 sm:ml-auto">
+            {someFilterIsActive && (
+              <button
+                type="button"
+                className="text-sm text-white/50 hover:text-white transition-colors duration-150"
+                onClick={() => {
+                  setSearchValue(null);
+                  setQuerySearchValue(null);
+                  setSelectedCategoriesIds(null);
+                  setMonthParam(null);
+                  setPageParam(null);
+                }}
+              >
+                Reset
+              </button>
+            )}
             <div className="relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -244,21 +259,6 @@ export function ChangelogList({
                 className="pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0] w-36 sm:w-44"
               />
             </div>
-            {someFilterIsActive && (
-              <button
-                type="button"
-                className="text-sm text-white/50 hover:text-white transition-colors duration-150"
-                onClick={() => {
-                  setSearchValue(null);
-                  setQuerySearchValue(null);
-                  setSelectedCategoriesIds(null);
-                  setMonthParam(null);
-                  setPageParam(null);
-                }}
-              >
-                Reset
-              </button>
-            )}
           </div>
         </div>
 

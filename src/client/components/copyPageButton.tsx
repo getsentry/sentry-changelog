@@ -81,7 +81,7 @@ export function CopyPageButton({ title, slug, content }: CopyPageButtonProps) {
           onClick={() => setOpen((v) => !v)}
           aria-label="More options"
           aria-expanded={open}
-          className="px-2 py-1.5 hover:bg-surface-overlay transition-colors duration-150"
+          className="px-2 self-stretch flex items-center hover:bg-surface-overlay transition-colors duration-150"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
