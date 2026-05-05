@@ -42,16 +42,16 @@ export function Article({
         <h3 className="text-base font-medium text-white mb-2 leading-snug line-clamp-2">
           {title}
         </h3>
-        <div className="prose prose-sm max-w-none text-white/60 line-clamp-3 blog-prose-dark">
+        <div className="prose prose-sm max-w-none text-white/75 line-clamp-3 blog-prose-dark">
           {children}
         </div>
         <div className="mt-4 flex items-center justify-between">
           {date && (
-            <span className="text-xs text-white/35">
+            <span className="text-xs text-white/60">
               <DateComponent date={date} />
             </span>
           )}
-          <span className="text-[13px] font-semibold text-[#fd44b0]/70 group-hover:text-[#fd44b0] uppercase tracking-wide ml-auto transition-colors duration-200">
+          <span className="text-[13px] font-semibold text-[#fd44b0] uppercase tracking-wide ml-auto transition-colors duration-200">
             Read On →
           </span>
         </div>

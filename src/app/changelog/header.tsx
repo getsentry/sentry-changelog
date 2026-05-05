@@ -7,12 +7,12 @@ export default function Header({ loading }: { loading?: boolean }) {
         <h1 className="text-4xl font-medium text-white tracking-tight">
           Changelog
         </h1>
-        <div className="mt-2 flex items-center justify-between gap-4">
+        <div className="mt-2 flex items-start justify-between gap-4">
           <p className="text-white/60 text-base">
             Stay up to date on everything big and small, from product updates to
             SDK changes.
           </p>
-          <div className="flex-shrink-0 flex items-center gap-3">
+          <div className="flex-shrink-0 flex flex-col-reverse sm:flex-row items-end sm:items-center gap-2 sm:gap-3">
             {!loading && <CopyChangelogButton />}
             <a
               href="/changelog/feed.xml"

@@ -296,7 +296,7 @@ export function ChangelogList({
           {visibleMonths.length > 0 && (
             <div className="hidden sm:block w-40 flex-shrink-0">
               <div className="sticky top-[7rem] pt-6">
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-white/35">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
                   Jump to
                 </span>
                 <div className="mt-3 flex flex-col gap-2">
@@ -315,7 +315,7 @@ export function ChangelogList({
                       className={`text-left text-xs transition-colors duration-150 ${
                         monthAndYearParam === monthAndYear
                           ? "text-[#fd44b0] font-semibold"
-                          : "text-white/40 hover:text-white/80"
+                          : "text-white/65 hover:text-white"
                       }`}
                     >
                       {monthAndYear}

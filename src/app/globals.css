@@ -186,7 +186,11 @@
 /* TOC active heading highlight */
 .toc-link-active {
   color: #6a5fc1;
-  font-weight: 500;
+  font-weight: 600;
+  padding-left: 8px;
+  border-left: 2px solid #6a5fc1;
+  margin-left: -10px;
+  transition: border-color 0.15s, color 0.15s;
 }
 
 html {
