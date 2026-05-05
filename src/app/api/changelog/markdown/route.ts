@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prismaClient } from "@/server/prisma-client";
 
+export const revalidate = 300;
+
 export async function GET() {
   const changelogs = await prismaClient.changelog.findMany({
     where: { published: true },
@@ -31,6 +33,9 @@ export async function GET() {
   }
 
   return new NextResponse(lines.join("\n"), {
-    headers: { "Content-Type": "text/plain; charset=utf-8" },
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "public, max-age=300, stale-while-revalidate=3600",
+    },
   });
 }
