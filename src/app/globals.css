@@ -108,6 +108,7 @@
   cursor: pointer;
 }
 
+/* Slope utilities kept for backward compat but no longer used in changelog */
 .hero-top-left-down-slope {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 40%);
 }
@@ -118,6 +119,80 @@
 
 .footer-top-right-down-slope {
   clip-path: polygon(0 0, 100% 0, 100% 40%, 0 100%);
+}
+
+/* Prose overrides for dark background (article excerpts on dark bg) */
+.blog-prose-dark {
+  --tw-prose-body: rgba(255, 255, 255, 0.7);
+  --tw-prose-headings: rgba(255, 255, 255, 0.9);
+  --tw-prose-links: #fd44b0;
+  --tw-prose-code: rgba(255, 255, 255, 0.8);
+  --tw-prose-bullets: rgba(255, 255, 255, 0.4);
+  --tw-prose-counters: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Blog-style article prose overrides */
+.blog-prose {
+  --tw-prose-body: #1d1127;
+  --tw-prose-headings: #1d1127;
+  --tw-prose-links: #6a5fc1;
+  --tw-prose-code: #1d1127;
+  --tw-prose-pre-bg: #1d1127;
+  --tw-prose-counters: #6b6580;
+  --tw-prose-bullets: #6b6580;
+  --tw-prose-hr: #e8e5f0;
+  --tw-prose-quotes: #362d59;
+  --tw-prose-quote-borders: #6a5fc1;
+}
+
+.blog-prose h2 {
+  padding-left: 0.75rem;
+  border-left: 3px solid #6a5fc1;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.blog-prose h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.blog-prose pre {
+  position: relative;
+}
+
+/* Copy button for code blocks */
+.code-copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  color: #9ca3af;
+  background: transparent;
+  border: 1px solid #374151;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+.code-copy-btn:hover {
+  color: #f3f4f6;
+  border-color: #6b7280;
+}
+
+/* TOC active heading highlight */
+.toc-link-active {
+  color: #6a5fc1;
+  font-weight: 600;
+  padding-left: 8px;
+  border-left: 2px solid #6a5fc1;
+  margin-left: -10px;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 
 html {

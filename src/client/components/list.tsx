@@ -12,7 +12,6 @@ import {
 import { Fragment, useState } from "react";
 import { Article } from "./article";
 import { Pagination } from "./pagination";
-import { CategoryTag } from "./tag";
 
 const ENTRIES_PER_PAGE = 10;
 
@@ -27,10 +26,6 @@ export type ChangelogEntry = {
   mdxSummary: MDXRemoteSerializeResult;
 };
 
-/**
- * Turns a date into this format: "August 2024"
- * Which is the format we use in query params and to filter.
- */
 function changelogEntryPublishDateToAddressableTag(date: Date) {
   return date.toLocaleString("en-EN", {
     month: "long",
@@ -66,62 +61,43 @@ export function ChangelogList({
   );
 
   const filteredChangelogsWithoutMonthFilter = changelogs
-    // First filter by categories
     .filter((changelog) => {
-      if (selectedCategoriesIds.length === 0) {
-        // If no categories are selected we don't filter anything
-        return true;
-      }
-
+      if (selectedCategoriesIds.length === 0) return true;
       return changelog.categories.some((changelogCategory) =>
         selectedCategoriesIds.includes(changelogCategory.id),
       );
     })
-
     .filter((changelog) => {
-      if (searchValue === null) {
-        return true;
-      }
-
+      if (searchValue === null) return true;
       const addressableDate = changelogEntryPublishDateToAddressableTag(
         new Date(changelog.publishedAt),
       );
-
-      // map all categories to a string
       const concatenatedCategories = changelog.categories
         .map((category: Category) => category.name)
         .join(" ");
-
       const searchableContent =
         changelog.title +
         changelog.summary +
         concatenatedCategories +
         addressableDate;
-
       return searchableContent
         .toLowerCase()
         .includes(searchValue.toLowerCase());
     })
-    .sort((a, b) => {
-      return (
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-      );
-    });
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+    );
 
-  const filteredChangelogs = filteredChangelogsWithoutMonthFilter
-    // Filter by selected date
-    .filter((changelog) => {
-      if (monthAndYearParam == null) {
-        // If no date was selected we don't filter anything
-        return true;
-      }
-
+  const filteredChangelogs = filteredChangelogsWithoutMonthFilter.filter(
+    (changelog) => {
+      if (monthAndYearParam == null) return true;
       const addressableDate = changelogEntryPublishDateToAddressableTag(
         new Date(changelog.publishedAt),
       );
-
       return monthAndYearParam === addressableDate;
-    });
+    },
+  );
 
   const allChangelogCategories: Record<string, Category> = {};
   for (const changelog of changelogs) {
@@ -130,13 +106,11 @@ export function ChangelogList({
     }
   }
 
-  // contains dates in the format "August 2024"
   const datesGroupedByMonthAndYear = new Set<string>();
   for (const changelog of changelogs) {
     if (changelog.publishedAt === null) {
       throw new Error("invariant");
     }
-
     datesGroupedByMonthAndYear.add(
       changelogEntryPublishDateToAddressableTag(
         new Date(changelog.publishedAt),
@@ -147,6 +121,8 @@ export function ChangelogList({
   const sortedDatesGroupedByMonthAndYear = [...datesGroupedByMonthAndYear].sort(
     (a, b) => new Date(b).getTime() - new Date(a).getTime(),
   );
+
+  const numberOfPages = Math.ceil(filteredChangelogs.length / ENTRIES_PER_PAGE);
 
   const paginatedChangelogs = filteredChangelogs
     .slice(
@@ -171,15 +147,15 @@ export function ChangelogList({
       return (
         <Fragment key={changelog.id}>
           {prevChangelogHasDifferentMonth && (
-            <div className="flex items-center my-4">
-              <div className="flex-1 border-t-[1px] border-gray-400" />
-              <span className="px-3 text-gray-500">{monthYear}</span>
-              <div className="flex-1 border-t-[1px] border-gray-400" />
+            <div className="flex items-center gap-3 mt-8 mb-4">
+              <span className="text-xs font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">
+                {monthYear}
+              </span>
+              <div className="flex-1 h-px bg-white/10" />
             </div>
           )}
-          <Link href={`/changelog/${changelog.slug}`}>
+          <Link href={`/changelog/${changelog.slug}`} className="block group">
             <Article
-              className="fancy-border"
               key={changelog.id}
               slug={changelog.slug}
               date={changelog.publishedAt}
@@ -196,145 +172,194 @@ export function ChangelogList({
       );
     });
 
-  const numberOfPages = Math.ceil(filteredChangelogs.length / ENTRIES_PER_PAGE);
+  const visibleMonths = sortedDatesGroupedByMonthAndYear.filter(
+    (monthAndYear) =>
+      filteredChangelogsWithoutMonthFilter.some(
+        (changelog) =>
+          changelogEntryPublishDateToAddressableTag(
+            new Date(changelog.publishedAt),
+          ) === monthAndYear,
+      ),
+  );
 
   return (
-    <main className="w-full mx-auto grid grid-cols-12 bg-gray-200">
-      <div className="hidden md:block md:col-span-2 pl-5 pt-10">
-        <h3 className="text-2xl text-primary font-semibold mb-2">
-          Categories:
-        </h3>
-        <div className="flex flex-wrap gap-1 py-1">
-          {Object.values(allChangelogCategories).map((category) => {
-            return (
-              <CategoryTag
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (selectedCategoriesIds.includes(category.id)) {
-                    const newSelectedCategoriesIds =
-                      selectedCategoriesIds.filter(
-                        (cat) => cat !== category.id,
-                      );
-                    setSelectedCategoriesIds(newSelectedCategoriesIds);
+    <main className="w-full bg-darkPurple min-h-screen">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        {/* Top nav — search, category pills, mobile month */}
+        <div className="py-4 flex flex-col gap-3 border-b border-white/10 sticky top-[4.5rem] z-30 bg-darkPurple">
+          {/* Row 1: mobile month dropdown + search + reset */}
+          <div className="flex items-center gap-3">
+            {visibleMonths.length > 0 && (
+              <div className="flex items-center gap-2 sm:hidden flex-1 min-w-0">
+                <select
+                  value={monthAndYearParam ?? ""}
+                  onChange={(e) => {
+                    setMonthParam(e.target.value || null);
                     setPageParam(null);
-                  } else {
-                    setSelectedCategoriesIds([
-                      ...selectedCategoriesIds,
-                      category.id,
-                    ]);
+                  }}
+                  className="flex-1 text-xs rounded-lg border border-white/25 bg-white/10 text-white px-2 py-1.5 focus:outline-none focus:border-[#fd44b0] appearance-none"
+                >
+                  <option value="" className="bg-darkPurple text-white">
+                    All months
+                  </option>
+                  {visibleMonths.map((monthAndYear) => (
+                    <option
+                      key={monthAndYear}
+                      value={monthAndYear}
+                      className="bg-darkPurple text-white"
+                    >
+                      {monthAndYear}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 flex-shrink-0 sm:ml-auto">
+              {someFilterIsActive && (
+                <button
+                  type="button"
+                  className="text-sm text-white/50 hover:text-white transition-colors duration-150"
+                  onClick={() => {
+                    setSearchValue(null);
+                    setQuerySearchValue(null);
+                    setSelectedCategoriesIds(null);
+                    setMonthParam(null);
                     setPageParam(null);
-                  }
-                }}
-                text={category.name}
-                active={selectedCategoriesIds.includes(category.id)}
-                pointer
-                key={category.name}
-              />
-            );
-          })}
-        </div>
-      </div>
-      <div className="col-span-12 md:col-span-8">
-        <div className="max-w-3xl mx-auto px-4 pb-4 sm:px-6 md:px-8">
-          <div className="flex justify-between items-center py-6 space-x-4">
-            <input
-              aria-label="Search..."
-              type="text"
-              value={searchValue ?? ""}
-              onChange={(e) => {
-                setPageParam(null);
-                const newSearchValue = e.target.value ? e.target.value : null;
-                setSearchValue(newSearchValue);
-                setQuerySearchValue(newSearchValue);
-              }}
-              placeholder="Search..."
-              className="form-input flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-primary-500 focus:ring-primary-500"
-            />
-            <div className="flex space-x-4">
-              <button
-                tabIndex={0}
-                type="button"
-                className={`${
-                  someFilterIsActive
-                    ? "text-purple font-medium cursor-pointer"
-                    : "text-gray-500 cursor-not-allowed"
-                } hover:text-gray-700 bg-transparent border-none`}
-                onClick={() => {
-                  setSearchValue(null);
-                  setQuerySearchValue(null);
-                  setSelectedCategoriesIds(null);
-                  setMonthParam(null);
-                  setPageParam(null);
-                }}
-              >
-                Reset
-              </button>
+                  }}
+                >
+                  Reset
+                </button>
+              )}
+              <div className="relative">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <input
+                  aria-label="Search..."
+                  type="text"
+                  value={searchValue ?? ""}
+                  onChange={(e) => {
+                    setPageParam(null);
+                    const newSearchValue = e.target.value
+                      ? e.target.value
+                      : null;
+                    setSearchValue(newSearchValue);
+                    setQuerySearchValue(newSearchValue);
+                  }}
+                  placeholder="Search..."
+                  className="pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0] w-36 sm:w-44"
+                />
+              </div>
             </div>
           </div>
 
-          {paginatedChangelogs}
-
-          {numberOfPages > 1 && (
-            <Pagination
-              currentPage={selectedPage}
-              totalPages={numberOfPages}
-              onPageNumberChange={(pageNumber) => {
-                setPageParam(pageNumber, { history: "push" });
-              }}
-              search={searchValue}
-              selectedMonth={monthAndYearParam}
-              selectedCategoriesIds={selectedCategoriesIds}
-            />
+          {/* Row 2: category pills */}
+          {Object.keys(allChangelogCategories).length > 0 && (
+            <div className="flex items-center gap-2 overflow-x-auto">
+              {Object.values(allChangelogCategories)
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((category) => (
+                  <button
+                    key={category.id}
+                    type="button"
+                    onClick={() => {
+                      const next = selectedCategoriesIds.includes(category.id)
+                        ? selectedCategoriesIds.filter(
+                            (id) => id !== category.id,
+                          )
+                        : [...selectedCategoriesIds, category.id];
+                      setSelectedCategoriesIds(next.length === 0 ? null : next);
+                      setPageParam(null);
+                    }}
+                    className={`flex-shrink-0 text-xs px-2.5 py-1 rounded-full border transition-colors duration-150 ${
+                      selectedCategoriesIds.includes(category.id)
+                        ? "bg-[#fd44b0] border-[#fd44b0] text-white"
+                        : "border-white/20 text-white/60 hover:text-white hover:border-white/40"
+                    }`}
+                  >
+                    {category.name}
+                  </button>
+                ))}
+            </div>
           )}
+        </div>
 
-          {paginatedChangelogs.length === 0 && (
-            <div className="flex items-center my-4">
-              <div className="flex-1 border-t-[1px] border-gray-400" />
-              <span className="px-3 text-gray-500">No posts found.</span>
-              <div className="flex-1 border-t-[1px] border-gray-400" />
+        {/* Two-column layout on desktop */}
+        <div className="sm:flex sm:gap-10">
+          {/* Feed */}
+          <div className="flex-1 min-w-0 pb-10">
+            {paginatedChangelogs}
+
+            {paginatedChangelogs.length === 0 && (
+              <div className="flex items-center gap-3 my-10">
+                <div className="flex-1 h-px bg-white/10" />
+                <span className="text-sm text-white/40">No posts found.</span>
+                <div className="flex-1 h-px bg-white/10" />
+              </div>
+            )}
+
+            {numberOfPages > 1 && (
+              <div className="mt-8">
+                <Pagination
+                  currentPage={selectedPage}
+                  totalPages={numberOfPages}
+                  onPageNumberChange={(pageNumber) => {
+                    setPageParam(pageNumber, { history: "push" });
+                  }}
+                  search={searchValue}
+                  selectedMonth={monthAndYearParam}
+                  selectedCategoriesIds={selectedCategoriesIds}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Right sidebar — date navigator, desktop only */}
+          {visibleMonths.length > 0 && (
+            <div className="hidden sm:block w-40 flex-shrink-0">
+              <div className="sticky top-[7rem] pt-6">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
+                  Jump to
+                </span>
+                <div className="mt-3 flex flex-col gap-2">
+                  {visibleMonths.map((monthAndYear) => (
+                    <button
+                      key={monthAndYear}
+                      type="button"
+                      onClick={() => {
+                        if (monthAndYearParam === monthAndYear) {
+                          setMonthParam(null);
+                        } else {
+                          setMonthParam(monthAndYear);
+                        }
+                        setPageParam(null);
+                      }}
+                      className={`text-left text-xs transition-colors duration-150 ${
+                        monthAndYearParam === monthAndYear
+                          ? "text-[#fd44b0] font-semibold"
+                          : "text-white/65 hover:text-white"
+                      }`}
+                    >
+                      {monthAndYear}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
       </div>
-      <nav
-        className="hidden md:block md:col-span-2 pl-5 pt-10"
-        aria-label="Jump to month and year"
-      >
-        <h3 className="text-1xl text-primary font-semibold mb-2">Jump to:</h3>
-        <ul>
-          {sortedDatesGroupedByMonthAndYear
-            .filter((monthAndYear) => {
-              return filteredChangelogsWithoutMonthFilter.some((changelog) => {
-                return (
-                  changelogEntryPublishDateToAddressableTag(
-                    new Date(changelog.publishedAt),
-                  ) === monthAndYear
-                );
-              });
-            })
-            .map((monthAndYear) => (
-              <li key={monthAndYear}>
-                <button
-                  type="button"
-                  className={`text-primary cursor-pointer hover:text-purple-900 hover:font-extrabold bg-transparent border-none ${
-                    monthAndYearParam === monthAndYear ? "underline" : ""
-                  }`}
-                  onClick={() => {
-                    if (monthAndYearParam === monthAndYear) {
-                      setMonthParam(null);
-                      setPageParam(null);
-                    } else {
-                      setMonthParam(monthAndYear);
-                      setPageParam(null);
-                    }
-                  }}
-                >
-                  {monthAndYear}
-                </button>
-              </li>
-            ))}
-        </ul>
-      </nav>
     </main>
   );
 }

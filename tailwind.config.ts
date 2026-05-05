@@ -66,6 +66,18 @@ module.exports = {
         pink: {
           500: '#F472B6',
         },
+        // Blog-aligned palette
+        surface: '#FFFFFF',
+        'surface-raised': '#F9F8FF',
+        'surface-overlay': '#F3F2FA',
+        'blog-border': '#E8E5F0',
+        'blog-text': '#1D1127',
+        'blog-muted': '#6B6580',
+        'blog-accent': '#6A5FC1',
+        'blog-accent-hover': '#5A4FB1',
+        'blog-pink': '#E1567C',
+        'blog-gold': '#F2B712',
+        'hot-pink': '#fd44b0',
       },
     },
   },

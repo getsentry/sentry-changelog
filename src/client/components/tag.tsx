@@ -7,19 +7,15 @@ type CategoryTagProps = {
   onClick?: MouseEventHandler<HTMLButtonElement>;
 };
 
-export function CategoryTag({
-  text,
-  active,
-  pointer,
-  onClick,
-}: CategoryTagProps) {
+export function CategoryTag({ text, pointer, onClick }: CategoryTagProps) {
+  const base =
+    "text-[0.6875rem] font-medium uppercase tracking-[.06em] text-[#fd44b0] inline-block transition-opacity duration-150 hover:opacity-70";
+
   if (pointer && onClick) {
     return (
       <button
         type="button"
-        className={`py-1 px-3 uppercase shadow-sm no-underline rounded-full text-red text-xs mr-2 cursor-pointer ${
-          active ? "bg-gray-300" : "bg-gray-100"
-        }`}
+        className={`${base} cursor-pointer`}
         onClick={onClick}
       >
         {text.split(" ").join("-")}
@@ -27,13 +23,5 @@ export function CategoryTag({
     );
   }
 
-  return (
-    <div
-      className={`py-1 px-3 uppercase shadow-sm no-underline rounded-full text-red text-xs mr-2 ${
-        active ? "bg-gray-300" : "bg-gray-100"
-      }`}
-    >
-      {text.split(" ").join("-")}
-    </div>
-  );
+  return <span className={base}>{text.split(" ").join("-")}</span>;
 }
