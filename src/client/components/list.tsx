@@ -27,10 +27,6 @@ export type ChangelogEntry = {
   mdxSummary: MDXRemoteSerializeResult;
 };
 
-/**
- * Turns a date into this format: "August 2024"
- * Which is the format we use in query params and to filter.
- */
 function changelogEntryPublishDateToAddressableTag(date: Date) {
   return date.toLocaleString("en-EN", {
     month: "long",
@@ -66,62 +62,43 @@ export function ChangelogList({
   );
 
   const filteredChangelogsWithoutMonthFilter = changelogs
-    // First filter by categories
     .filter((changelog) => {
-      if (selectedCategoriesIds.length === 0) {
-        // If no categories are selected we don't filter anything
-        return true;
-      }
-
+      if (selectedCategoriesIds.length === 0) return true;
       return changelog.categories.some((changelogCategory) =>
         selectedCategoriesIds.includes(changelogCategory.id),
       );
     })
-
     .filter((changelog) => {
-      if (searchValue === null) {
-        return true;
-      }
-
+      if (searchValue === null) return true;
       const addressableDate = changelogEntryPublishDateToAddressableTag(
         new Date(changelog.publishedAt),
       );
-
-      // map all categories to a string
       const concatenatedCategories = changelog.categories
         .map((category: Category) => category.name)
         .join(" ");
-
       const searchableContent =
         changelog.title +
         changelog.summary +
         concatenatedCategories +
         addressableDate;
-
       return searchableContent
         .toLowerCase()
         .includes(searchValue.toLowerCase());
     })
-    .sort((a, b) => {
-      return (
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-      );
-    });
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+    );
 
-  const filteredChangelogs = filteredChangelogsWithoutMonthFilter
-    // Filter by selected date
-    .filter((changelog) => {
-      if (monthAndYearParam == null) {
-        // If no date was selected we don't filter anything
-        return true;
-      }
-
+  const filteredChangelogs = filteredChangelogsWithoutMonthFilter.filter(
+    (changelog) => {
+      if (monthAndYearParam == null) return true;
       const addressableDate = changelogEntryPublishDateToAddressableTag(
         new Date(changelog.publishedAt),
       );
-
       return monthAndYearParam === addressableDate;
-    });
+    },
+  );
 
   const allChangelogCategories: Record<string, Category> = {};
   for (const changelog of changelogs) {
@@ -130,23 +107,21 @@ export function ChangelogList({
     }
   }
 
-  // contains dates in the format "August 2024"
   const datesGroupedByMonthAndYear = new Set<string>();
   for (const changelog of changelogs) {
     if (changelog.publishedAt === null) {
       throw new Error("invariant");
     }
-
     datesGroupedByMonthAndYear.add(
-      changelogEntryPublishDateToAddressableTag(
-        new Date(changelog.publishedAt),
-      ),
+      changelogEntryPublishDateToAddressableTag(new Date(changelog.publishedAt)),
     );
   }
 
-  const sortedDatesGroupedByMonthAndYear = [...datesGroupedByMonthAndYear].sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime(),
-  );
+  const sortedDatesGroupedByMonthAndYear = [
+    ...datesGroupedByMonthAndYear,
+  ].sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+
+  const numberOfPages = Math.ceil(filteredChangelogs.length / ENTRIES_PER_PAGE);
 
   const paginatedChangelogs = filteredChangelogs
     .slice(
@@ -171,15 +146,15 @@ export function ChangelogList({
       return (
         <Fragment key={changelog.id}>
           {prevChangelogHasDifferentMonth && (
-            <div className="flex items-center my-4">
-              <div className="flex-1 border-t-[1px] border-gray-400" />
-              <span className="px-3 text-gray-500">{monthYear}</span>
-              <div className="flex-1 border-t-[1px] border-gray-400" />
+            <div className="flex items-center gap-3 mt-8 mb-4">
+              <span className="text-xs font-semibold uppercase tracking-widest text-blog-muted whitespace-nowrap">
+                {monthYear}
+              </span>
+              <div className="flex-1 h-px bg-blog-border" />
             </div>
           )}
-          <Link href={`/changelog/${changelog.slug}`}>
+          <Link href={`/changelog/${changelog.slug}`} className="block group">
             <Article
-              className="fancy-border"
               key={changelog.id}
               slug={changelog.slug}
               date={changelog.publishedAt}
@@ -196,69 +171,94 @@ export function ChangelogList({
       );
     });
 
-  const numberOfPages = Math.ceil(filteredChangelogs.length / ENTRIES_PER_PAGE);
-
   return (
-    <main className="w-full mx-auto grid grid-cols-12 bg-gray-200">
-      <div className="hidden md:block md:col-span-2 pl-5 pt-10">
-        <h3 className="text-2xl text-primary font-semibold mb-2">
-          Categories:
-        </h3>
-        <div className="flex flex-wrap gap-1 py-1">
-          {Object.values(allChangelogCategories).map((category) => {
-            return (
-              <CategoryTag
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (selectedCategoriesIds.includes(category.id)) {
-                    const newSelectedCategoriesIds =
-                      selectedCategoriesIds.filter(
-                        (cat) => cat !== category.id,
-                      );
-                    setSelectedCategoriesIds(newSelectedCategoriesIds);
-                    setPageParam(null);
-                  } else {
-                    setSelectedCategoriesIds([
-                      ...selectedCategoriesIds,
-                      category.id,
-                    ]);
-                    setPageParam(null);
-                  }
-                }}
-                text={category.name}
-                active={selectedCategoriesIds.includes(category.id)}
-                pointer
-                key={category.name}
-              />
-            );
-          })}
-        </div>
-      </div>
-      <div className="col-span-12 md:col-span-8">
-        <div className="max-w-3xl mx-auto px-4 pb-4 sm:px-6 md:px-8">
-          <div className="flex justify-between items-center py-6 space-x-4">
-            <input
-              aria-label="Search..."
-              type="text"
-              value={searchValue ?? ""}
-              onChange={(e) => {
+    <main className="w-full bg-surface min-h-screen">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        {/* Filter bar */}
+        <div className="py-5 flex flex-col sm:flex-row sm:items-center gap-3 border-b border-blog-border">
+          {/* Category pills — scrollable on mobile */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 flex-1 min-w-0">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCategoriesIds(null);
                 setPageParam(null);
-                const newSearchValue = e.target.value ? e.target.value : null;
-                setSearchValue(newSearchValue);
-                setQuerySearchValue(newSearchValue);
               }}
-              placeholder="Search..."
-              className="form-input flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-primary-500 focus:ring-primary-500"
-            />
-            <div className="flex space-x-4">
+              className={`flex-shrink-0 px-3 py-1 rounded-full text-sm font-medium transition-colors duration-150 border ${
+                selectedCategoriesIds.length === 0
+                  ? "bg-blog-accent text-white border-blog-accent"
+                  : "text-blog-muted border-blog-border hover:border-blog-accent hover:text-blog-accent"
+              }`}
+            >
+              All
+            </button>
+            {Object.values(allChangelogCategories).map((category) => {
+              const isActive = selectedCategoriesIds.includes(category.id);
+              return (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => {
+                    if (isActive) {
+                      setSelectedCategoriesIds(
+                        selectedCategoriesIds.filter(
+                          (id) => id !== category.id,
+                        ),
+                      );
+                    } else {
+                      setSelectedCategoriesIds([
+                        ...selectedCategoriesIds,
+                        category.id,
+                      ]);
+                    }
+                    setPageParam(null);
+                  }}
+                  className={`flex-shrink-0 px-3 py-1 rounded-full text-sm font-medium transition-colors duration-150 border ${
+                    isActive
+                      ? "bg-blog-accent text-white border-blog-accent"
+                      : "text-blog-muted border-blog-border hover:border-blog-accent hover:text-blog-accent"
+                  }`}
+                >
+                  {category.name}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Search + Reset */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-blog-muted pointer-events-none"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <input
+                aria-label="Search..."
+                type="text"
+                value={searchValue ?? ""}
+                onChange={(e) => {
+                  setPageParam(null);
+                  const newSearchValue = e.target.value ? e.target.value : null;
+                  setSearchValue(newSearchValue);
+                  setQuerySearchValue(newSearchValue);
+                }}
+                placeholder="Search..."
+                className="pl-8 pr-3 py-1.5 text-sm rounded-full border border-blog-border bg-white text-blog-text placeholder:text-blog-muted focus:outline-none focus:border-blog-accent focus:ring-1 focus:ring-blog-accent w-36 sm:w-44"
+              />
+            </div>
+            {someFilterIsActive && (
               <button
-                tabIndex={0}
                 type="button"
-                className={`${
-                  someFilterIsActive
-                    ? "text-purple font-medium cursor-pointer"
-                    : "text-gray-500 cursor-not-allowed"
-                } hover:text-gray-700 bg-transparent border-none`}
+                className="text-sm text-blog-muted hover:text-blog-accent transition-colors duration-150"
                 onClick={() => {
                   setSearchValue(null);
                   setQuerySearchValue(null);
@@ -269,72 +269,77 @@ export function ChangelogList({
               >
                 Reset
               </button>
-            </div>
+            )}
           </div>
+        </div>
 
+        {/* Jump-to month — collapsible below filter bar on mobile, inline on desktop */}
+        {sortedDatesGroupedByMonthAndYear.length > 0 && (
+          <div className="py-3 flex flex-wrap gap-x-4 gap-y-1 border-b border-blog-border">
+            <span className="text-xs font-semibold uppercase tracking-widest text-blog-muted self-center">
+              Jump to:
+            </span>
+            {sortedDatesGroupedByMonthAndYear
+              .filter((monthAndYear) =>
+                filteredChangelogsWithoutMonthFilter.some(
+                  (changelog) =>
+                    changelogEntryPublishDateToAddressableTag(
+                      new Date(changelog.publishedAt),
+                    ) === monthAndYear,
+                ),
+              )
+              .map((monthAndYear) => (
+                <button
+                  key={monthAndYear}
+                  type="button"
+                  onClick={() => {
+                    if (monthAndYearParam === monthAndYear) {
+                      setMonthParam(null);
+                    } else {
+                      setMonthParam(monthAndYear);
+                    }
+                    setPageParam(null);
+                  }}
+                  className={`text-xs transition-colors duration-150 ${
+                    monthAndYearParam === monthAndYear
+                      ? "text-blog-accent font-semibold underline underline-offset-2"
+                      : "text-blog-muted hover:text-blog-accent"
+                  }`}
+                >
+                  {monthAndYear}
+                </button>
+              ))}
+          </div>
+        )}
+
+        {/* Feed */}
+        <div className="pb-10">
           {paginatedChangelogs}
 
-          {numberOfPages > 1 && (
-            <Pagination
-              currentPage={selectedPage}
-              totalPages={numberOfPages}
-              onPageNumberChange={(pageNumber) => {
-                setPageParam(pageNumber, { history: "push" });
-              }}
-              search={searchValue}
-              selectedMonth={monthAndYearParam}
-              selectedCategoriesIds={selectedCategoriesIds}
-            />
+          {paginatedChangelogs.length === 0 && (
+            <div className="flex items-center gap-3 my-10">
+              <div className="flex-1 h-px bg-blog-border" />
+              <span className="text-sm text-blog-muted">No posts found.</span>
+              <div className="flex-1 h-px bg-blog-border" />
+            </div>
           )}
 
-          {paginatedChangelogs.length === 0 && (
-            <div className="flex items-center my-4">
-              <div className="flex-1 border-t-[1px] border-gray-400" />
-              <span className="px-3 text-gray-500">No posts found.</span>
-              <div className="flex-1 border-t-[1px] border-gray-400" />
+          {numberOfPages > 1 && (
+            <div className="mt-8">
+              <Pagination
+                currentPage={selectedPage}
+                totalPages={numberOfPages}
+                onPageNumberChange={(pageNumber) => {
+                  setPageParam(pageNumber, { history: "push" });
+                }}
+                search={searchValue}
+                selectedMonth={monthAndYearParam}
+                selectedCategoriesIds={selectedCategoriesIds}
+              />
             </div>
           )}
         </div>
       </div>
-      <nav
-        className="hidden md:block md:col-span-2 pl-5 pt-10"
-        aria-label="Jump to month and year"
-      >
-        <h3 className="text-1xl text-primary font-semibold mb-2">Jump to:</h3>
-        <ul>
-          {sortedDatesGroupedByMonthAndYear
-            .filter((monthAndYear) => {
-              return filteredChangelogsWithoutMonthFilter.some((changelog) => {
-                return (
-                  changelogEntryPublishDateToAddressableTag(
-                    new Date(changelog.publishedAt),
-                  ) === monthAndYear
-                );
-              });
-            })
-            .map((monthAndYear) => (
-              <li key={monthAndYear}>
-                <button
-                  type="button"
-                  className={`text-primary cursor-pointer hover:text-purple-900 hover:font-extrabold bg-transparent border-none ${
-                    monthAndYearParam === monthAndYear ? "underline" : ""
-                  }`}
-                  onClick={() => {
-                    if (monthAndYearParam === monthAndYear) {
-                      setMonthParam(null);
-                      setPageParam(null);
-                    } else {
-                      setMonthParam(monthAndYear);
-                      setPageParam(null);
-                    }
-                  }}
-                >
-                  {monthAndYear}
-                </button>
-              </li>
-            ))}
-        </ul>
-      </nav>
     </main>
   );
 }

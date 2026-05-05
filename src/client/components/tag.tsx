@@ -13,13 +13,17 @@ export function CategoryTag({
   pointer,
   onClick,
 }: CategoryTagProps) {
+  const base =
+    "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium uppercase tracking-wide transition-colors duration-150";
+  const activeStyle = "bg-blog-accent text-white";
+  const inactiveStyle =
+    "bg-surface-overlay text-blog-accent border border-blog-border hover:bg-blog-accent hover:text-white";
+
   if (pointer && onClick) {
     return (
       <button
         type="button"
-        className={`py-1 px-3 uppercase shadow-sm no-underline rounded-full text-red text-xs mr-2 cursor-pointer ${
-          active ? "bg-gray-300" : "bg-gray-100"
-        }`}
+        className={`${base} ${active ? activeStyle : inactiveStyle} cursor-pointer`}
         onClick={onClick}
       >
         {text.split(" ").join("-")}
@@ -28,12 +32,8 @@ export function CategoryTag({
   }
 
   return (
-    <div
-      className={`py-1 px-3 uppercase shadow-sm no-underline rounded-full text-red text-xs mr-2 ${
-        active ? "bg-gray-300" : "bg-gray-100"
-      }`}
-    >
+    <span className={`${base} ${active ? activeStyle : inactiveStyle}`}>
       {text.split(" ").join("-")}
-    </div>
+    </span>
   );
 }

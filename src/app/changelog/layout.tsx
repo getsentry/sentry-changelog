@@ -30,13 +30,15 @@ export default async function ChangelogLayout({
 
   return (
     <Fragment>
-      <NextTopLoader color="#8d5494" />
-      <div className="font-sans">
+      <NextTopLoader color="#6A5FC1" showSpinner={false} />
+      <div className="font-sans bg-white min-h-screen flex flex-col">
         <GlobalHeader menuItems={menuItems} mode="dark" />
-        <div className="bg-gray-100">{children}</div>
-        <div className="w-full mx-auto h-16 relative bg-darkPurple">
-          <div className="footer-top-right-down-slope absolute w-full -top-1 h-10 bg-gray-200" />
-        </div>
+        <div className="flex-1">{children}</div>
+        <footer className="border-t border-blog-border bg-white py-6">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 text-xs text-blog-muted text-center">
+            © {new Date().getFullYear()} Sentry. All rights reserved.
+          </div>
+        </footer>
       </div>
     </Fragment>
   );

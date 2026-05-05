@@ -108,6 +108,7 @@
   cursor: pointer;
 }
 
+/* Slope utilities kept for backward compat but no longer used in changelog */
 .hero-top-left-down-slope {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 40%);
 }
@@ -118,6 +119,61 @@
 
 .footer-top-right-down-slope {
   clip-path: polygon(0 0, 100% 0, 100% 40%, 0 100%);
+}
+
+/* Blog-style article prose overrides */
+.blog-prose {
+  --tw-prose-body: #1D1127;
+  --tw-prose-headings: #1D1127;
+  --tw-prose-links: #6A5FC1;
+  --tw-prose-code: #1D1127;
+  --tw-prose-pre-bg: #1D1127;
+  --tw-prose-counters: #6B6580;
+  --tw-prose-bullets: #6B6580;
+  --tw-prose-hr: #E8E5F0;
+  --tw-prose-quotes: #362d59;
+  --tw-prose-quote-borders: #6A5FC1;
+}
+
+.blog-prose h2 {
+  padding-left: 0.75rem;
+  border-left: 3px solid #6A5FC1;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.blog-prose h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.blog-prose pre {
+  position: relative;
+}
+
+/* Copy button for code blocks */
+.code-copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  color: #9ca3af;
+  background: transparent;
+  border: 1px solid #374151;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.code-copy-btn:hover {
+  color: #f3f4f6;
+  border-color: #6B7280;
+}
+
+/* TOC active heading highlight */
+.toc-link-active {
+  color: #6A5FC1;
+  font-weight: 500;
 }
 
 html {

@@ -7,8 +7,11 @@ import { getServerSession } from "next-auth/next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { Suspense } from "react";
 
-import { Article } from "@/client/components/article";
+import { ShareButtons } from "@/client/components/shareButtons";
+import { TableOfContents } from "@/client/components/tableOfContents";
+import { CategoryTag } from "@/client/components/tag";
 import ArticleFooter from "@/client/components/articleFooter";
+import { DateComponent } from "@/client/components/date";
 import { authOptions } from "@/server/authOptions";
 import { mdxOptions } from "@/server/mdxOptions";
 import { prismaClient } from "@/server/prisma-client";
@@ -43,12 +46,8 @@ const getChangelog = unstable_cache(
   async (slug) => {
     try {
       return await prismaClient.changelog.findUnique({
-        where: {
-          slug,
-        },
-        include: {
-          categories: true,
-        },
+        where: { slug },
+        include: { categories: true },
       });
     } catch (_e) {
       return null;
@@ -58,17 +57,43 @@ const getChangelog = unstable_cache(
   { tags: ["changelog-detail"] },
 );
 
+const getRecentChangelogs = unstable_cache(
+  async (excludeSlug: string) => {
+    try {
+      return await prismaClient.changelog.findMany({
+        where: { published: true, slug: { not: excludeSlug } },
+        include: { categories: true },
+        orderBy: { publishedAt: "desc" },
+        take: 3,
+      });
+    } catch (_e) {
+      return [];
+    }
+  },
+  ["changelog-related"],
+  { tags: ["changelogs"] },
+);
+
+function estimateReadTime(content: string | null | undefined): string {
+  if (!content) return "";
+  const words = content.trim().split(/\s+/).length;
+  const minutes = Math.max(1, Math.round(words / 200));
+  return `${minutes} min read`;
+}
+
 export default async function ChangelogEntry(props: {
   params: Promise<{ slug: string }>;
 }) {
   const params = await props.params;
-  const changelog = await getChangelog(params.slug);
+  const [changelog, relatedEntries] = await Promise.all([
+    getChangelog(params.slug),
+    getRecentChangelogs(params.slug),
+  ]);
 
   if (!changelog) {
     notFound();
   }
 
-  // Don't show unpublished changelog entries
   if (!changelog.published) {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -76,53 +101,148 @@ export default async function ChangelogEntry(props: {
     }
   }
 
+  const readTime = estimateReadTime(changelog.content);
+
   return (
-    <div className="relative min-h-[calc(100vh-8rem)] w-full mx-auto grid grid-cols-12 bg-gray-200">
-      <div className="col-span-12 md:col-start-3 md:col-span-8">
-        <div className="max-w-3xl mx-auto px-4 p-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center space-x-4 py-3">
-            <Link href="/changelog/">
-              <button
-                className="flex items-center gap-2 px-6 py-3 font-bold text-center text-primary uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20"
-                type="button"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                  className="w-4 h-4"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                  />
-                </svg>
-                Back
-              </button>
-            </Link>
-          </div>
-          <Article
-            title={changelog?.title}
-            image={changelog?.image}
-            date={changelog?.publishedAt}
+    <div className="bg-white min-h-screen">
+      {/* Full-bleed hero image */}
+      {changelog.image && (
+        // biome-ignore lint/performance/noImgElement: next/image doesn't resolve here
+        <img
+          src={changelog.image}
+          alt={changelog.title ?? ""}
+          className="w-full max-h-[480px] object-cover"
+        />
+      )}
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        {/* Back link */}
+        <Link
+          href="/changelog/"
+          className="inline-flex items-center gap-1.5 text-sm text-blog-muted hover:text-blog-accent transition-colors duration-150 mb-6"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="w-4 h-4"
+            aria-hidden="true"
           >
-            <Suspense fallback="Loading...">
-              <MDXRemote
-                source={changelog?.content || "No content found."}
-                options={
-                  {
-                    mdxOptions,
-                  } as any
-                }
-              />
-            </Suspense>
-          </Article>
-          <ArticleFooter />
+            <path
+              fillRule="evenodd"
+              d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z"
+              clipRule="evenodd"
+            />
+          </svg>
+          Changelog
+        </Link>
+
+        {/* Two-column layout: content + TOC */}
+        <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-12">
+          {/* Main content */}
+          <div>
+            {/* Category tags */}
+            {changelog.categories.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {changelog.categories.map((cat) => (
+                  <CategoryTag key={cat.id} text={cat.name} />
+                ))}
+              </div>
+            )}
+
+            {/* Title */}
+            <h1 className="text-3xl sm:text-4xl font-bold text-blog-text leading-tight mb-4">
+              {changelog.title}
+            </h1>
+
+            {/* Metadata strip */}
+            <div className="flex items-center gap-4 pb-6 border-b border-blog-border mb-6">
+              {changelog.publishedAt && (
+                <span className="text-sm text-blog-muted">
+                  <DateComponent date={changelog.publishedAt} />
+                </span>
+              )}
+              {readTime && (
+                <>
+                  <span className="text-blog-border" aria-hidden="true">·</span>
+                  <span className="text-sm text-blog-muted">{readTime}</span>
+                </>
+              )}
+              <div className="ml-auto">
+                <ShareButtons
+                  title={changelog.title ?? ""}
+                  slug={changelog.slug}
+                />
+              </div>
+            </div>
+
+            {/* MDX body */}
+            <div className="prose prose-lg max-w-none blog-prose blog-content">
+              <Suspense fallback="Loading...">
+                <MDXRemote
+                  source={changelog.content ?? "No content found."}
+                  options={{ mdxOptions } as any}
+                />
+              </Suspense>
+            </div>
+
+            {/* Footer CTA */}
+            <div className="mt-12">
+              <ArticleFooter />
+            </div>
+          </div>
+
+          {/* Sticky TOC sidebar */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-8">
+              <TableOfContents contentSelector=".blog-content" />
+            </div>
+          </aside>
         </div>
+
+        {/* Related entries */}
+        {relatedEntries.length > 0 && (
+          <section className="mt-16 pt-10 border-t border-blog-border">
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-blog-muted mb-6">
+              Recent entries
+            </h2>
+            <div className="grid sm:grid-cols-3 gap-5">
+              {relatedEntries.map((entry) => (
+                <Link
+                  key={entry.id}
+                  href={`/changelog/${entry.slug}`}
+                  className="group block bg-white border border-blog-border rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200"
+                >
+                  {entry.image && (
+                    // biome-ignore lint/performance/noImgElement: next/image doesn't resolve here
+                    <img
+                      src={entry.image}
+                      alt={entry.title ?? ""}
+                      className="w-full aspect-video object-cover"
+                    />
+                  )}
+                  <div className="p-4">
+                    {entry.categories.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {entry.categories.map((cat) => (
+                          <CategoryTag key={cat.id} text={cat.name} />
+                        ))}
+                      </div>
+                    )}
+                    <h3 className="text-sm font-semibold text-blog-text group-hover:text-blog-accent transition-colors duration-150 line-clamp-2">
+                      {entry.title}
+                    </h3>
+                    {entry.publishedAt && (
+                      <p className="mt-2 text-xs text-blog-muted">
+                        <DateComponent date={entry.publishedAt} />
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

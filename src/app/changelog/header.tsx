@@ -1,44 +1,38 @@
-import Image from "next/image";
-import heroImage from "../../../public/img/hero.png";
-
 export default function Header({ loading }: { loading?: boolean }) {
   return (
-    <div className="w-full mx-auto h-96 relative bg-darkPurple">
-      <div className="relative w-full lg:max-w-7xl mx-auto px-4 lg:px-8 pt-8 grid grid-cols-12 items-center">
-        <Image
-          className={`justify-self-center col-span-10 hidden lg:block ${
-            loading ? "animate-fade-in-left" : ""
-          }`}
-          src={heroImage}
-          alt="Sentry Changelog Illustration"
-          height={273}
-          width={450}
-        />
-        <div
-          className={`relative col-span-12 mt-32 lg:absolute lg:w-96 lg:right-1/4 lg:-bottom-2 ${
-            loading ? "animate-fade-in-right" : ""
-          }`}
-        >
-          <h1 className="justify-self-center text-white font-bold text-4xl text-center lg:text-left mb-2">
-            Sentry Changelog
-          </h1>
-          <h2 className="justify-self-center text-gold text-1xl text-center lg:text-left">
-            Follow&nbsp;
-            <a
-              href="https://twitter.com/SentryChangelog"
-              target="_blank"
-              rel="noreferrer"
-              className="underline underline-offset-2"
+    <div
+      className={`w-full bg-white border-b border-blog-border ${loading ? "animate-pulse" : ""}`}
+    >
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-4xl font-bold text-blog-text tracking-tight">
+              Changelog
+            </h1>
+            <p className="mt-2 text-blog-muted text-base">
+              Stay up to date on everything big and small, from product updates
+              to SDK changes.
+            </p>
+          </div>
+          <a
+            href="/changelog/feed.xml"
+            aria-label="Subscribe to RSS feed"
+            className="flex-shrink-0 mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-blog-accent border border-blog-accent hover:bg-blog-accent hover:text-white transition-colors duration-150"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="w-3.5 h-3.5"
+              aria-hidden="true"
             >
-              <span className="sr-only">Twitter</span>
-              @SentryChangelog
-            </a>
-            &nbsp;to stay up to date on everything from product updates to SDK
-            changes.
-          </h2>
+              <path d="M3.75 3a.75.75 0 00-.75.75v.5c0 .414.336.75.75.75H4c6.075 0 11 4.925 11 11v.25c0 .414.336.75.75.75h.5a.75.75 0 00.75-.75V16C17 8.82 11.18 3 4 3h-.25z" />
+              <path d="M3 8.75A.75.75 0 013.75 8H4a8 8 0 018 8v.25a.75.75 0 01-.75.75h-.5a.75.75 0 01-.75-.75V16a6 6 0 00-6-6h-.25A.75.75 0 013 9.25v-.5zM7 15a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            RSS
+          </a>
         </div>
       </div>
-      <div className="hero-bottom-left-down-slope absolute -bottom-0.5 w-full h-10 bg-gray-200 border-none" />
     </div>
   );
 }

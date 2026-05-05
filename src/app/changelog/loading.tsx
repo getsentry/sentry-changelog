@@ -7,36 +7,38 @@ export default function Loading() {
   return (
     <Fragment>
       <Header loading />
-      <div className="w-full mx-auto grid grid-cols-12 bg-gray-200">
-        <div className="hidden md:block md:col-span-2 pl-5 pt-10">
-          <h3 className="text-2xl text-primary font-semibold mb-2">
-            Categories:
-          </h3>
-          <div className="flex flex-wrap gap-1 py-1">
-            <div className="bg-gray-300 animate-pulse block rounded w-40 h-8" />
-            <div className="flex flex-wrap gap-1 py-1 mt-2">
-              <div className="bg-gray-300 animate-pulse block rounded w-12 h-6" />
-              <div className="bg-gray-300 animate-pulse block rounded w-20 h-6" />
-              <div className="bg-gray-300 animate-pulse block rounded w-12 h-6" />
-              <div className="bg-gray-300 animate-pulse block rounded w-20 h-6" />
-              <div className="bg-gray-300 animate-pulse block rounded w-16 h-6" />
-              <div className="bg-gray-300 animate-pulse block rounded w-12 h-6" />
-            </div>
+      <main className="w-full bg-surface min-h-screen">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          {/* Filter bar skeleton */}
+          <div className="py-5 flex items-center gap-2 border-b border-blog-border">
+            <div className="h-7 bg-gray-100 animate-pulse rounded-full w-10" />
+            <div className="h-7 bg-gray-100 animate-pulse rounded-full w-20" />
+            <div className="h-7 bg-gray-100 animate-pulse rounded-full w-16" />
+            <div className="h-7 bg-gray-100 animate-pulse rounded-full w-24" />
+            <div className="ml-auto h-7 bg-gray-100 animate-pulse rounded-full w-36" />
           </div>
-        </div>
-        <div className="col-span-12 md:col-span-8">
-          <div className="max-w-3xl mx-auto px-4 pb-4 sm:px-6 md:px-8 mt-28">
+
+          {/* Jump-to skeleton */}
+          <div className="py-3 flex items-center gap-4 border-b border-blog-border">
+            <div className="h-3 bg-gray-100 animate-pulse rounded w-14" />
+            <div className="h-3 bg-gray-100 animate-pulse rounded w-20" />
+            <div className="h-3 bg-gray-100 animate-pulse rounded w-20" />
+            <div className="h-3 bg-gray-100 animate-pulse rounded w-20" />
+          </div>
+
+          {/* Feed skeleton */}
+          <div className="pt-6 pb-10 space-y-5">
+            {/* Month divider skeleton */}
+            <div className="flex items-center gap-3 mt-2 mb-4">
+              <div className="h-3 bg-gray-100 animate-pulse rounded w-24" />
+              <div className="flex-1 h-px bg-gray-100" />
+            </div>
+            <LoadingArticle />
+            <LoadingArticle />
             <LoadingArticle />
           </div>
         </div>
-        <div className="hidden md:block md:col-span-2 pl-5 pt-10">
-          <h3 className="text-1xl text-primary font-semibold mb-2">Jump to:</h3>
-          <div className="bg-gray-300 animate-pulse block rounded w-40 h-6" />
-          <div className="bg-gray-300 animate-pulse block rounded w-32 h-6 mt-2" />
-          <div className="bg-gray-300 animate-pulse block rounded w-32 h-6 mt-2" />
-          <div className="bg-gray-300 animate-pulse block rounded w-32 h-6 mt-2" />
-        </div>
-      </div>
+      </main>
     </Fragment>
   );
 }

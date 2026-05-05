@@ -19,31 +19,40 @@ export function Article({
   tags = [],
   date = null,
   children,
-  className,
 }: ArticleProps) {
   return (
-    <article className={`bg-white rounded-lg shadow-lg mb-8 ${className}`}>
+    <article className="bg-white rounded-xl border border-blog-border mb-5 overflow-hidden transition-shadow duration-200 group-hover:shadow-md">
       {image && (
         // biome-ignore lint/performance/noImgElement: <Image> does not resolve here for some reason
         <img
-          className="object-cover rounded-lg rounded-b-none relative w-full h-64"
+          className="w-full aspect-video object-cover"
           src={image}
           alt={title}
         />
       )}
       <div className="p-6">
-        <h3 className="text-3xl text-primary font-semibold mb-2">{title}</h3>
-        <div>
-          <div className="flex flex-wrap gap-1 py-1">
-            {Array.isArray(tags) &&
-              tags.map((tag) => <CategoryTag key={tag} text={tag} />)}
+        {Array.isArray(tags) && tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {tags.map((tag) => (
+              <CategoryTag key={tag} text={tag} />
+            ))}
           </div>
-          <div className="prose max-w-none text-gray-700 py-2">{children}</div>
-          <dl>
-            <dd className="text-xs leading-6 text-gray-400">
-              {date && <DateComponent date={date} />}
-            </dd>
-          </dl>
+        )}
+        <h3 className="text-xl font-semibold text-blog-text mb-2 group-hover:text-blog-accent transition-colors duration-150">
+          {title}
+        </h3>
+        <div className="prose prose-sm max-w-none text-blog-muted line-clamp-3 blog-prose">
+          {children}
+        </div>
+        <div className="mt-4 flex items-center justify-between">
+          {date && (
+            <span className="text-xs text-blog-muted">
+              <DateComponent date={date} />
+            </span>
+          )}
+          <span className="text-xs font-medium text-blog-accent group-hover:underline underline-offset-2 ml-auto">
+            Read more →
+          </span>
         </div>
       </div>
     </article>
@@ -52,20 +61,20 @@ export function Article({
 
 export function LoadingArticle() {
   return (
-    <article className="bg-white rounded-lg shadow-lg mb-8">
+    <article className="bg-white rounded-xl border border-blog-border mb-5 overflow-hidden">
+      <div className="w-full aspect-video bg-gray-100 animate-pulse" />
       <div className="p-6">
-        <div className="h-6 bg-gray-200 mb-2 animate-pulse rounded" />
-        <div className="flex flex-wrap gap-1 py-1">
-          <div className="h-4 bg-gray-200 w-20 animate-pulse rounded" />
+        <div className="flex gap-1.5 mb-3">
+          <div className="h-5 bg-gray-100 w-20 animate-pulse rounded-full" />
+          <div className="h-5 bg-gray-100 w-16 animate-pulse rounded-full" />
         </div>
-        <div className="prose max-w-none text-gray-700 py-2">
-          <div className="h-4 bg-gray-200 mb-2" />
-          <div className="h-4 bg-gray-200 mb-2 animate-pulse rounded" />
-          <div className="h-4 bg-gray-200" />
+        <div className="h-6 bg-gray-100 w-3/4 animate-pulse rounded mb-2" />
+        <div className="space-y-1.5 mb-4">
+          <div className="h-4 bg-gray-100 animate-pulse rounded" />
+          <div className="h-4 bg-gray-100 animate-pulse rounded w-5/6" />
+          <div className="h-4 bg-gray-100 animate-pulse rounded w-4/6" />
         </div>
-        <div className="text-xs leading-6 text-gray-400 animate-pulse rounded">
-          <div className="h-4 bg-gray-200 w-16 animate-pulse rounded" />
-        </div>
+        <div className="h-3 bg-gray-100 w-24 animate-pulse rounded" />
       </div>
     </article>
   );
