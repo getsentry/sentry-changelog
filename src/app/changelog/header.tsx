@@ -3,18 +3,16 @@ import { CopyChangelogButton } from "@/client/components/copyChangelogButton";
 export default function Header({ loading }: { loading?: boolean }) {
   return (
     <div className={`w-full bg-darkPurple ${loading ? "animate-pulse" : ""}`}>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-medium text-white tracking-tight">
-              Changelog
-            </h1>
-            <p className="mt-2 text-white/60 text-base">
-              Stay up to date on everything big and small, from product updates
-              to SDK changes.
-            </p>
-          </div>
-          <div className="flex-shrink-0 mt-1 flex items-center gap-3">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+        <h1 className="text-4xl font-medium text-white tracking-tight">
+          Changelog
+        </h1>
+        <div className="mt-2 flex items-center justify-between gap-4">
+          <p className="text-white/60 text-base">
+            Stay up to date on everything big and small, from product updates to
+            SDK changes.
+          </p>
+          <div className="flex-shrink-0 flex items-center gap-3">
             {!loading && <CopyChangelogButton />}
             <a
               href="/changelog/feed.xml"
