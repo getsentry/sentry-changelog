@@ -172,58 +172,48 @@ export function ChangelogList({
       );
     });
 
+  const visibleMonths = sortedDatesGroupedByMonthAndYear.filter((monthAndYear) =>
+    filteredChangelogsWithoutMonthFilter.some(
+      (changelog) =>
+        changelogEntryPublishDateToAddressableTag(new Date(changelog.publishedAt)) ===
+        monthAndYear,
+    ),
+  );
+
   return (
     <main className="w-full bg-darkPurple min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
-        {/* Category nav — sticky, matches blog-category-nav */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        {/* Top nav — search only, no category pills */}
         <div className="py-4 flex items-center gap-3 border-b border-white/10 sticky top-[4.5rem] z-30 bg-darkPurple">
-          {/* Category pills — hidden on mobile */}
-          <div className="hidden sm:flex items-center gap-2 overflow-x-auto flex-1 min-w-0">
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedCategoriesIds(null);
-                setPageParam(null);
-              }}
-              className={`btn-new secondary-dark flex-shrink-0 !h-auto !py-1.5 !px-3 !text-[13px] ${
-                selectedCategoriesIds.length === 0 ? "!bg-[position:2%_0]" : ""
-              }`}
-            >
-              All
-            </button>
-            {Object.values(allChangelogCategories).map((category) => {
-              const isActive = selectedCategoriesIds.includes(category.id);
-              return (
-                <button
-                  key={category.id}
-                  type="button"
-                  onClick={() => {
-                    if (isActive) {
-                      setSelectedCategoriesIds(
-                        selectedCategoriesIds.filter(
-                          (id) => id !== category.id,
-                        ),
-                      );
-                    } else {
-                      setSelectedCategoriesIds([
-                        ...selectedCategoriesIds,
-                        category.id,
-                      ]);
-                    }
-                    setPageParam(null);
-                  }}
-                  className={`btn-new secondary-dark flex-shrink-0 !h-auto !py-1.5 !px-3 !text-[13px] ${
-                    isActive ? "!bg-[position:2%_0]" : ""
-                  }`}
-                >
-                  {category.name}
-                </button>
-              );
-            })}
-          </div>
+          {/* Mobile: jump-to dropdown */}
+          {visibleMonths.length > 0 && (
+            <div className="flex items-center gap-2 sm:hidden flex-1 min-w-0">
+              <select
+                value={monthAndYearParam ?? ""}
+                onChange={(e) => {
+                  setMonthParam(e.target.value || null);
+                  setPageParam(null);
+                }}
+                className="flex-1 text-xs rounded-lg border border-white/25 bg-white/10 text-white px-2 py-1.5 focus:outline-none focus:border-[#fd44b0] appearance-none"
+              >
+                <option value="" className="bg-darkPurple text-white">
+                  All months
+                </option>
+                {visibleMonths.map((monthAndYear) => (
+                  <option
+                    key={monthAndYear}
+                    value={monthAndYear}
+                    className="bg-darkPurple text-white"
+                  >
+                    {monthAndYear}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Search + Reset */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0 sm:ml-auto">
             <div className="relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -270,53 +260,44 @@ export function ChangelogList({
           </div>
         </div>
 
-        {/* Jump-to month */}
-        {sortedDatesGroupedByMonthAndYear.length > 0 &&
-          (() => {
-            const visibleMonths = sortedDatesGroupedByMonthAndYear.filter(
-              (monthAndYear) =>
-                filteredChangelogsWithoutMonthFilter.some(
-                  (changelog) =>
-                    changelogEntryPublishDateToAddressableTag(
-                      new Date(changelog.publishedAt),
-                    ) === monthAndYear,
-                ),
-            );
-            return (
-              <div className="py-3 border-b border-white/10">
-                {/* Mobile: select dropdown */}
-                <div className="flex items-center gap-2 sm:hidden">
-                  <span className="text-xs font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">
-                    Jump to:
-                  </span>
-                  <select
-                    value={monthAndYearParam ?? ""}
-                    onChange={(e) => {
-                      setMonthParam(e.target.value || null);
-                      setPageParam(null);
-                    }}
-                    className="flex-1 text-xs rounded-lg border border-white/25 bg-white/10 text-white px-2 py-1.5 focus:outline-none focus:border-[#fd44b0] appearance-none"
-                  >
-                    <option value="" className="bg-darkPurple text-white">
-                      All months
-                    </option>
-                    {visibleMonths.map((monthAndYear) => (
-                      <option
-                        key={monthAndYear}
-                        value={monthAndYear}
-                        className="bg-darkPurple text-white"
-                      >
-                        {monthAndYear}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+        {/* Two-column layout on desktop */}
+        <div className="sm:flex sm:gap-10">
+          {/* Feed */}
+          <div className="flex-1 min-w-0 pb-10">
+            {paginatedChangelogs}
 
-                {/* Desktop: inline buttons */}
-                <div className="hidden sm:flex flex-wrap gap-x-4 gap-y-1 items-center">
-                  <span className="text-xs font-semibold uppercase tracking-widest text-white/40">
-                    Jump to:
-                  </span>
+            {paginatedChangelogs.length === 0 && (
+              <div className="flex items-center gap-3 my-10">
+                <div className="flex-1 h-px bg-white/10" />
+                <span className="text-sm text-white/40">No posts found.</span>
+                <div className="flex-1 h-px bg-white/10" />
+              </div>
+            )}
+
+            {numberOfPages > 1 && (
+              <div className="mt-8">
+                <Pagination
+                  currentPage={selectedPage}
+                  totalPages={numberOfPages}
+                  onPageNumberChange={(pageNumber) => {
+                    setPageParam(pageNumber, { history: "push" });
+                  }}
+                  search={searchValue}
+                  selectedMonth={monthAndYearParam}
+                  selectedCategoriesIds={selectedCategoriesIds}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Right sidebar — date navigator, desktop only */}
+          {visibleMonths.length > 0 && (
+            <div className="hidden sm:block w-40 flex-shrink-0">
+              <div className="sticky top-[7rem] pt-6">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-white/35">
+                  Jump to
+                </span>
+                <div className="mt-3 flex flex-col gap-2">
                   {visibleMonths.map((monthAndYear) => (
                     <button
                       key={monthAndYear}
@@ -329,10 +310,10 @@ export function ChangelogList({
                         }
                         setPageParam(null);
                       }}
-                      className={`text-xs transition-colors duration-150 ${
+                      className={`text-left text-xs transition-colors duration-150 ${
                         monthAndYearParam === monthAndYear
-                          ? "text-[#fd44b0] font-semibold underline underline-offset-2"
-                          : "text-white/50 hover:text-white"
+                          ? "text-[#fd44b0] font-semibold"
+                          : "text-white/40 hover:text-white/80"
                       }`}
                     >
                       {monthAndYear}
@@ -340,33 +321,6 @@ export function ChangelogList({
                   ))}
                 </div>
               </div>
-            );
-          })()}
-
-        {/* Feed */}
-        <div className="pb-10">
-          {paginatedChangelogs}
-
-          {paginatedChangelogs.length === 0 && (
-            <div className="flex items-center gap-3 my-10">
-              <div className="flex-1 h-px bg-white/10" />
-              <span className="text-sm text-white/40">No posts found.</span>
-              <div className="flex-1 h-px bg-white/10" />
-            </div>
-          )}
-
-          {numberOfPages > 1 && (
-            <div className="mt-8">
-              <Pagination
-                currentPage={selectedPage}
-                totalPages={numberOfPages}
-                onPageNumberChange={(pageNumber) => {
-                  setPageParam(pageNumber, { history: "push" });
-                }}
-                search={searchValue}
-                selectedMonth={monthAndYearParam}
-                selectedCategoriesIds={selectedCategoriesIds}
-              />
             </div>
           )}
         </div>
