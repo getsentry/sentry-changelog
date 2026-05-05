@@ -271,43 +271,77 @@ export function ChangelogList({
         </div>
 
         {/* Jump-to month */}
-        {sortedDatesGroupedByMonthAndYear.length > 0 && (
-          <div className="py-3 flex flex-wrap gap-x-4 gap-y-1 border-b border-white/10">
-            <span className="text-xs font-semibold uppercase tracking-widest text-white/40 self-center">
-              Jump to:
-            </span>
-            {sortedDatesGroupedByMonthAndYear
-              .filter((monthAndYear) =>
+        {sortedDatesGroupedByMonthAndYear.length > 0 &&
+          (() => {
+            const visibleMonths = sortedDatesGroupedByMonthAndYear.filter(
+              (monthAndYear) =>
                 filteredChangelogsWithoutMonthFilter.some(
                   (changelog) =>
                     changelogEntryPublishDateToAddressableTag(
                       new Date(changelog.publishedAt),
                     ) === monthAndYear,
                 ),
-              )
-              .map((monthAndYear) => (
-                <button
-                  key={monthAndYear}
-                  type="button"
-                  onClick={() => {
-                    if (monthAndYearParam === monthAndYear) {
-                      setMonthParam(null);
-                    } else {
-                      setMonthParam(monthAndYear);
-                    }
-                    setPageParam(null);
-                  }}
-                  className={`text-xs transition-colors duration-150 ${
-                    monthAndYearParam === monthAndYear
-                      ? "text-[#fd44b0] font-semibold underline underline-offset-2"
-                      : "text-white/50 hover:text-white"
-                  }`}
-                >
-                  {monthAndYear}
-                </button>
-              ))}
-          </div>
-        )}
+            );
+            return (
+              <div className="py-3 border-b border-white/10">
+                {/* Mobile: select dropdown */}
+                <div className="flex items-center gap-2 sm:hidden">
+                  <span className="text-xs font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">
+                    Jump to:
+                  </span>
+                  <select
+                    value={monthAndYearParam ?? ""}
+                    onChange={(e) => {
+                      setMonthParam(e.target.value || null);
+                      setPageParam(null);
+                    }}
+                    className="flex-1 text-xs rounded-lg border border-white/25 bg-white/10 text-white px-2 py-1.5 focus:outline-none focus:border-[#fd44b0] appearance-none"
+                  >
+                    <option value="" className="bg-darkPurple text-white">
+                      All months
+                    </option>
+                    {visibleMonths.map((monthAndYear) => (
+                      <option
+                        key={monthAndYear}
+                        value={monthAndYear}
+                        className="bg-darkPurple text-white"
+                      >
+                        {monthAndYear}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Desktop: inline buttons */}
+                <div className="hidden sm:flex flex-wrap gap-x-4 gap-y-1 items-center">
+                  <span className="text-xs font-semibold uppercase tracking-widest text-white/40">
+                    Jump to:
+                  </span>
+                  {visibleMonths.map((monthAndYear) => (
+                    <button
+                      key={monthAndYear}
+                      type="button"
+                      onClick={() => {
+                        if (monthAndYearParam === monthAndYear) {
+                          setMonthParam(null);
+                        } else {
+                          setMonthParam(monthAndYear);
+                        }
+                        setPageParam(null);
+                      }}
+                      className={`text-xs transition-colors duration-150 ${
+                        monthAndYearParam === monthAndYear
+                          ? "text-[#fd44b0] font-semibold underline underline-offset-2"
+                          : "text-white/50 hover:text-white"
+                      }`}
+                    >
+                      {monthAndYear}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
 
         {/* Feed */}
         <div className="pb-10">
