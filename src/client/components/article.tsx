@@ -21,37 +21,38 @@ export function Article({
   children,
 }: ArticleProps) {
   return (
-    <article className="bg-white rounded-xl border border-blog-border mb-5 overflow-hidden transition-shadow duration-200 group-hover:shadow-md">
+    <article className="fancy-border bg-transparent rounded-md mb-5 overflow-hidden">
       {image && (
         // biome-ignore lint/performance/noImgElement: <Image> does not resolve here for some reason
         <img
-          className="w-full aspect-video object-cover"
+          className="w-full object-cover"
+          style={{ aspectRatio: "2/1" }}
           src={image}
           alt={title}
         />
       )}
-      <div className="p-6">
+      <div className="py-5">
         {Array.isArray(tags) && tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-3">
+          <div className="flex flex-wrap gap-2 mb-2">
             {tags.map((tag) => (
               <CategoryTag key={tag} text={tag} />
             ))}
           </div>
         )}
-        <h3 className="text-xl font-semibold text-blog-text mb-2 group-hover:text-blog-accent transition-colors duration-150">
+        <h3 className="text-base font-medium text-white mb-2 leading-snug line-clamp-2 group-hover:text-white/80 transition-colors duration-150">
           {title}
         </h3>
-        <div className="prose prose-sm max-w-none text-blog-muted line-clamp-3 blog-prose">
+        <div className="prose prose-sm max-w-none text-white/70 line-clamp-3 blog-prose-dark">
           {children}
         </div>
         <div className="mt-4 flex items-center justify-between">
           {date && (
-            <span className="text-xs text-blog-muted">
+            <span className="text-xs text-white/50">
               <DateComponent date={date} />
             </span>
           )}
-          <span className="text-xs font-medium text-blog-accent group-hover:underline underline-offset-2 ml-auto">
-            Read more →
+          <span className="text-[14px] font-semibold text-[#fd44b0] uppercase ml-auto">
+            Read On →
           </span>
         </div>
       </div>
@@ -61,20 +62,23 @@ export function Article({
 
 export function LoadingArticle() {
   return (
-    <article className="bg-white rounded-xl border border-blog-border mb-5 overflow-hidden">
-      <div className="w-full aspect-video bg-gray-100 animate-pulse" />
-      <div className="p-6">
-        <div className="flex gap-1.5 mb-3">
-          <div className="h-5 bg-gray-100 w-20 animate-pulse rounded-full" />
-          <div className="h-5 bg-gray-100 w-16 animate-pulse rounded-full" />
+    <article className="bg-transparent rounded-md mb-5 overflow-hidden">
+      <div
+        className="w-full bg-white/10 animate-pulse"
+        style={{ aspectRatio: "2/1" }}
+      />
+      <div className="py-5">
+        <div className="flex gap-2 mb-2">
+          <div className="h-3 bg-white/10 w-16 animate-pulse rounded" />
+          <div className="h-3 bg-white/10 w-12 animate-pulse rounded" />
         </div>
-        <div className="h-6 bg-gray-100 w-3/4 animate-pulse rounded mb-2" />
+        <div className="h-5 bg-white/10 w-3/4 animate-pulse rounded mb-2" />
         <div className="space-y-1.5 mb-4">
-          <div className="h-4 bg-gray-100 animate-pulse rounded" />
-          <div className="h-4 bg-gray-100 animate-pulse rounded w-5/6" />
-          <div className="h-4 bg-gray-100 animate-pulse rounded w-4/6" />
+          <div className="h-4 bg-white/10 animate-pulse rounded" />
+          <div className="h-4 bg-white/10 animate-pulse rounded w-5/6" />
+          <div className="h-4 bg-white/10 animate-pulse rounded w-4/6" />
         </div>
-        <div className="h-3 bg-gray-100 w-24 animate-pulse rounded" />
+        <div className="h-3 bg-white/10 w-24 animate-pulse rounded" />
       </div>
     </article>
   );

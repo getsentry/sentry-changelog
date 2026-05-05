@@ -1,15 +1,13 @@
 export default function Header({ loading }: { loading?: boolean }) {
   return (
-    <div
-      className={`w-full bg-white border-b border-blog-border ${loading ? "animate-pulse" : ""}`}
-    >
+    <div className={`w-full bg-darkPurple ${loading ? "animate-pulse" : ""}`}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-blog-text tracking-tight">
+            <h1 className="text-4xl font-medium text-white tracking-tight">
               Changelog
             </h1>
-            <p className="mt-2 text-blog-muted text-base">
+            <p className="mt-2 text-white/60 text-base">
               Stay up to date on everything big and small, from product updates
               to SDK changes.
             </p>
@@ -17,7 +15,7 @@ export default function Header({ loading }: { loading?: boolean }) {
           <a
             href="/changelog/feed.xml"
             aria-label="Subscribe to RSS feed"
-            className="flex-shrink-0 mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-blog-accent border border-blog-accent hover:bg-blog-accent hover:text-white transition-colors duration-150"
+            className="flex-shrink-0 mt-1 inline-flex items-center gap-1.5 text-[#fd44b0] text-sm font-semibold uppercase hover:opacity-80 transition-opacity duration-150"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

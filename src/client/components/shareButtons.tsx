@@ -27,6 +27,7 @@ export function ShareButtons({ title, slug }: { title: string; slug: string }) {
       </span>
 
       {/* X / Twitter */}
+      {/* biome-ignore lint/a11y/useAnchorContent: aria-label provides accessible content */}
       <a
         href={`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`}
         target="_blank"
@@ -46,6 +47,7 @@ export function ShareButtons({ title, slug }: { title: string; slug: string }) {
       </a>
 
       {/* LinkedIn */}
+      {/* biome-ignore lint/a11y/useAnchorContent: aria-label provides accessible content */}
       <a
         href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
         target="_blank"
@@ -65,6 +67,7 @@ export function ShareButtons({ title, slug }: { title: string; slug: string }) {
       </a>
 
       {/* Hacker News */}
+      {/* biome-ignore lint/a11y/useAnchorContent: aria-label provides accessible content */}
       <a
         href={`https://news.ycombinator.com/submitlink?u=${encodedUrl}&t=${encodedTitle}`}
         target="_blank"

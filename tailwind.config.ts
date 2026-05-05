@@ -77,6 +77,7 @@ module.exports = {
         'blog-accent-hover': '#5A4FB1',
         'blog-pink': '#E1567C',
         'blog-gold': '#F2B712',
+        'hot-pink': '#fd44b0',
       },
     },
   },

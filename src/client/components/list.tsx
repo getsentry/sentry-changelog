@@ -12,7 +12,6 @@ import {
 import { Fragment, useState } from "react";
 import { Article } from "./article";
 import { Pagination } from "./pagination";
-import { CategoryTag } from "./tag";
 
 const ENTRIES_PER_PAGE = 10;
 
@@ -113,13 +112,15 @@ export function ChangelogList({
       throw new Error("invariant");
     }
     datesGroupedByMonthAndYear.add(
-      changelogEntryPublishDateToAddressableTag(new Date(changelog.publishedAt)),
+      changelogEntryPublishDateToAddressableTag(
+        new Date(changelog.publishedAt),
+      ),
     );
   }
 
-  const sortedDatesGroupedByMonthAndYear = [
-    ...datesGroupedByMonthAndYear,
-  ].sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  const sortedDatesGroupedByMonthAndYear = [...datesGroupedByMonthAndYear].sort(
+    (a, b) => new Date(b).getTime() - new Date(a).getTime(),
+  );
 
   const numberOfPages = Math.ceil(filteredChangelogs.length / ENTRIES_PER_PAGE);
 
@@ -147,10 +148,10 @@ export function ChangelogList({
         <Fragment key={changelog.id}>
           {prevChangelogHasDifferentMonth && (
             <div className="flex items-center gap-3 mt-8 mb-4">
-              <span className="text-xs font-semibold uppercase tracking-widest text-blog-muted whitespace-nowrap">
+              <span className="text-xs font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">
                 {monthYear}
               </span>
-              <div className="flex-1 h-px bg-blog-border" />
+              <div className="flex-1 h-px bg-white/10" />
             </div>
           )}
           <Link href={`/changelog/${changelog.slug}`} className="block group">
@@ -172,11 +173,11 @@ export function ChangelogList({
     });
 
   return (
-    <main className="w-full bg-surface min-h-screen">
+    <main className="w-full bg-darkPurple min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
-        {/* Filter bar */}
-        <div className="py-5 flex flex-col sm:flex-row sm:items-center gap-3 border-b border-blog-border">
-          {/* Category pills — scrollable on mobile */}
+        {/* Category nav — sticky, matches blog-category-nav */}
+        <div className="py-4 flex flex-col sm:flex-row sm:items-center gap-3 border-b border-white/10 sticky top-[4.5rem] z-30 bg-darkPurple">
+          {/* Category pills */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 flex-1 min-w-0">
             <button
               type="button"
@@ -184,10 +185,8 @@ export function ChangelogList({
                 setSelectedCategoriesIds(null);
                 setPageParam(null);
               }}
-              className={`flex-shrink-0 px-3 py-1 rounded-full text-sm font-medium transition-colors duration-150 border ${
-                selectedCategoriesIds.length === 0
-                  ? "bg-blog-accent text-white border-blog-accent"
-                  : "text-blog-muted border-blog-border hover:border-blog-accent hover:text-blog-accent"
+              className={`btn-new secondary-dark flex-shrink-0 !h-auto !py-1.5 !px-3 !text-[13px] ${
+                selectedCategoriesIds.length === 0 ? "!bg-[position:2%_0]" : ""
               }`}
             >
               All
@@ -213,10 +212,8 @@ export function ChangelogList({
                     }
                     setPageParam(null);
                   }}
-                  className={`flex-shrink-0 px-3 py-1 rounded-full text-sm font-medium transition-colors duration-150 border ${
-                    isActive
-                      ? "bg-blog-accent text-white border-blog-accent"
-                      : "text-blog-muted border-blog-border hover:border-blog-accent hover:text-blog-accent"
+                  className={`btn-new secondary-dark flex-shrink-0 !h-auto !py-1.5 !px-3 !text-[13px] ${
+                    isActive ? "!bg-[position:2%_0]" : ""
                   }`}
                 >
                   {category.name}
@@ -232,7 +229,7 @@ export function ChangelogList({
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-blog-muted pointer-events-none"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none"
                 aria-hidden="true"
               >
                 <path
@@ -252,13 +249,13 @@ export function ChangelogList({
                   setQuerySearchValue(newSearchValue);
                 }}
                 placeholder="Search..."
-                className="pl-8 pr-3 py-1.5 text-sm rounded-full border border-blog-border bg-white text-blog-text placeholder:text-blog-muted focus:outline-none focus:border-blog-accent focus:ring-1 focus:ring-blog-accent w-36 sm:w-44"
+                className="pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0] w-36 sm:w-44"
               />
             </div>
             {someFilterIsActive && (
               <button
                 type="button"
-                className="text-sm text-blog-muted hover:text-blog-accent transition-colors duration-150"
+                className="text-sm text-white/50 hover:text-white transition-colors duration-150"
                 onClick={() => {
                   setSearchValue(null);
                   setQuerySearchValue(null);
@@ -273,10 +270,10 @@ export function ChangelogList({
           </div>
         </div>
 
-        {/* Jump-to month — collapsible below filter bar on mobile, inline on desktop */}
+        {/* Jump-to month */}
         {sortedDatesGroupedByMonthAndYear.length > 0 && (
-          <div className="py-3 flex flex-wrap gap-x-4 gap-y-1 border-b border-blog-border">
-            <span className="text-xs font-semibold uppercase tracking-widest text-blog-muted self-center">
+          <div className="py-3 flex flex-wrap gap-x-4 gap-y-1 border-b border-white/10">
+            <span className="text-xs font-semibold uppercase tracking-widest text-white/40 self-center">
               Jump to:
             </span>
             {sortedDatesGroupedByMonthAndYear
@@ -302,8 +299,8 @@ export function ChangelogList({
                   }}
                   className={`text-xs transition-colors duration-150 ${
                     monthAndYearParam === monthAndYear
-                      ? "text-blog-accent font-semibold underline underline-offset-2"
-                      : "text-blog-muted hover:text-blog-accent"
+                      ? "text-[#fd44b0] font-semibold underline underline-offset-2"
+                      : "text-white/50 hover:text-white"
                   }`}
                 >
                   {monthAndYear}
@@ -318,9 +315,9 @@ export function ChangelogList({
 
           {paginatedChangelogs.length === 0 && (
             <div className="flex items-center gap-3 my-10">
-              <div className="flex-1 h-px bg-blog-border" />
-              <span className="text-sm text-blog-muted">No posts found.</span>
-              <div className="flex-1 h-px bg-blog-border" />
+              <div className="flex-1 h-px bg-white/10" />
+              <span className="text-sm text-white/40">No posts found.</span>
+              <div className="flex-1 h-px bg-white/10" />
             </div>
           )}
 
