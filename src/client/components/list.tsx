@@ -176,9 +176,9 @@ export function ChangelogList({
     <main className="w-full bg-darkPurple min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         {/* Category nav — sticky, matches blog-category-nav */}
-        <div className="py-4 flex flex-col sm:flex-row sm:items-center gap-3 border-b border-white/10 sticky top-[4.5rem] z-30 bg-darkPurple">
-          {/* Category pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 flex-1 min-w-0">
+        <div className="py-4 flex items-center gap-3 border-b border-white/10 sticky top-[4.5rem] z-30 bg-darkPurple">
+          {/* Category pills — hidden on mobile */}
+          <div className="hidden sm:flex items-center gap-2 overflow-x-auto flex-1 min-w-0">
             <button
               type="button"
               onClick={() => {
