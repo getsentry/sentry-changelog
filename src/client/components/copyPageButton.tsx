@@ -37,7 +37,7 @@ export function CopyPageButton({ title, slug, content }: CopyPageButtonProps) {
   }
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className="relative z-50" ref={containerRef}>
       {/* Split button */}
       <div className="flex items-center rounded-lg border border-blog-border overflow-hidden text-sm text-blog-muted">
         <button

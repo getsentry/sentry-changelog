@@ -27,7 +27,7 @@ export function CopyChangelogButton() {
   }
 
   return (
-    <div className="relative">
+    <div className="relative z-50">
       <div className="flex items-center rounded-lg border border-white/20 overflow-hidden text-sm text-white/70">
         <button
           type="button"
