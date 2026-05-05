@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth/next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { Suspense } from "react";
 import ArticleFooter from "@/client/components/articleFooter";
+import { CopyPageButton } from "@/client/components/copyPageButton";
 import { DateComponent } from "@/client/components/date";
 import { ShareButtons } from "@/client/components/shareButtons";
 import { TableOfContents } from "@/client/components/tableOfContents";
@@ -169,7 +170,12 @@ export default async function ChangelogEntry(props: {
                   <span className="text-sm text-blog-muted">{readTime}</span>
                 </>
               )}
-              <div className="ml-auto">
+              <div className="ml-auto flex items-center gap-2">
+                <CopyPageButton
+                  title={changelog.title ?? ""}
+                  slug={changelog.slug}
+                  content={changelog.content ?? ""}
+                />
                 <ShareButtons
                   title={changelog.title ?? ""}
                   slug={changelog.slug}
