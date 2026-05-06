@@ -10,7 +10,6 @@ import ArticleFooter from "@/client/components/articleFooter";
 import { CopyPageButton } from "@/client/components/copyPageButton";
 import { DateComponent } from "@/client/components/date";
 import { ShareButtons } from "@/client/components/shareButtons";
-import { TableOfContents } from "@/client/components/tableOfContents";
 import { authOptions } from "@/server/authOptions";
 import { mdxOptions } from "@/server/mdxOptions";
 import { prismaClient } from "@/server/prisma-client";
@@ -141,69 +140,56 @@ export default async function ChangelogEntry(props: {
           </div>
         </div>
 
-        {/* Two-column layout: content + TOC */}
-        <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-12">
-          {/* Main content */}
-          <div>
-            {/* Title */}
-            <h1 className="text-3xl sm:text-4xl font-bold text-blog-text leading-tight mb-4">
-              {changelog.title}
-            </h1>
+        {/* Title */}
+        <h1 className="text-3xl sm:text-4xl font-bold text-blog-text leading-tight mb-4">
+          {changelog.title}
+        </h1>
 
-            {/* Metadata strip */}
-            <div className="flex items-center gap-4 pb-6 border-b border-blog-border mb-6">
+        {/* Metadata strip */}
+        <div className="flex items-center gap-4 pb-6 border-b border-blog-border mb-6">
+          {changelog.publishedAt && (
+            <span className="text-sm text-blog-muted">
+              <DateComponent date={changelog.publishedAt} />
+            </span>
+          )}
+          {readTime && (
+            <>
               {changelog.publishedAt && (
-                <span className="text-sm text-blog-muted">
-                  <DateComponent date={changelog.publishedAt} />
+                <span className="text-blog-border" aria-hidden="true">
+                  ·
                 </span>
               )}
-              {readTime && (
-                <>
-                  {changelog.publishedAt && (
-                    <span className="text-blog-border" aria-hidden="true">
-                      ·
-                    </span>
-                  )}
-                  <span className="text-sm text-blog-muted">{readTime}</span>
-                </>
-              )}
-              <div className="ml-auto flex items-center gap-2">
-                <CopyPageButton
-                  title={changelog.title ?? ""}
-                  slug={changelog.slug}
-                  content={changelog.content ?? ""}
-                />
-                <div className="hidden sm:block">
-                  <ShareButtons
-                    title={changelog.title ?? ""}
-                    slug={changelog.slug}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* MDX body */}
-            <div className="prose prose-lg max-w-none blog-prose blog-content">
-              <Suspense fallback="Loading...">
-                <MDXRemote
-                  source={changelog.content ?? "No content found."}
-                  options={{ mdxOptions } as any}
-                />
-              </Suspense>
-            </div>
-
-            {/* Footer CTA */}
-            <div className="mt-12">
-              <ArticleFooter />
+              <span className="text-sm text-blog-muted">{readTime}</span>
+            </>
+          )}
+          <div className="ml-auto flex items-center gap-2">
+            <CopyPageButton
+              title={changelog.title ?? ""}
+              slug={changelog.slug}
+              content={changelog.content ?? ""}
+            />
+            <div className="hidden sm:block">
+              <ShareButtons
+                title={changelog.title ?? ""}
+                slug={changelog.slug}
+              />
             </div>
           </div>
+        </div>
 
-          {/* Sticky TOC sidebar */}
-          <aside className="hidden lg:block">
-            <div className="sticky top-8">
-              <TableOfContents contentSelector=".blog-content" />
-            </div>
-          </aside>
+        {/* MDX body */}
+        <div className="prose prose-lg max-w-none blog-prose blog-content">
+          <Suspense fallback="Loading...">
+            <MDXRemote
+              source={changelog.content ?? "No content found."}
+              options={{ mdxOptions } as any}
+            />
+          </Suspense>
+        </div>
+
+        {/* Footer CTA */}
+        <div className="mt-12">
+          <ArticleFooter />
         </div>
 
         {/* Related entries */}
