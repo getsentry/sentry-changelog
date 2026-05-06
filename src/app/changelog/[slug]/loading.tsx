@@ -7,7 +7,7 @@ export default function Loading() {
         {/* Back link + share row */}
         <div className="flex items-center justify-between mb-6">
           <div className={`h-4 ${sk} w-24`} />
-          <div className="hidden sm:flex items-center gap-2">
+          <div className="flex sm:hidden items-center gap-2">
             <div className={`h-4 ${sk} w-10`} />
             <div className={`h-7 ${sk} w-7`} />
             <div className={`h-7 ${sk} w-7`} />

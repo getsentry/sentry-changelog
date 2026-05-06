@@ -30,7 +30,7 @@ export default function Loading() {
                 <div className="flex flex-col gap-2">
                   <div className="h-3 bg-white/10 animate-pulse rounded w-24" />
                   <div className="h-3 bg-white/10 animate-pulse rounded w-20" />
-                  <div className="h-3 bg-white/10 animate-pulse rounded w-22" />
+                  <div className="h-3 bg-white/10 animate-pulse rounded w-24" />
                   <div className="h-3 bg-white/10 animate-pulse rounded w-20" />
                 </div>
               </div>
