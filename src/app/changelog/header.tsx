@@ -13,7 +13,7 @@ export default function Header({ loading }: { loading?: boolean }) {
             SDK changes.
           </p>
           <div className="flex-shrink-0 flex flex-col-reverse sm:flex-row items-end sm:items-center gap-2 sm:gap-3">
-            {!loading && <CopyChangelogButton />}
+            <CopyChangelogButton />
             <a
               href="/changelog/feed.xml"
               aria-label="Subscribe to RSS feed"
