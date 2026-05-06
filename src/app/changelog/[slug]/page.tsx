@@ -136,7 +136,9 @@ export default async function ChangelogEntry(props: {
             </svg>
             Changelog
           </Link>
-          <ShareButtons title={changelog.title ?? ""} slug={changelog.slug} />
+          <div className="sm:hidden">
+            <ShareButtons title={changelog.title ?? ""} slug={changelog.slug} />
+          </div>
         </div>
 
         {/* Two-column layout: content + TOC */}
@@ -165,12 +167,18 @@ export default async function ChangelogEntry(props: {
                   <span className="text-sm text-blog-muted">{readTime}</span>
                 </>
               )}
-              <div className="ml-auto">
+              <div className="ml-auto flex items-center gap-2">
                 <CopyPageButton
                   title={changelog.title ?? ""}
                   slug={changelog.slug}
                   content={changelog.content ?? ""}
                 />
+                <div className="hidden sm:block">
+                  <ShareButtons
+                    title={changelog.title ?? ""}
+                    slug={changelog.slug}
+                  />
+                </div>
               </div>
             </div>
 
