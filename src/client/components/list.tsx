@@ -180,8 +180,8 @@ export function ChangelogList({
     <main className="w-full bg-darkPurple min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         {/* Mobile search + month dropdown */}
-        <div className="py-4 border-b border-white/10 sm:hidden flex items-center gap-3">
-          <div className="relative flex-1 min-w-0">
+        <div className="py-4 border-b border-white/10 sm:hidden flex flex-col gap-3">
+          <div className="relative">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
