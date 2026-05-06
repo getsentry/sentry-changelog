@@ -74,22 +74,17 @@ export function LoadingArticle({
     <article
       className={`rounded-xl border ${border} ${bg} mb-5 overflow-hidden`}
     >
-      <div
-        className={`w-full ${sk} animate-pulse`}
-        style={{ aspectRatio: "2/1" }}
-      />
       <div className="p-5">
-        <div className="flex gap-2 mb-2">
-          <div className={`h-3 ${sk} w-16 animate-pulse rounded`} />
-          <div className={`h-3 ${sk} w-12 animate-pulse rounded`} />
-        </div>
         <div className={`h-5 ${sk} w-3/4 animate-pulse rounded mb-2`} />
         <div className="space-y-1.5 mb-4">
           <div className={`h-4 ${sk} animate-pulse rounded`} />
           <div className={`h-4 ${sk} animate-pulse rounded w-5/6`} />
           <div className={`h-4 ${sk} animate-pulse rounded w-4/6`} />
         </div>
-        <div className={`h-3 ${sk} w-24 animate-pulse rounded`} />
+        <div className="flex items-center justify-between">
+          <div className={`h-3 ${sk} w-24 animate-pulse rounded`} />
+          <div className={`h-3 ${sk} w-16 animate-pulse rounded`} />
+        </div>
       </div>
     </article>
   );

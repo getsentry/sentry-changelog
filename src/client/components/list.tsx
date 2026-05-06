@@ -43,7 +43,7 @@ export function ChangelogList({
   const [, setQuerySearchValue] = useQueryState("search", parseAsString);
 
   const [monthAndYearParam, setMonthParam] = useQueryState("month");
-  const [selectedCategoriesIds, setSelectedCategoriesIds] = useQueryState(
+  const [selectedCategoriesIds] = useQueryState(
     "categories",
     parseAsArrayOf(parseAsString)
       .withDefault([])
@@ -55,10 +55,6 @@ export function ChangelogList({
   );
 
   const selectedPage = pageParam === null ? 1 : pageParam;
-
-  const someFilterIsActive = Boolean(
-    selectedCategoriesIds.length > 0 || searchValue || monthAndYearParam,
-  );
 
   const filteredChangelogsWithoutMonthFilter = changelogs
     .filter((changelog) => {
@@ -183,84 +179,59 @@ export function ChangelogList({
   return (
     <main className="w-full bg-darkPurple min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        {/* Top nav — search, category pills, mobile month */}
-        <div className="py-4 flex flex-col gap-3 border-b border-white/10 sticky top-[4.5rem] z-30 bg-darkPurple">
-          {/* Row 1: mobile month dropdown + search + reset */}
-          <div className="flex items-center gap-3">
-            {visibleMonths.length > 0 && (
-              <div className="flex items-center gap-2 sm:hidden flex-1 min-w-0">
-                <select
-                  value={monthAndYearParam ?? ""}
-                  onChange={(e) => {
-                    setMonthParam(e.target.value || null);
-                    setPageParam(null);
-                  }}
-                  className="flex-1 text-xs rounded-lg border border-white/25 bg-white/10 text-white px-2 py-1.5 focus:outline-none focus:border-[#fd44b0] appearance-none"
-                >
-                  <option value="" className="bg-darkPurple text-white">
-                    All months
-                  </option>
-                  {visibleMonths.map((monthAndYear) => (
-                    <option
-                      key={monthAndYear}
-                      value={monthAndYear}
-                      className="bg-darkPurple text-white"
-                    >
-                      {monthAndYear}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            <div className="flex items-center gap-2 flex-shrink-0 sm:ml-auto">
-              {someFilterIsActive && (
-                <button
-                  type="button"
-                  className="text-sm text-white/50 hover:text-white transition-colors duration-150"
-                  onClick={() => {
-                    setSearchValue(null);
-                    setQuerySearchValue(null);
-                    setSelectedCategoriesIds(null);
-                    setMonthParam(null);
-                    setPageParam(null);
-                  }}
-                >
-                  Reset
-                </button>
-              )}
-              <div className="relative">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <input
-                  aria-label="Search..."
-                  type="text"
-                  value={searchValue ?? ""}
-                  onChange={(e) => {
-                    setPageParam(null);
-                    const newSearchValue = e.target.value
-                      ? e.target.value
-                      : null;
-                    setSearchValue(newSearchValue);
-                    setQuerySearchValue(newSearchValue);
-                  }}
-                  placeholder="Search..."
-                  className="pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0] w-36 sm:w-44"
-                />
-              </div>
-            </div>
+        {/* Mobile search + month dropdown */}
+        <div className="py-4 border-b border-white/10 sm:hidden flex flex-col gap-3">
+          <div className="relative">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <input
+              aria-label="Search..."
+              type="text"
+              value={searchValue ?? ""}
+              onChange={(e) => {
+                setPageParam(null);
+                const newSearchValue = e.target.value ? e.target.value : null;
+                setSearchValue(newSearchValue);
+                setQuerySearchValue(newSearchValue);
+              }}
+              placeholder="Search..."
+              className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0]"
+            />
           </div>
+          {visibleMonths.length > 0 && (
+            <select
+              value={monthAndYearParam ?? ""}
+              onChange={(e) => {
+                setMonthParam(e.target.value || null);
+                setPageParam(null);
+              }}
+              className="w-full text-xs rounded-lg border border-white/25 bg-white/10 text-white px-2 py-1.5 focus:outline-none focus:border-[#fd44b0] appearance-none"
+            >
+              <option value="" className="bg-darkPurple text-white">
+                All months
+              </option>
+              {visibleMonths.map((monthAndYear) => (
+                <option
+                  key={monthAndYear}
+                  value={monthAndYear}
+                  className="bg-darkPurple text-white"
+                >
+                  {monthAndYear}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Two-column layout on desktop */}
@@ -293,39 +264,71 @@ export function ChangelogList({
             )}
           </div>
 
-          {/* Right sidebar — date navigator, desktop only */}
-          {visibleMonths.length > 0 && (
-            <div className="hidden sm:block w-40 flex-shrink-0">
-              <div className="sticky top-[7rem] pt-6">
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
-                  Jump to
-                </span>
-                <div className="mt-3 flex flex-col gap-2">
-                  {visibleMonths.map((monthAndYear) => (
-                    <button
-                      key={monthAndYear}
-                      type="button"
-                      onClick={() => {
-                        if (monthAndYearParam === monthAndYear) {
-                          setMonthParam(null);
-                        } else {
-                          setMonthParam(monthAndYear);
-                        }
-                        setPageParam(null);
-                      }}
-                      className={`text-left text-xs transition-colors duration-150 ${
-                        monthAndYearParam === monthAndYear
-                          ? "text-[#fd44b0] font-semibold"
-                          : "text-white/65 hover:text-white"
-                      }`}
-                    >
-                      {monthAndYear}
-                    </button>
-                  ))}
-                </div>
+          {/* Right sidebar — search + date navigator, desktop only */}
+          <div className="hidden sm:block w-40 flex-shrink-0">
+            <div className="sticky top-[7rem] pt-6">
+              <div className="relative mb-6">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <input
+                  aria-label="Search..."
+                  type="text"
+                  value={searchValue ?? ""}
+                  onChange={(e) => {
+                    setPageParam(null);
+                    const newSearchValue = e.target.value
+                      ? e.target.value
+                      : null;
+                    setSearchValue(newSearchValue);
+                    setQuerySearchValue(newSearchValue);
+                  }}
+                  placeholder="Search..."
+                  className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0]"
+                />
               </div>
+              {visibleMonths.length > 0 && (
+                <>
+                  <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
+                    Jump to
+                  </span>
+                  <div className="mt-3 flex flex-col gap-2">
+                    {visibleMonths.map((monthAndYear) => (
+                      <button
+                        key={monthAndYear}
+                        type="button"
+                        onClick={() => {
+                          if (monthAndYearParam === monthAndYear) {
+                            setMonthParam(null);
+                          } else {
+                            setMonthParam(monthAndYear);
+                          }
+                          setPageParam(null);
+                        }}
+                        className={`text-left text-xs transition-colors duration-150 ${
+                          monthAndYearParam === monthAndYear
+                            ? "text-[#fd44b0] font-semibold"
+                            : "text-white/65 hover:text-white"
+                        }`}
+                      >
+                        {monthAndYear}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>

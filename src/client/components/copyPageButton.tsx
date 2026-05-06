@@ -38,7 +38,7 @@ export function CopyPageButton({ title, slug, content }: CopyPageButtonProps) {
       aiPrompt={aiPrompt}
       copied={copied}
       theme="light"
-      wrapperClass="relative z-50"
+      wrapperClass="relative z-10"
     />
   );
 }

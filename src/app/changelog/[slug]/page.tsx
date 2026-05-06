@@ -10,7 +10,6 @@ import ArticleFooter from "@/client/components/articleFooter";
 import { CopyPageButton } from "@/client/components/copyPageButton";
 import { DateComponent } from "@/client/components/date";
 import { ShareButtons } from "@/client/components/shareButtons";
-import { TableOfContents } from "@/client/components/tableOfContents";
 import { authOptions } from "@/server/authOptions";
 import { mdxOptions } from "@/server/mdxOptions";
 import { prismaClient } from "@/server/prisma-client";
@@ -115,88 +114,82 @@ export default async function ChangelogEntry(props: {
       )}
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        {/* Back link */}
-        <Link
-          href="/changelog/"
-          className="inline-flex items-center gap-1.5 text-sm text-blog-muted hover:text-blog-accent transition-colors duration-150 mb-6"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className="w-4 h-4"
-            aria-hidden="true"
+        {/* Back link + share */}
+        <div className="flex items-center justify-between mb-6">
+          <Link
+            href="/changelog/"
+            className="inline-flex items-center gap-1.5 text-sm text-blog-muted hover:text-blog-accent transition-colors duration-150"
           >
-            <path
-              fillRule="evenodd"
-              d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Changelog
-        </Link>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="w-4 h-4"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Changelog
+          </Link>
+          <div className="sm:hidden">
+            <ShareButtons title={changelog.title ?? ""} slug={changelog.slug} />
+          </div>
+        </div>
 
-        {/* Two-column layout: content + TOC */}
-        <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-12">
-          {/* Main content */}
-          <div>
-            {/* Title */}
-            <h1 className="text-3xl sm:text-4xl font-bold text-blog-text leading-tight mb-4">
-              {changelog.title}
-            </h1>
+        {/* Title */}
+        <h1 className="text-3xl sm:text-4xl font-bold text-blog-text leading-tight mb-4">
+          {changelog.title}
+        </h1>
 
-            {/* Metadata strip */}
-            <div className="flex items-center gap-4 pb-6 border-b border-blog-border mb-6">
+        {/* Metadata strip */}
+        <div className="flex items-center gap-4 pb-6 border-b border-blog-border mb-6">
+          {changelog.publishedAt && (
+            <span className="text-sm text-blog-muted">
+              <DateComponent date={changelog.publishedAt} />
+            </span>
+          )}
+          {readTime && (
+            <>
               {changelog.publishedAt && (
-                <span className="text-sm text-blog-muted">
-                  <DateComponent date={changelog.publishedAt} />
+                <span className="text-blog-border" aria-hidden="true">
+                  ·
                 </span>
               )}
-              {readTime && (
-                <>
-                  {changelog.publishedAt && (
-                    <span className="text-blog-border" aria-hidden="true">
-                      ·
-                    </span>
-                  )}
-                  <span className="text-sm text-blog-muted">{readTime}</span>
-                </>
-              )}
-              <div className="ml-auto flex items-center gap-2">
-                <CopyPageButton
-                  title={changelog.title ?? ""}
-                  slug={changelog.slug}
-                  content={changelog.content ?? ""}
-                />
-                <ShareButtons
-                  title={changelog.title ?? ""}
-                  slug={changelog.slug}
-                />
-              </div>
-            </div>
-
-            {/* MDX body */}
-            <div className="prose prose-lg max-w-none blog-prose blog-content">
-              <Suspense fallback="Loading...">
-                <MDXRemote
-                  source={changelog.content ?? "No content found."}
-                  options={{ mdxOptions } as any}
-                />
-              </Suspense>
-            </div>
-
-            {/* Footer CTA */}
-            <div className="mt-12">
-              <ArticleFooter />
+              <span className="text-sm text-blog-muted">{readTime}</span>
+            </>
+          )}
+          <div className="ml-auto flex items-center gap-2">
+            <CopyPageButton
+              title={changelog.title ?? ""}
+              slug={changelog.slug}
+              content={changelog.content ?? ""}
+            />
+            <div className="hidden sm:block">
+              <ShareButtons
+                title={changelog.title ?? ""}
+                slug={changelog.slug}
+              />
             </div>
           </div>
+        </div>
 
-          {/* Sticky TOC sidebar */}
-          <aside className="hidden lg:block">
-            <div className="sticky top-8">
-              <TableOfContents contentSelector=".blog-content" />
-            </div>
-          </aside>
+        {/* MDX body */}
+        <div className="prose prose-lg max-w-none blog-prose blog-content">
+          <Suspense fallback="Loading...">
+            <MDXRemote
+              source={changelog.content ?? "No content found."}
+              options={{ mdxOptions } as any}
+            />
+          </Suspense>
+        </div>
+
+        {/* Footer CTA */}
+        <div className="mt-12">
+          <ArticleFooter />
         </div>
 
         {/* Related entries */}
