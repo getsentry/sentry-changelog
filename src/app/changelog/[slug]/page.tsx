@@ -115,26 +115,29 @@ export default async function ChangelogEntry(props: {
       )}
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        {/* Back link */}
-        <Link
-          href="/changelog/"
-          className="inline-flex items-center gap-1.5 text-sm text-blog-muted hover:text-blog-accent transition-colors duration-150 mb-6"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className="w-4 h-4"
-            aria-hidden="true"
+        {/* Back link + share */}
+        <div className="flex items-center justify-between mb-6">
+          <Link
+            href="/changelog/"
+            className="inline-flex items-center gap-1.5 text-sm text-blog-muted hover:text-blog-accent transition-colors duration-150"
           >
-            <path
-              fillRule="evenodd"
-              d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Changelog
-        </Link>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="w-4 h-4"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Changelog
+          </Link>
+          <ShareButtons title={changelog.title ?? ""} slug={changelog.slug} />
+        </div>
 
         {/* Two-column layout: content + TOC */}
         <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-12">
@@ -162,15 +165,11 @@ export default async function ChangelogEntry(props: {
                   <span className="text-sm text-blog-muted">{readTime}</span>
                 </>
               )}
-              <div className="ml-auto flex items-center gap-2">
+              <div className="ml-auto">
                 <CopyPageButton
                   title={changelog.title ?? ""}
                   slug={changelog.slug}
                   content={changelog.content ?? ""}
-                />
-                <ShareButtons
-                  title={changelog.title ?? ""}
-                  slug={changelog.slug}
                 />
               </div>
             </div>
