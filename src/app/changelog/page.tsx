@@ -1,6 +1,9 @@
+"use cache";
+
 import { startSpan } from "@sentry/nextjs";
 import type { Element } from "hast";
 import type { Metadata } from "next";
+import { cacheTag } from "next/cache";
 import { serialize } from "next-mdx-remote/serialize";
 import { Fragment } from "react";
 import type { Plugin } from "unified";
@@ -9,9 +12,8 @@ import { type ChangelogEntry, ChangelogList } from "@/client/components/list";
 import { getChangelogs } from "../../server/utils";
 import Header from "./header";
 
-export const dynamic = "force-dynamic";
-
 export default async function Page() {
+  cacheTag("changelogs");
   const changelogs = await getChangelogs();
 
   const changelogsWithPublishedAt = changelogs.filter((changelog) => {
@@ -29,8 +31,6 @@ export default async function Page() {
               {
                 mdxOptions: {
                   rehypePlugins: [
-                    // Because we render the changelog entries as <a> tags, and it is not allowed to render <a> tags
-                    // within other a tags, we need to strip away the <a> tags inside the previews here.
                     // @ts-expect-error
                     stripLinks,
                   ],
@@ -42,7 +42,6 @@ export default async function Page() {
               id: changelog.id,
               title: changelog.title,
               slug: changelog.slug,
-              // Because `getChangelogs` is cached, it sometimes returns its results serialized and sometimes not. Therefore we have to deserialize the string to be able to call toUTCString().
               publishedAt: new Date(changelog.publishedAt!).toUTCString(),
               categories: changelog.categories,
               mdxSummary,

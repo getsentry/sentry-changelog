@@ -2,6 +2,7 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  cacheComponents: true,
   trailingSlash: true,
   transpilePackages: ["next-mdx-remote"],
   async redirects() {

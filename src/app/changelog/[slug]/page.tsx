@@ -1,6 +1,5 @@
 import type { Changelog } from "@prisma/client";
 import type { Metadata, ResolvingMetadata } from "next";
-import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth/next";
@@ -12,9 +11,7 @@ import { DateComponent } from "@/client/components/date";
 import { ShareButtons } from "@/client/components/shareButtons";
 import { authOptions } from "@/server/authOptions";
 import { mdxOptions } from "@/server/mdxOptions";
-import { prismaClient } from "@/server/prisma-client";
-
-export const dynamic = "force-dynamic";
+import { getChangelog, getRecentChangelogs } from "@/server/utils";
 
 export async function generateMetadata(
   props: { params: Promise<{ slug: string }> },
@@ -39,38 +36,6 @@ export async function generateMetadata(
     },
   };
 }
-
-const getChangelog = unstable_cache(
-  async (slug) => {
-    try {
-      return await prismaClient.changelog.findUnique({
-        where: { slug },
-        include: { categories: true },
-      });
-    } catch (_e) {
-      return null;
-    }
-  },
-  ["changelog-detail"],
-  { tags: ["changelog-detail"] },
-);
-
-const getRecentChangelogs = unstable_cache(
-  async (excludeSlug: string) => {
-    try {
-      return await prismaClient.changelog.findMany({
-        where: { published: true, slug: { not: excludeSlug } },
-        include: { categories: true },
-        orderBy: { publishedAt: "desc" },
-        take: 3,
-      });
-    } catch (_e) {
-      return [];
-    }
-  },
-  ["changelog-related"],
-  { tags: ["changelogs"] },
-);
 
 function estimateReadTime(content: string | null | undefined): string {
   if (!content) return "";
@@ -103,7 +68,6 @@ export default async function ChangelogEntry(props: {
 
   return (
     <div className="bg-white min-h-screen">
-      {/* Full-bleed hero image */}
       {changelog.image && (
         // biome-ignore lint/performance/noImgElement: next/image doesn't resolve here
         <img
@@ -114,7 +78,6 @@ export default async function ChangelogEntry(props: {
       )}
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        {/* Back link + share */}
         <div className="flex items-center justify-between mb-6">
           <Link
             href="/changelog/"
@@ -140,12 +103,10 @@ export default async function ChangelogEntry(props: {
           </div>
         </div>
 
-        {/* Title */}
         <h1 className="text-3xl sm:text-4xl font-bold text-blog-text leading-tight mb-4">
           {changelog.title}
         </h1>
 
-        {/* Metadata strip */}
         <div className="flex items-center gap-4 pb-6 border-b border-blog-border mb-6">
           {changelog.publishedAt && (
             <span className="text-sm text-blog-muted">
@@ -177,7 +138,6 @@ export default async function ChangelogEntry(props: {
           </div>
         </div>
 
-        {/* MDX body */}
         <div className="prose prose-lg max-w-none blog-prose blog-content">
           <Suspense fallback="Loading...">
             <MDXRemote
@@ -187,12 +147,10 @@ export default async function ChangelogEntry(props: {
           </Suspense>
         </div>
 
-        {/* Footer CTA */}
         <div className="mt-12">
           <ArticleFooter />
         </div>
 
-        {/* Related entries */}
         {relatedEntries.length > 0 && (
           <section className="mt-16 pt-10 border-t border-blog-border">
             <h2 className="text-sm font-semibold uppercase tracking-widest text-blog-muted mb-6">
