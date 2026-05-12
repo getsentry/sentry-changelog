@@ -25,6 +25,9 @@ export default withSentryConfig(nextConfig, {
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
 
+  // Route Sentry events through the server to avoid ad blockers
+  tunnelRoute: "/sentry-tunnel",
+
   _experimental: {
     thirdPartyOriginStackFrames: true,
     turbopackApplicationKey: "sentry-changelog",
