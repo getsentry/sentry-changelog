@@ -1,6 +1,6 @@
 "use client";
 
-import type { MenuItem } from "@/lib/contentful/types";
+import type { MenuItem } from "@/lib/navigation/types";
 import MultiColumnMenu from "../organisms/MultiColumnMenu";
 import FeaturedContent from "./FeaturedContent";
 import SingleColumnMenu from "./SingleColumnMenu";

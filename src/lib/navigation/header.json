@@ -1,0 +1,485 @@
+{
+  "menuItems": [
+    {
+      "__typename": "NavigationMenuItem",
+      "entryTitle": "Platform Dropdown Menu",
+      "label": "Platform",
+      "order": 0,
+      "className": "plausible-event-name=Nav+Click+Product",
+      "layout": "Multi-Column",
+      "columnsCollection": {
+        "items": [
+          {
+            "__typename": "NavigationMenuItem",
+            "entryTitle": "Platform Menu Column 1",
+            "label": "Products",
+            "order": 0,
+            "menuItemsCollection": {
+              "items": [
+                {
+                  "__typename": "Button",
+                  "label": "Errors Menu Button",
+                  "cta": "Error Monitoring",
+                  "destination": "https://sentry.io/product/error-monitoring/",
+                  "variant": "default"
+                },
+                {
+                  "__typename": "Button",
+                  "label": "Logs Menu Button",
+                  "cta": "Logs",
+                  "destination": "https://sentry.io/product/logs/",
+                  "variant": "default"
+                },
+                {
+                  "__typename": "Button",
+                  "label": "Replay Menu Button",
+                  "cta": "Session Replay",
+                  "destination": "https://sentry.io/product/session-replay/",
+                  "variant": "default"
+                },
+                {
+                  "__typename": "Button",
+                  "label": "Metrics Menu Button",
+                  "cta": "Metrics",
+                  "destination": "https://sentry.io/product/metrics/",
+                  "variant": "default",
+                  "class": "new"
+                },
+                {
+                  "__typename": "Button",
+                  "label": "Tracing Menu Button",
+                  "cta": "Tracing",
+                  "destination": "https://sentry.io/product/tracing/",
+                  "variant": "default"
+                },
+                {
+                  "__typename": "Button",
+                  "label": "Profiling Menu Button",
+                  "cta": "Profiling",
+                  "destination": "https://sentry.io/product/profiling/",
+                  "variant": "default"
+                },
+                {
+                  "__typename": "Button",
+                  "label": "Size Analysis Link",
+                  "cta": "Size Analysis",
+                  "destination": "https://sentry.io/product/size-analysis/",
+                  "variant": "default"
+                },
+                {
+                  "__typename": "Button",
+                  "label": "Cron Menu Button",
+                  "cta": "Cron Monitoring",
+                  "destination": "https://sentry.io/product/cron-monitoring/",
+                  "variant": "default"
+                },
+                {
+                  "__typename": "Button",
+                  "label": "Uptime Menu Button",
+                  "cta": "Uptime Monitoring",
+                  "destination": "https://sentry.io/product/uptime-monitoring/",
+                  "variant": "default"
+                }
+              ]
+            }
+          },
+          {
+            "__typename": "NavigationMenuItem",
+            "entryTitle": "Platform Menu Column 2",
+            "order": 0,
+            "className": "wide-column",
+            "mobileMergeWithPrevious": true,
+            "mobileSubdropdownInsertAfterCta": "Logs",
+            "menuItemsCollection": {
+              "items": [
+                {
+                  "__typename": "NavigationMenuItem",
+                  "entryTitle": "AI Debugging Submenu",
+                  "label": "AI Debugging",
+                  "order": 0,
+                  "layout": "Submenu",
+                  "menuItemsCollection": {
+                    "items": [
+                      {
+                        "__typename": "Button",
+                        "label": "Seer Menu Button",
+                        "cta": "Seer",
+                        "destination": "https://sentry.io/product/seer/",
+                        "variant": "default",
+                        "class": "new"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Seer Agent Menu Button",
+                        "cta": "Agent",
+                        "destination": "https://sentry.io/product/seer/agent/",
+                        "variant": "default",
+                        "class": "new nested"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Seer Autofix Menu Button",
+                        "cta": "Autofix",
+                        "destination": "https://sentry.io/product/seer/autofix/",
+                        "variant": "default",
+                        "class": "new nested"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "AI Code Review link",
+                        "cta": "AI Code Review",
+                        "destination": "https://sentry.io/product/seer/ai-code-review/",
+                        "variant": "default",
+                        "class": "new nested"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "__typename": "NavigationMenuItem",
+            "entryTitle": "Platform Menu Column 3",
+            "order": 0,
+            "className": "bg-gray",
+            "menuItemsCollection": {
+              "items": [
+                {
+                  "__typename": "NavigationMenuItem",
+                  "entryTitle": "Integration Submenu",
+                  "label": "Integrations",
+                  "order": 0,
+                  "layout": "Submenu",
+                  "menuItemsCollection": {
+                    "items": [
+                      {
+                        "__typename": "Button",
+                        "label": "Github Menu Button",
+                        "cta": "Github",
+                        "destination": "https://sentry.io/integrations/github/",
+                        "variant": "default",
+                        "icon": {
+                          "url": "/astro-assets/nav-icons/github.png",
+                          "description": ""
+                        }
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Slack Menu Button",
+                        "cta": "Slack",
+                        "destination": "https://sentry.io/integrations/slack/",
+                        "variant": "default",
+                        "icon": {
+                          "url": "/astro-assets/nav-icons/slack.png",
+                          "description": ""
+                        }
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Sentry CLI Menu Button",
+                        "cta": "Sentry CLI",
+                        "destination": "https://cli.sentry.dev/",
+                        "variant": "default",
+                        "target": ["_blank"]
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Sentry MCP link",
+                        "cta": "Sentry MCP",
+                        "destination": "https://mcp.sentry.dev/",
+                        "variant": "default"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "All Integrations Menu Button",
+                        "cta": "All Integrations",
+                        "destination": "https://sentry.io/integrations/",
+                        "variant": "default"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "__typename": "NavigationMenuItem",
+      "entryTitle": "Solutions Dropdown Menu",
+      "label": "Solutions",
+      "order": 0,
+      "className": "plausible-event-name=Nav+Click+Solutions",
+      "menuItemsCollection": {
+        "items": [
+          {
+            "__typename": "Button",
+            "label": "Full Stack Menu Button",
+            "cta": "Web / Full Stack Development",
+            "destination": "https://sentry.io/for/full-stack/",
+            "variant": "default"
+          },
+          {
+            "__typename": "Button",
+            "label": "Mobile Crash Reporting Menu Button",
+            "cta": "Mobile Crash Reporting",
+            "destination": "https://sentry.io/solutions/mobile-developers/",
+            "variant": "default"
+          },
+          {
+            "__typename": "Button",
+            "label": "Game Crash Reporting Menu Button",
+            "cta": "Game Crash Reporting",
+            "destination": "https://sentry.io/solutions/game-developers/",
+            "variant": "default"
+          },
+          {
+            "__typename": "Button",
+            "label": "AI Observability Menu Button",
+            "cta": "AI Observability",
+            "destination": "https://sentry.io/solutions/ai-observability/",
+            "variant": "default"
+          },
+          {
+            "__typename": "Button",
+            "label": "Application Performance Monitoring Menu Button",
+            "cta": "Application Performance Monitoring",
+            "destination": "https://sentry.io/solutions/application-performance-monitoring/",
+            "variant": "default"
+          },
+          {
+            "__typename": "Button",
+            "label": "Application Observability Menu Button",
+            "cta": "Application Observability",
+            "destination": "https://sentry.io/solutions/application-observability/",
+            "variant": "default"
+          },
+          {
+            "__typename": "Button",
+            "label": "Real User Monitoring Menu Button",
+            "cta": "Real User Monitoring",
+            "destination": "https://sentry.io/solutions/real-user-monitoring-rum/",
+            "variant": "default"
+          },
+          {
+            "__typename": "Button",
+            "label": "Ecommerce",
+            "cta": "Ecommerce",
+            "destination": "https://sentry.io/solutions/ecommerce/",
+            "variant": "default"
+          },
+          {
+            "__typename": "Button",
+            "label": "Enterprise Menu Button",
+            "cta": "Enterprise",
+            "destination": "https://sentry.io/for/enterprise/",
+            "variant": "default"
+          },
+          {
+            "__typename": "Button",
+            "label": "Startups Menu Button",
+            "cta": "Startups",
+            "destination": "https://sentry.io/for/startups/",
+            "variant": "default"
+          },
+          {
+            "__typename": "Button",
+            "label": "All SDKs Menu Button",
+            "cta": "All SDKs",
+            "destination": "https://sentry.io/platforms/",
+            "variant": "default"
+          }
+        ]
+      }
+    },
+    {
+      "__typename": "NavigationMenuItem",
+      "entryTitle": "Resources Dropdown Menu",
+      "label": "Resources",
+      "featuredContent": {
+        "title": "Bi-weekly Intro to Sentry Demo",
+        "description": "See Sentry in action and learn how errors, performance issues, and context fit together to help you find bugs faster and ship with confidence. Join us bi-weekly on Thursdays!",
+        "coverImage": {
+          "url": "/astro-assets/nav-icons/intro-demo.png",
+          "description": "",
+          "width": 1200,
+          "height": 1200
+        },
+        "cta": "RSVP",
+        "link": "https://sentry.io/resources/find-fix-test/",
+        "assetType": "Event",
+        "style": "Yellow",
+        "reference": "bi-weekly-intro-to-sentry-demo",
+        "bannerType": "In-content banner"
+      },
+      "order": 1,
+      "className": "plausible-event-name=Nav+Click+Resources",
+      "layout": "Multi-Column",
+      "columnWidths": "3,3",
+      "columnsCollection": {
+        "items": [
+          {
+            "__typename": "NavigationMenuItem",
+            "entryTitle": "Resources Column 1",
+            "order": 0,
+            "menuItemsCollection": {
+              "items": [
+                {
+                  "__typename": "NavigationMenuItem",
+                  "entryTitle": "Learn Submenu",
+                  "label": "Learn",
+                  "order": 0,
+                  "layout": "Submenu",
+                  "menuItemsCollection": {
+                    "items": [
+                      {
+                        "__typename": "Button",
+                        "label": "Blog Menu Button",
+                        "cta": "Blog",
+                        "destination": "https://blog.sentry.io/",
+                        "variant": "default"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Changelog menu button",
+                        "cta": "Changelog",
+                        "destination": "https://sentry.io/changelog/",
+                        "variant": "default"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Sandbox Menu Button",
+                        "cta": "Sandbox",
+                        "destination": "https://sandbox.sentry.io/",
+                        "variant": "default"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Resources Menu Button",
+                        "cta": "Resources",
+                        "destination": "https://sentry.io/resources/",
+                        "variant": "default"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Syntax Menu Button",
+                        "cta": "Syntax",
+                        "destination": "https://syntax.fm/",
+                        "variant": "default"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Customers Menu Button",
+                        "cta": "Customers",
+                        "destination": "https://sentry.io/customers/",
+                        "variant": "default"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Cookbook Menu Button",
+                        "cta": "Cookbook",
+                        "destination": "https://sentry.io/cookbook/",
+                        "variant": "default"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "__typename": "NavigationMenuItem",
+            "entryTitle": "Resources Column 2",
+            "order": 0,
+            "menuItemsCollection": {
+              "items": [
+                {
+                  "__typename": "NavigationMenuItem",
+                  "entryTitle": "Support Submenu",
+                  "label": "Support",
+                  "order": 0,
+                  "layout": "Submenu",
+                  "menuItemsCollection": {
+                    "items": [
+                      {
+                        "__typename": "Button",
+                        "label": "Contact Us Menu Button",
+                        "cta": "Contact Us",
+                        "destination": "https://sentry.io/contact/enterprise/",
+                        "variant": "default"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Support Menu Button",
+                        "cta": "Help Center",
+                        "destination": "https://help.sentry.io/",
+                        "variant": "default"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Status Menu Button",
+                        "cta": "Status",
+                        "destination": "https://status.sentry.io/",
+                        "variant": "default"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "__typename": "NavigationMenuItem",
+                  "entryTitle": "Hangout Submenu",
+                  "label": "Hang out with us",
+                  "order": 0,
+                  "layout": "Submenu",
+                  "menuItemsCollection": {
+                    "items": [
+                      {
+                        "__typename": "Button",
+                        "label": "Build Menu Button",
+                        "cta": "Sentry Build",
+                        "destination": "https://sentry.io/resources/sentry-build/",
+                        "variant": "default"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Events Link",
+                        "cta": "Events",
+                        "destination": "https://sentry.io/events/",
+                        "variant": "default"
+                      },
+                      {
+                        "__typename": "Button",
+                        "label": "Merch Menu Button",
+                        "cta": "Merch",
+                        "destination": "https://sentry.shop/",
+                        "variant": "default"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "__typename": "Button",
+      "label": "Docs Menu Button",
+      "cta": "Docs",
+      "destination": "https://docs.sentry.io/",
+      "variant": "default",
+      "class": "plausible-event-name=Nav+Click+Docs"
+    },
+    {
+      "__typename": "Button",
+      "label": "Pricing Menu Button",
+      "cta": "Pricing",
+      "destination": "https://sentry.io/pricing/",
+      "variant": "default",
+      "class": "plausible-event-name=Nav+Click+Pricing"
+    }
+  ]
+}

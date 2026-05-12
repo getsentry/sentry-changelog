@@ -1,6 +1,6 @@
 "use client";
 
-import type { MenuItem } from "@/lib/contentful/types";
+import type { MenuItem } from "@/lib/navigation/types";
 import Button from "../atoms/Button";
 import Container from "../atoms/Container";
 import CollapsibleSection from "../molecules/CollapsibleSection";

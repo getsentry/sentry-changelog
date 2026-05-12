@@ -1,5 +1,5 @@
 import type React from "react";
-import type { MenuItem } from "@/lib/contentful/types";
+import type { MenuItem } from "@/lib/navigation/types";
 import CollapsibleSection from "../molecules/CollapsibleSection";
 import LinkList from "../molecules/LinkList";
 

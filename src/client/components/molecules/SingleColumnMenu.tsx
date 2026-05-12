@@ -1,4 +1,4 @@
-import type { MenuItem } from "@/lib/contentful/types";
+import type { MenuItem } from "@/lib/navigation/types";
 import LinkList from "./LinkList";
 
 interface SingleColumnMenuProps {
