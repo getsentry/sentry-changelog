@@ -13,7 +13,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ChangelogLayout({ children }: { children: ReactNode }) {
+async function getCopyrightYear() {
+  "use cache";
+  return new Date().getFullYear();
+}
+
+export default async function ChangelogLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const menuItems = getHeaderMenuItems();
 
   return (
@@ -24,7 +33,7 @@ export default function ChangelogLayout({ children }: { children: ReactNode }) {
         <div className="flex-1">{children}</div>
         <footer className="border-t border-white/10 bg-darkPurple py-6">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 text-xs text-white/40 text-center">
-            © 2026 Sentry. All rights reserved.
+            © {await getCopyrightYear()} Sentry. All rights reserved.
           </div>
         </footer>
       </div>
