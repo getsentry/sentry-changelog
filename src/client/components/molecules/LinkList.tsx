@@ -51,7 +51,7 @@ export default function LinkList({
           return (
             <li
               key={`${href}-${text}`}
-              className={`pb-1 pl-6 xl:pl-0 ${iconSrc ? "pl-0" : ""} ${isNested ? "nested-item" : ""}`}
+              className={`pb-1 ${isNested ? "nested-item" : `pl-6 xl:pl-0 ${iconSrc ? "pl-0" : ""}`}`}
             >
               <Link
                 href={href}
