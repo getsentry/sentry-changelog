@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Button from "../atoms/Button";
 import Link from "../atoms/Link";
 import NewPill from "../atoms/NewPill";
@@ -63,7 +62,8 @@ export default function LinkList({
                 }`}
               >
                 {iconSrc && (
-                  <Image
+                  // biome-ignore lint/performance/noImgElement: nav icons are small decorative images
+                  <img
                     src={iconSrc}
                     alt=""
                     aria-hidden="true"

@@ -160,7 +160,7 @@
                         "destination": "https://sentry.io/integrations/github/",
                         "variant": "default",
                         "icon": {
-                          "url": "/astro-assets/nav-icons/github.png",
+                          "url": "https://sentry.io/astro-assets/nav-icons/github.png",
                           "description": ""
                         }
                       },
@@ -171,7 +171,7 @@
                         "destination": "https://sentry.io/integrations/slack/",
                         "variant": "default",
                         "icon": {
-                          "url": "/astro-assets/nav-icons/slack.png",
+                          "url": "https://sentry.io/astro-assets/nav-icons/slack.png",
                           "description": ""
                         }
                       },
@@ -302,7 +302,7 @@
         "title": "Bi-weekly Intro to Sentry Demo",
         "description": "See Sentry in action and learn how errors, performance issues, and context fit together to help you find bugs faster and ship with confidence. Join us bi-weekly on Thursdays!",
         "coverImage": {
-          "url": "/astro-assets/nav-icons/intro-demo.png",
+          "url": "https://sentry.io/astro-assets/nav-icons/intro-demo.png",
           "description": "",
           "width": 1200,
           "height": 1200
