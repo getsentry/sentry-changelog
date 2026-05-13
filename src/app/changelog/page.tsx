@@ -59,7 +59,7 @@ export default async function Page() {
   );
 }
 
-export function generateMetadata(): Metadata {
+export async function generateMetadata(): Promise<Metadata> {
   return {
     description:
       "Stay up to date on everything big and small, from product updates to SDK changes with the Sentry Changelog.",
