@@ -34,7 +34,7 @@ export default function LinkList({
 }: LinkListProps) {
   const isDarkMode = mode === "dark";
   const h3Classes = [
-    "text-base mb-4 font-[500]",
+    "text-base mb-4 font-semibold",
     isDarkMode ? "text-white" : "text-gray-800",
     noWrapHeading ? "whitespace-nowrap" : "",
     hideHeadingOnMobile ? "hidden xl:block" : "",
@@ -56,7 +56,7 @@ export default function LinkList({
               <Link
                 href={href}
                 {...args}
-                className={`no-underline font-medium leading-[18px] uppercase whitespace-nowrap flex items-center gap-x-1.5 w-full min-h-[18px] py-0.5 hover:underline xl:w-max transition-colors duration-200 ${
+                className={`no-underline font-medium text-sm leading-[18px] uppercase whitespace-nowrap flex items-center gap-x-1.5 w-full min-h-[18px] py-0.5 hover:underline xl:w-max transition-colors duration-200 font-sans ${
                   isDarkMode
                     ? "text-white hover:text-white"
                     : "text-[#4E2A9A] hover:text-[#4E2A9A]"
