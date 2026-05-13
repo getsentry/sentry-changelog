@@ -42,15 +42,16 @@ export default function LinkList({
   ];
 
   return (
-    <div>
+    <div className={isDarkMode ? "linklist-dark" : ""}>
       {heading && <h3 className={h3Classes.join(" ")}>{heading}</h3>}
       <ul className="list-none p-0 m-0 grid gap-y-5 mt-4 xl:mt-0">
         {links.map(({ text, href, args, icon, class: linkClass }) => {
           const iconSrc = typeof icon === "string" ? icon : icon?.url;
+          const isNested = linkClass?.includes("nested");
           return (
             <li
               key={`${href}-${text}`}
-              className={`pb-1 pl-6 xl:pl-0 ${iconSrc ? "pl-0" : ""}`}
+              className={`pb-1 pl-6 xl:pl-0 ${iconSrc ? "pl-0" : ""} ${isNested ? "nested-item" : ""}`}
             >
               <Link
                 href={href}
@@ -71,7 +72,7 @@ export default function LinkList({
                   />
                 )}
                 {text}
-                {linkClass === "new" && <NewPill />}
+                {linkClass?.includes("new") && <NewPill />}
               </Link>
             </li>
           );
