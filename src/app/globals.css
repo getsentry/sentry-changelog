@@ -955,33 +955,28 @@ b {
 
 /* Multi-column menu styles */
 @media (min-width: 1152px) {
-  .flex-col.xl\:flex-row > div {
+  .multi-column-menu > div {
     flex: 1 1 0%;
     min-width: 0;
     padding: 1.5rem;
     overflow: visible;
   }
 
-  .flex-col.xl\:flex-row > .wide-column {
+  .multi-column-menu > .wide-column {
     flex: 1.4 1 0%;
   }
 
-  .flex-col.xl\:flex-row > [class*="bg-"] {
+  .multi-column-menu > [class*="bg-"] {
     border-radius: 0;
   }
 
-  .flex-col.xl\:flex-row > [class*="bg-"]:first-child {
+  .multi-column-menu > [class*="bg-"]:first-child {
     border-top-left-radius: 1rem;
     border-bottom-left-radius: 1rem;
   }
 
-  .flex-col.xl\:flex-row > [class*="bg-"]:last-child {
+  .multi-column-menu > [class*="bg-"]:last-child {
     border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
   }
-}
-
-[class*="bg-featured"] {
-  padding: 1rem;
-  border-radius: 1rem;
 }

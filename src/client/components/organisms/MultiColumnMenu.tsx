@@ -17,7 +17,7 @@ export default function MultiColumnMenu({
 
   return (
     <div
-      className="flex flex-col xl:flex-row flex-1 xl:gap-8"
+      className="multi-column-menu flex flex-col xl:flex-row flex-1"
       style={{ "--column-count": columns.length } as React.CSSProperties}
     >
       {columns.map((column: MenuItem) => {
