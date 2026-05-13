@@ -1,9 +1,6 @@
 export interface MenuItem {
   __typename: string;
-  sys: {
-    id: string;
-  };
-  contentful_id: string;
+  id: string;
   entryTitle?: string;
   label?: string;
   cta?: string;

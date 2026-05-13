@@ -32,8 +32,7 @@ export default function MultiColumnMenu({
 
         const hasSubmenus = columnMenuItems.some(
           (sub: MenuItem) =>
-            sub.__typename === "ContentfulNavigationMenuItem" &&
-            sub.layout === "Submenu",
+            sub.__typename === "NavigationMenuItem" && sub.layout === "Submenu",
         );
 
         const columnClasses = [
@@ -46,22 +45,22 @@ export default function MultiColumnMenu({
           .join(" ");
 
         return (
-          <div key={column.sys.id} className={columnClasses}>
+          <div key={column.id} className={columnClasses}>
             <div className="flex-1 flex flex-col">
               {hasSubmenus ? (
                 columnMenuItems
                   .filter(
                     (subItem: MenuItem) =>
-                      subItem.__typename === "ContentfulNavigationMenuItem" &&
+                      subItem.__typename === "NavigationMenuItem" &&
                       subItem.layout === "Submenu",
                   )
                   .map((subItem: MenuItem) => (
-                    <div key={subItem.sys.id} className="xl:mb-2">
+                    <div key={subItem.id} className="xl:mb-2">
                       <div className="xl:hidden">
                         <CollapsibleSection
                           title={subItem.label || ""}
                           isDarkMode={isDarkMode}
-                          id={subItem.contentful_id}
+                          id={subItem.id}
                           hideOnDesktop={true}
                         >
                           <LinkList
@@ -104,7 +103,7 @@ export default function MultiColumnMenu({
                     <CollapsibleSection
                       title={column.label || ""}
                       isDarkMode={isDarkMode}
-                      id={column.contentful_id}
+                      id={column.id}
                       hideOnDesktop={true}
                     >
                       <LinkList

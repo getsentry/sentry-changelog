@@ -18,19 +18,9 @@ function generateId(item: Record<string, unknown>): string {
 }
 
 function transformMenuItem(raw: Record<string, unknown>): MenuItem {
-  const id = generateId(raw);
-  const typename =
-    raw.__typename === "NavigationMenuItem"
-      ? "ContentfulNavigationMenuItem"
-      : raw.__typename === "Button"
-        ? "ContentfulButton"
-        : (raw.__typename as string);
-
   const item: MenuItem = {
     ...raw,
-    __typename: typename,
-    sys: { id },
-    contentful_id: id,
+    id: generateId(raw),
   } as MenuItem;
 
   if (item.columnsCollection?.items) {

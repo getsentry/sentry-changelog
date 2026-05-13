@@ -28,8 +28,7 @@ export default function NavigationMenuItem({
     setIsExpanded(isOpen);
   }, [isOpen]);
 
-  const isNavigationMenuItem =
-    item.__typename === "ContentfulNavigationMenuItem";
+  const isNavigationMenuItem = item.__typename === "NavigationMenuItem";
   const hasMenuItems =
     item.menuItemsCollection?.items &&
     item.menuItemsCollection.items.length > 0;
@@ -37,7 +36,7 @@ export default function NavigationMenuItem({
     item.columnsCollection?.items && item.columnsCollection.items.length > 0;
   const hasChildren = hasMenuItems || hasColumns;
   const isDropdown = isNavigationMenuItem && hasChildren;
-  const menuKey = item.sys.id;
+  const menuKey = item.id;
   const uniqueId = `menu-item-${menuKey}-${idx}`;
 
   const handleClick = (e: React.MouseEvent) => {

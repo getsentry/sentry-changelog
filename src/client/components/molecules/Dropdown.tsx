@@ -31,8 +31,7 @@ export default function Dropdown({ item, menuKey, isOpen }: DropdownProps) {
     .join(" ");
 
   const isMultiColumn =
-    item.__typename === "ContentfulNavigationMenuItem" &&
-    item.layout === "Multi-Column";
+    item.__typename === "NavigationMenuItem" && item.layout === "Multi-Column";
   const containerPaddingClass = isMultiColumn ? "xl:p-0" : "p-6 xl:p-0";
 
   const featuredContentClass = item.featuredContent?.className

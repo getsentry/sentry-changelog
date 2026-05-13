@@ -62,8 +62,7 @@ export default function DesktopNavigation({
       className="hidden xl:flex xl:flex-row xl:items-center xl:flex-1 xl:justify-evenly xl:relative"
     >
       {menuItems.map((item, idx) => {
-        const isNavigationMenuItem =
-          item.__typename === "ContentfulNavigationMenuItem";
+        const isNavigationMenuItem = item.__typename === "NavigationMenuItem";
         const hasMenuItems =
           item.menuItemsCollection?.items &&
           item.menuItemsCollection.items.length > 0;
@@ -72,9 +71,9 @@ export default function DesktopNavigation({
           item.columnsCollection.items.length > 0;
         const hasChildren = hasMenuItems || hasColumns;
         const isDropdown = isNavigationMenuItem && hasChildren;
-        const menuKey = item.sys.id;
+        const menuKey = item.id;
         return (
-          <React.Fragment key={item.sys.id}>
+          <React.Fragment key={item.id}>
             <NavigationMenuItem
               item={item}
               isDarkMode={isDarkMode}

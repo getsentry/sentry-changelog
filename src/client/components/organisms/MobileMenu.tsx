@@ -35,8 +35,8 @@ export default function MobileMenu({
         <div className="mt-4">
           {menuItems.map((item) => {
             const isNavigationMenuItem =
-              item.__typename === "ContentfulNavigationMenuItem";
-            const itemId = item.sys.id;
+              item.__typename === "NavigationMenuItem";
+            const itemId = item.id;
 
             return (
               <div key={itemId} className="mb-4">
@@ -44,7 +44,7 @@ export default function MobileMenu({
                   <CollapsibleSection
                     title={item.cta || item.label || ""}
                     isDarkMode={isDarkMode}
-                    id={item.contentful_id || `mobile-${itemId}`}
+                    id={item.id || `mobile-${itemId}`}
                     hideOnDesktop={true}
                   >
                     {item.layout === "Multi-Column" ? (
@@ -56,16 +56,14 @@ export default function MobileMenu({
                               column.menuItemsCollection?.items || [];
                             const hasSubmenus = menuItems.some(
                               (item: MenuItem) =>
-                                item.__typename ===
-                                  "ContentfulNavigationMenuItem" &&
+                                item.__typename === "NavigationMenuItem" &&
                                 item.layout === "Submenu",
                             );
 
                             if (hasSubmenus) {
                               for (const item of menuItems) {
                                 if (
-                                  item.__typename ===
-                                    "ContentfulNavigationMenuItem" &&
+                                  item.__typename === "NavigationMenuItem" &&
                                   item.layout === "Submenu"
                                 ) {
                                   flattenedItems.push({
@@ -84,15 +82,15 @@ export default function MobileMenu({
                             }
 
                             return (
-                              <div key={column.sys.id}>
+                              <div key={column.id}>
                                 {flattenedItems.map((item: any) => {
                                   if (item.type === "submenu") {
                                     return (
                                       <CollapsibleSection
-                                        key={`submenu-${itemId}-${column.sys.id}-${item.title}`}
+                                        key={`submenu-${itemId}-${column.id}-${item.title}`}
                                         title={item.title}
                                         isDarkMode={isDarkMode}
-                                        id={`mobile-${itemId}-col-${column.sys.id}-${item.title}`}
+                                        id={`mobile-${itemId}-col-${column.id}-${item.title}`}
                                         buttonVariant="silent"
                                       >
                                         <LinkList
@@ -117,10 +115,10 @@ export default function MobileMenu({
                                   if (item.type === "group") {
                                     return (
                                       <CollapsibleSection
-                                        key={`group-${itemId}-${column.sys.id}-${item.title}`}
+                                        key={`group-${itemId}-${column.id}-${item.title}`}
                                         title={item.title}
                                         isDarkMode={isDarkMode}
-                                        id={`mobile-${itemId}-col-${column.sys.id}-group`}
+                                        id={`mobile-${itemId}-col-${column.id}-group`}
                                         buttonVariant="silent"
                                       >
                                         <LinkList
@@ -160,7 +158,7 @@ export default function MobileMenu({
                           return (
                             <div>
                               {menuItems.map((menuItem: MenuItem) => (
-                                <div key={menuItem.sys.id} className="mb-4">
+                                <div key={menuItem.id} className="mb-4">
                                   {menuItem.layout === "Submenu" ? (
                                     <LinkList
                                       heading={menuItem.label}
