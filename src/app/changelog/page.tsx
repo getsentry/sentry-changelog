@@ -1,9 +1,7 @@
-"use cache";
-
 import { startSpan } from "@sentry/nextjs";
 import type { Element } from "hast";
 import type { Metadata } from "next";
-import { cacheTag } from "next/cache";
+import { connection } from "next/server";
 import { serialize } from "next-mdx-remote/serialize";
 import { Fragment } from "react";
 import type { Plugin } from "unified";
@@ -13,7 +11,7 @@ import { getChangelogs } from "../../server/utils";
 import Header from "./header";
 
 export default async function Page() {
-  cacheTag("changelogs");
+  await connection();
   const changelogs = await getChangelogs();
 
   const changelogsWithPublishedAt = changelogs.filter((changelog) => {
@@ -59,7 +57,7 @@ export default async function Page() {
   );
 }
 
-export async function generateMetadata(): Promise<Metadata> {
+export function generateMetadata(): Metadata {
   return {
     description:
       "Stay up to date on everything big and small, from product updates to SDK changes with the Sentry Changelog.",
