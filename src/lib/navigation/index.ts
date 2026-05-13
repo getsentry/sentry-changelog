@@ -4,6 +4,7 @@ import type { MenuItem } from "./types";
 let counter = 0;
 
 function generateId(item: Record<string, unknown>): string {
+  const idx = ++counter;
   const base =
     (item.entryTitle as string) ||
     (item.label as string) ||
@@ -13,7 +14,7 @@ function generateId(item: Record<string, unknown>): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
-  return slug || `item-${++counter}`;
+  return `${slug || "item"}-${idx}`;
 }
 
 function transformMenuItem(raw: Record<string, unknown>): MenuItem {

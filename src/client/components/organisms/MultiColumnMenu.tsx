@@ -22,12 +22,13 @@ export default function MultiColumnMenu({
     >
       {columns.map((column: MenuItem) => {
         const columnMenuItems = column.menuItemsCollection?.items || [];
-        const isBackgroundColumn = column.className?.includes("bg-");
+        const classes = (column.className || "").split(/\s+/).filter(Boolean);
+        const isBackgroundColumn = classes.some((c) => c.startsWith("bg-"));
+        const isWideColumn = classes.includes("wide-column");
 
-        let backgroundClass = column.className || "";
-        if (backgroundClass === "bg-gray") {
-          backgroundClass = "bg-featured-light";
-        }
+        const bgClass = classes.includes("bg-gray")
+          ? "bg-featured-light"
+          : classes.find((c) => c.startsWith("bg-")) || "";
 
         const hasSubmenus = columnMenuItems.some(
           (sub: MenuItem) =>
@@ -37,9 +38,9 @@ export default function MultiColumnMenu({
 
         const columnClasses = [
           "flex flex-col self-stretch xl:flex-1",
-          backgroundClass,
+          bgClass,
           isBackgroundColumn && "relative",
-          column.className?.includes("wide-column") && "wide-column",
+          isWideColumn && "wide-column",
         ]
           .filter(Boolean)
           .join(" ");
