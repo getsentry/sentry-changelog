@@ -961,11 +961,6 @@ b {
   }
 }
 
-/* Nested nav menu items (e.g. Seer > Agent, Autofix) */
-.nested-item {
-  padding-left: 1.5rem;
-}
-
 /* Desktop navigation item spacing */
 @media (min-width: 1280px) {
   #desktopNavBar > li:not(:first-of-type) {
