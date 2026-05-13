@@ -62,6 +62,11 @@ export default function LinkList({
                     : "text-[#4E2A9A] hover:text-[#4E2A9A]"
                 }`}
               >
+                {isNested && (
+                  <span
+                    className={`inline-block w-3 h-px mr-0.5 flex-shrink-0 ${isDarkMode ? "bg-white/70" : "bg-[#4E2A9A]/50"}`}
+                  />
+                )}
                 {iconSrc && (
                   // biome-ignore lint/performance/noImgElement: nav icons are small decorative images
                   <img
