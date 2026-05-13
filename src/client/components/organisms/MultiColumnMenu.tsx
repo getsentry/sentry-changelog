@@ -17,7 +17,7 @@ export default function MultiColumnMenu({
 
   return (
     <div
-      className="flex flex-col xl:flex-row flex-1"
+      className="flex flex-col xl:flex-row flex-1 xl:gap-8"
       style={{ "--column-count": columns.length } as React.CSSProperties}
     >
       {columns.map((column: MenuItem) => {
@@ -37,9 +37,9 @@ export default function MultiColumnMenu({
 
         const columnClasses = [
           "flex flex-col self-stretch xl:flex-1",
-          !isBackgroundColumn ? "xl:px-6 xl:py-6" : "xl:p-[1.5rem]",
           backgroundClass,
-          isBackgroundColumn && "relative xl:rounded-2xl",
+          isBackgroundColumn && "relative",
+          column.className?.includes("wide-column") && "wide-column",
         ]
           .filter(Boolean)
           .join(" ");

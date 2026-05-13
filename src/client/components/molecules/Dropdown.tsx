@@ -20,7 +20,6 @@ export default function Dropdown({ item, menuKey, isOpen }: DropdownProps) {
     isOpen ? "block" : "hidden",
     "xl:absolute xl:top-12 xl:left-0",
     "bg-rich-black xl:bg-white xl:shadow-lg",
-    "xl:border xl:border-gray-200",
     "rounded-xl overflow-hidden xl:rounded-xl xl:overflow-visible",
     "z-[9999] xl:z-[9999]",
     "transition-all duration-200 ease-in-out",
@@ -34,7 +33,7 @@ export default function Dropdown({ item, menuKey, isOpen }: DropdownProps) {
   const isMultiColumn =
     item.__typename === "ContentfulNavigationMenuItem" &&
     item.layout === "Multi-Column";
-  const containerPaddingClass = isMultiColumn ? "xl:p-0" : "p-6 lg:p-0";
+  const containerPaddingClass = isMultiColumn ? "xl:p-0" : "p-6 xl:p-0";
 
   const featuredContentClass = item.featuredContent?.className
     ? `xl:${item.featuredContent.className}`

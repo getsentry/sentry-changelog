@@ -59,7 +59,7 @@ export default function DesktopNavigation({
   return (
     <ul
       id="desktopNavBar"
-      className="hidden xl:flex xl:flex-row xl:items-center xl:flex-1 xl:justify-center xl:relative"
+      className="hidden xl:flex xl:flex-row xl:items-center xl:flex-1 xl:justify-evenly xl:relative"
     >
       {menuItems.map((item, idx) => {
         const isNavigationMenuItem =
