@@ -955,15 +955,28 @@ b {
 
 /* Multi-column menu styles */
 @media (min-width: 1152px) {
-  .flex-col.xl\:flex-row > div {
+  .multi-column-menu > div {
     flex: 1 1 0%;
     min-width: 0;
+    padding: 1.5rem;
+    overflow: visible;
   }
-}
 
-/* Desktop navigation item spacing */
-@media (min-width: 1280px) {
-  #desktopNavBar > li:not(:first-of-type) {
-    margin-left: 0.5rem !important;
+  .multi-column-menu > .wide-column {
+    flex: 1.4 1 0%;
+  }
+
+  .multi-column-menu > [class*="bg-"] {
+    border-radius: 0;
+  }
+
+  .multi-column-menu > [class*="bg-"]:first-child {
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+  }
+
+  .multi-column-menu > [class*="bg-"]:last-child {
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
   }
 }

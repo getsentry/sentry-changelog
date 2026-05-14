@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 import { Fragment, type ReactNode } from "react";
 import GlobalHeader from "@/client/components/organisms/GlobalHeader";
-import { getBlogGeneralSettingsByEntryTitle } from "@/lib/contentful/navigation";
+import { getHeaderMenuItems } from "@/lib/navigation";
 
 export const metadata: Metadata = {
   title: { template: "%s | Sentry Changelog", default: "Changelog" },
@@ -13,20 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function ChangelogLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  let menuItems: any[] = [];
-
-  try {
-    const headerData =
-      await getBlogGeneralSettingsByEntryTitle("Global Header");
-    menuItems = headerData?.menuItems || [];
-  } catch (error) {
-    console.error("Failed to fetch navigation data:", error);
-  }
+export default function ChangelogLayout({ children }: { children: ReactNode }) {
+  const menuItems = getHeaderMenuItems();
 
   return (
     <Fragment>

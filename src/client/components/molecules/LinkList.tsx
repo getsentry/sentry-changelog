@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Button from "../atoms/Button";
 import Link from "../atoms/Link";
 import NewPill from "../atoms/NewPill";
@@ -35,7 +34,7 @@ export default function LinkList({
 }: LinkListProps) {
   const isDarkMode = mode === "dark";
   const h3Classes = [
-    "text-base mb-4 font-[500]",
+    "text-base mb-4 font-semibold",
     isDarkMode ? "text-white" : "text-gray-800",
     noWrapHeading ? "whitespace-nowrap" : "",
     hideHeadingOnMobile ? "hidden xl:block" : "",
@@ -43,27 +42,34 @@ export default function LinkList({
   ];
 
   return (
-    <div>
+    <div className={isDarkMode ? "linklist-dark" : ""}>
       {heading && <h3 className={h3Classes.join(" ")}>{heading}</h3>}
       <ul className="list-none p-0 m-0 grid gap-y-5 mt-4 xl:mt-0">
         {links.map(({ text, href, args, icon, class: linkClass }) => {
           const iconSrc = typeof icon === "string" ? icon : icon?.url;
+          const isNested = linkClass?.includes("nested");
           return (
             <li
               key={`${href}-${text}`}
-              className={`pb-1 pl-6 xl:pl-0 ${iconSrc ? "pl-0" : ""}`}
+              className={`pb-1 ${isNested ? "xl:pl-0" : `pl-6 xl:pl-0 ${iconSrc ? "pl-0" : ""}`}`}
             >
               <Link
                 href={href}
                 {...args}
-                className={`no-underline font-medium leading-[18px] uppercase whitespace-nowrap flex items-center gap-x-1.5 w-full min-h-[18px] py-0.5 hover:underline xl:w-max transition-colors duration-200 ${
+                className={`no-underline font-medium text-sm leading-[18px] uppercase whitespace-nowrap flex items-center gap-x-1.5 w-full min-h-[18px] py-0.5 hover:underline xl:w-max transition-colors duration-200 font-sans ${
                   isDarkMode
                     ? "text-white hover:text-white"
                     : "text-[#4E2A9A] hover:text-[#4E2A9A]"
                 }`}
               >
+                {isNested && (
+                  <span
+                    className={`inline-block w-3 h-px mr-0.5 flex-shrink-0 ${isDarkMode ? "bg-white/70" : "bg-[#4E2A9A]/50"}`}
+                  />
+                )}
                 {iconSrc && (
-                  <Image
+                  // biome-ignore lint/performance/noImgElement: nav icons are small decorative images
+                  <img
                     src={iconSrc}
                     alt=""
                     aria-hidden="true"
@@ -71,7 +77,7 @@ export default function LinkList({
                   />
                 )}
                 {text}
-                {linkClass === "new" && <NewPill />}
+                {linkClass?.includes("new") && <NewPill />}
               </Link>
             </li>
           );

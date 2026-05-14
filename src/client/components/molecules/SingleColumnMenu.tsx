@@ -1,4 +1,4 @@
-import type { MenuItem } from "@/lib/contentful/types";
+import type { MenuItem } from "@/lib/navigation/types";
 import LinkList from "./LinkList";
 
 interface SingleColumnMenuProps {
@@ -26,7 +26,7 @@ export default function SingleColumnMenu({
           {hasSubmenus ? (
             <div className="flex flex-col gap-y-4 lg:gap-y-1">
               {menuItems.map((menuItem: MenuItem) => (
-                <div key={menuItem.sys.id} className="mb-4 lg:mb-2">
+                <div key={menuItem.id} className="mb-4 lg:mb-2">
                   {menuItem.__typename === "NavigationMenuItem" &&
                   menuItem.layout === "Submenu" ? (
                     <LinkList

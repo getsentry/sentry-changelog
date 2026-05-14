@@ -1,5 +1,5 @@
 import type React from "react";
-import type { MenuItem } from "@/lib/contentful/types";
+import type { MenuItem } from "@/lib/navigation/types";
 import CollapsibleSection from "../molecules/CollapsibleSection";
 import LinkList from "../molecules/LinkList";
 
@@ -17,50 +17,50 @@ export default function MultiColumnMenu({
 
   return (
     <div
-      className="flex flex-col xl:flex-row flex-1"
+      className="multi-column-menu flex flex-col xl:flex-row flex-1"
       style={{ "--column-count": columns.length } as React.CSSProperties}
     >
       {columns.map((column: MenuItem) => {
         const columnMenuItems = column.menuItemsCollection?.items || [];
-        const isBackgroundColumn = column.className?.includes("bg-");
+        const classes = (column.className || "").split(/\s+/).filter(Boolean);
+        const isBackgroundColumn = classes.some((c) => c.startsWith("bg-"));
+        const isWideColumn = classes.includes("wide-column");
 
-        let backgroundClass = column.className || "";
-        if (backgroundClass === "bg-gray") {
-          backgroundClass = "bg-featured-light";
-        }
+        const bgClass = classes.includes("bg-gray")
+          ? "bg-featured-light"
+          : classes.find((c) => c.startsWith("bg-")) || "";
 
         const hasSubmenus = columnMenuItems.some(
           (sub: MenuItem) =>
-            sub.__typename === "ContentfulNavigationMenuItem" &&
-            sub.layout === "Submenu",
+            sub.__typename === "NavigationMenuItem" && sub.layout === "Submenu",
         );
 
         const columnClasses = [
           "flex flex-col self-stretch xl:flex-1",
-          !isBackgroundColumn ? "xl:px-6 xl:py-6" : "xl:p-[1.5rem]",
-          backgroundClass,
-          isBackgroundColumn && "relative xl:rounded-2xl",
+          bgClass,
+          isBackgroundColumn && "relative",
+          isWideColumn && "wide-column",
         ]
           .filter(Boolean)
           .join(" ");
 
         return (
-          <div key={column.sys.id} className={columnClasses}>
+          <div key={column.id} className={columnClasses}>
             <div className="flex-1 flex flex-col">
               {hasSubmenus ? (
                 columnMenuItems
                   .filter(
                     (subItem: MenuItem) =>
-                      subItem.__typename === "ContentfulNavigationMenuItem" &&
+                      subItem.__typename === "NavigationMenuItem" &&
                       subItem.layout === "Submenu",
                   )
                   .map((subItem: MenuItem) => (
-                    <div key={subItem.sys.id} className="xl:mb-2">
+                    <div key={subItem.id} className="xl:mb-2">
                       <div className="xl:hidden">
                         <CollapsibleSection
                           title={subItem.label || ""}
                           isDarkMode={isDarkMode}
-                          id={subItem.contentful_id}
+                          id={subItem.id}
                           hideOnDesktop={true}
                         >
                           <LinkList
@@ -103,7 +103,7 @@ export default function MultiColumnMenu({
                     <CollapsibleSection
                       title={column.label || ""}
                       isDarkMode={isDarkMode}
-                      id={column.contentful_id}
+                      id={column.id}
                       hideOnDesktop={true}
                     >
                       <LinkList
