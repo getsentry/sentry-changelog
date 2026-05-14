@@ -1,7 +1,9 @@
-import { NextResponse } from "next/server";
+import { connection, NextResponse } from "next/server";
 import { prismaClient } from "@/server/prisma-client";
 
 export async function GET() {
+  await connection();
+
   const changelogs = await prismaClient.changelog.findMany({
     where: { published: true },
     orderBy: { publishedAt: "desc" },
