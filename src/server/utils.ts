@@ -25,11 +25,7 @@ export async function getChangelogs() {
 
 export async function getChangelogSummaries(): Promise<ChangelogEntry[]> {
   cacheTag("changelogs");
-  const changelogs = await prismaClient.changelog.findMany({
-    include: { categories: true },
-    where: { published: true },
-    orderBy: { publishedAt: "desc" },
-  });
+  const changelogs = await getChangelogs();
 
   return Promise.all(
     changelogs
