@@ -13,6 +13,11 @@ export const metadata: Metadata = {
   },
 };
 
+async function getCopyrightYear() {
+  "use cache";
+  return new Date().getFullYear();
+}
+
 export default async function ChangelogLayout({
   children,
 }: {
@@ -28,7 +33,7 @@ export default async function ChangelogLayout({
         <div className="flex-1">{children}</div>
         <footer className="border-t border-white/10 bg-darkPurple py-6">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 text-xs text-white/40 text-center">
-            © {new Date().getFullYear()} Sentry. All rights reserved.
+            © {await getCopyrightYear()} Sentry. All rights reserved.
           </div>
         </footer>
       </div>
