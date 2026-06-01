@@ -181,7 +181,7 @@ export function ChangelogList({
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         {/* Mobile search + month dropdown */}
         <div className="py-4 border-b border-white/10 sm:hidden flex flex-col gap-3">
-          <div className="relative">
+          <search className="relative">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
@@ -208,9 +208,10 @@ export function ChangelogList({
               placeholder="Search..."
               className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0]"
             />
-          </div>
+          </search>
           {visibleMonths.length > 0 && (
             <select
+              aria-label="Filter by month"
               value={monthAndYearParam ?? ""}
               onChange={(e) => {
                 setMonthParam(e.target.value || null);
@@ -267,7 +268,7 @@ export function ChangelogList({
           {/* Right sidebar — search + date navigator, desktop only */}
           <div className="hidden sm:block w-40 flex-shrink-0">
             <div className="sticky top-[7rem] pt-6">
-              <div className="relative mb-6">
+              <search className="relative mb-6">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
@@ -296,7 +297,7 @@ export function ChangelogList({
                   placeholder="Search..."
                   className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0]"
                 />
-              </div>
+              </search>
               {visibleMonths.length > 0 && (
                 <>
                   <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
