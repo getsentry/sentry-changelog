@@ -300,7 +300,7 @@ export function ChangelogList({
               </search>
               {visibleMonths.length > 0 && (
                 <>
-                  <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
+                  <span className="text-xs font-semibold uppercase tracking-widest text-white/60">
                     Jump to
                   </span>
                   <div className="mt-3 flex flex-col gap-2">
