@@ -62,7 +62,10 @@ export default function GlobalHeader({
       }`}
     >
       <Container disablePaddingTop disablePaddingBottom>
-        <nav aria-label="Main" className="flex flex-row flex-wrap items-center justify-center w-full py-4 xl:flex-nowrap">
+        <nav
+          aria-label="Main"
+          className="flex flex-row flex-wrap items-center justify-center w-full py-4 xl:flex-nowrap"
+        >
           <a
             href="https://sentry.io/welcome/"
             aria-label="Welcome Page"
