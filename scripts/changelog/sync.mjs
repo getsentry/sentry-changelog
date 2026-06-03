@@ -39,8 +39,9 @@ async function syncEntry(entry) {
     }
   }
 
-  const published = frontmatter.published === true;
   const deleted = frontmatter.deleted === true;
+  // A tombstoned entry is always unpublished, regardless of the published flag.
+  const published = frontmatter.published === true && !deleted;
   const explicitDate = resolveDate(frontmatter);
 
   const existing = await prisma.changelog.findUnique({
@@ -48,16 +49,14 @@ async function syncEntry(entry) {
     select: { publishedAt: true },
   });
 
-  // publishedAt resolution:
+  // publishedAt resolution (applies whether published or not, so unpublishing
+  // never discards an entry's original publication date):
   //  - explicit frontmatter date always wins
   //  - otherwise keep the existing value if present
   //  - otherwise, for a newly published post, stamp now
   let publishedAt = explicitDate ?? existing?.publishedAt ?? null;
   if (published && !publishedAt) {
     publishedAt = new Date();
-  }
-  if (!published) {
-    publishedAt = explicitDate ?? null;
   }
 
   const common = {
