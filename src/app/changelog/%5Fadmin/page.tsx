@@ -21,6 +21,9 @@ export default async function ChangelogsListPage() {
   }
 
   const changelogs = await prismaClient.changelog.findMany({
+    where: {
+      deleted: false,
+    },
     include: {
       categories: true,
       author: true,

@@ -167,8 +167,16 @@ export async function deleteChangelog(
   }
   const id = formData.get("id") as string;
   try {
-    await prismaClient.changelog.delete({
+    // Soft delete: mark deleted + admin-managed instead of removing the row,
+    // so the file sync skips it and never re-creates the entry from its file.
+    await prismaClient.changelog.update({
       where: { id },
+      data: {
+        deleted: true,
+        published: false,
+        publishedAt: null,
+        adminManaged: true,
+      },
     });
   } catch (error) {
     console.error("DELETE ACTION ERROR:", error);

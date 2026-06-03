@@ -63,9 +63,11 @@ pnpm changelog:validate
 The admin UI is the primary editing surface, so it takes priority over files:
 
 - **As soon as an entry is touched in the admin UI** (created, edited,
-  published, or unpublished), it becomes _admin-managed_ and the sync stops
-  overwriting it. Later changes to its file are **ignored** (and noted in the
-  sync log as `skipped — admin-managed`).
+  published, unpublished, or deleted), it becomes _admin-managed_ and the sync
+  stops overwriting it. Later changes to its file are **ignored** (and noted in
+  the sync log as `skipped — admin-managed`).
+- Deleting an entry in the UI is a soft delete: the sync will not re-create it
+  from its file. To remove it entirely, delete its file too.
 - To keep editing an entry through PRs, don't edit it in the UI. Once someone
   does, move further changes to the UI too.
 - A brand-new file still **creates** the entry; ownership only flips to the UI
