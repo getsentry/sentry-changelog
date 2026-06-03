@@ -1,8 +1,6 @@
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
-
 const TAGS = ["changelogs", "changelog-detail"] as const;
 
 /**
