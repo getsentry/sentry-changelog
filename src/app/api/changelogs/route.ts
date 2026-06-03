@@ -98,6 +98,7 @@ export async function GET(request: Request) {
         image: Changelog.image,
         content: Changelog.content,
         publishedAt: Changelog.publishedAt,
+        platform: Changelog.platform,
       })
       .from(Changelog)
       .where(and(...whereClauses))

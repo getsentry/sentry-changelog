@@ -4,10 +4,20 @@ import { eq, inArray } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
+import { isValidPlatform } from "@/lib/platforms";
 import { authOptions } from "../authOptions";
 import { db } from "../db";
 import { _CategoryToChangelog, Category, Changelog, User } from "../db/schema";
 import type { ServerActionPayloadInterface } from "./serverActionPayload.interface";
+
+// Keep only known Sentry platform slugs; the form's select is already
+// constrained, but guard against stale/forged values reaching the database.
+function parsePlatforms(formData: FormData): string[] {
+  return formData
+    .getAll("platform")
+    .map((value) => value as string)
+    .filter(isValidPlatform);
+}
 
 const unauthorizedPayload: ServerActionPayloadInterface = {
   success: false,
@@ -158,6 +168,7 @@ export async function createChangelog(
       summary: formData.get("summary") as string,
       image: formData.get("image") as string,
       slug: formData.get("slug") as string,
+      platform: parsePlatforms(formData),
       // Created in the UI, so the UI owns it; the file sync will never touch it.
       adminManaged: true,
       // Explicitly null so publishChangelog can distinguish a never-published
@@ -203,6 +214,7 @@ export async function editChangelog(
         summary: formData.get("summary") as string,
         image: formData.get("image") as string,
         slug: formData.get("slug") as string,
+        platform: parsePlatforms(formData),
         // Edited in the UI, so the UI now owns it; future file syncs skip it.
         adminManaged: true,
       })
