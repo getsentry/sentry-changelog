@@ -88,12 +88,18 @@ export function validateEntries(entries) {
       errors.push(
         `${prefix} "title" is required and must be a non-empty string`,
       );
+    } else if (frontmatter.title.length > 255) {
+      // Mirrors the VarChar(255) column limit so overflows fail validation
+      // rather than blowing up mid-sync.
+      errors.push(`${prefix} "title" must be 255 characters or fewer`);
     }
 
     if (!SLUG_RE.test(slug)) {
       errors.push(
         `${prefix} slug "${slug}" must be kebab-case (lowercase letters, digits, hyphens)`,
       );
+    } else if (slug.length > 255) {
+      errors.push(`${prefix} slug "${slug}" must be 255 characters or fewer`);
     }
     if (seenSlugs.has(slug)) {
       errors.push(
