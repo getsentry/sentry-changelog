@@ -55,6 +55,9 @@ export async function publishChangelog(
       where: { id },
       data: {
         published: true,
+        // Publishing clears any tombstone so a previously-deleted entry can't
+        // go live while still flagged deleted.
+        deleted: false,
         publishedAt: new Date().toISOString(),
         adminManaged: true,
       },

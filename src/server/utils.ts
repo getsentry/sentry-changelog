@@ -16,6 +16,7 @@ export async function getChangelogs() {
     },
     where: {
       published: true,
+      deleted: false,
     },
     orderBy: {
       publishedAt: "desc",
@@ -71,7 +72,7 @@ export async function getRecentChangelogs(excludeSlug: string) {
   cacheTag("changelogs");
   try {
     return await prismaClient.changelog.findMany({
-      where: { published: true, slug: { not: excludeSlug } },
+      where: { published: true, deleted: false, slug: { not: excludeSlug } },
       include: { categories: true },
       orderBy: { publishedAt: "desc" },
       take: 3,

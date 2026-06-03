@@ -15,10 +15,18 @@ const prisma = new PrismaClient();
 async function syncEntry(tx, entry) {
   const { slug, frontmatter, content } = entry;
 
-  const existing = await tx.changelog.findUnique({
-    where: { slug },
-    select: { publishedAt: true, adminManaged: true },
-  });
+  // Lock the row (if it exists) for the rest of the transaction with SELECT …
+  // FOR UPDATE. This closes the read-then-write race: a concurrent admin save
+  // either committed before this lock (so we read adminManaged=true and skip)
+  // or blocks until this sync commits and then applies on top — so a UI edit
+  // is never silently overwritten.
+  const lockedRows = await tx.$queryRaw`
+    SELECT "publishedAt", "adminManaged"
+    FROM "Changelog"
+    WHERE "slug" = ${slug}
+    FOR UPDATE
+  `;
+  const existing = lockedRows[0];
 
   // Once an entry has been touched in the admin UI it is owned by the UI;
   // never overwrite it from its file.
