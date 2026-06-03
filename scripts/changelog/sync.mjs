@@ -15,6 +15,17 @@ const prisma = new PrismaClient();
 async function syncEntry(tx, entry) {
   const { slug, frontmatter, content } = entry;
 
+  const existing = await tx.changelog.findUnique({
+    where: { slug },
+    select: { publishedAt: true, adminManaged: true },
+  });
+
+  // Once an entry has been touched in the admin UI it is owned by the UI;
+  // never overwrite it from its file.
+  if (existing?.adminManaged) {
+    return { slug, skipped: true };
+  }
+
   const categoryNames = Array.isArray(frontmatter.categories)
     ? frontmatter.categories
     : [];
@@ -54,11 +65,6 @@ async function syncEntry(tx, entry) {
   const published = frontmatter.published === true && !deleted;
   const explicitDate = resolveDate(frontmatter);
 
-  const existing = await tx.changelog.findUnique({
-    where: { slug },
-    select: { publishedAt: true },
-  });
-
   // publishedAt resolution (applies whether published or not, so unpublishing
   // never discards an entry's original publication date):
   //  - explicit frontmatter date always wins
@@ -90,6 +96,8 @@ async function syncEntry(tx, entry) {
     create: {
       slug,
       ...common,
+      // Created from a file, so it stays file-managed until edited in the UI.
+      adminManaged: false,
       categories: { connect },
       ...(authorCreate && { author: authorCreate }),
     },
@@ -164,6 +172,10 @@ async function main() {
 
   // Only logged after the transaction has committed.
   for (const result of results) {
+    if (result.skipped) {
+      console.log(`  ↷ ${result.slug} (skipped — admin-managed)`);
+      continue;
+    }
     const state = result.deleted
       ? "deleted"
       : result.published

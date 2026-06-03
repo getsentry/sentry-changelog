@@ -58,6 +58,19 @@ Files starting with `_` (like `_template.md`) or `.` are ignored.
 pnpm changelog:validate
 ```
 
+## The admin UI wins
+
+The admin UI is the primary editing surface, so it takes priority over files:
+
+- **As soon as an entry is touched in the admin UI** (created, edited,
+  published, or unpublished), it becomes _admin-managed_ and the sync stops
+  overwriting it. Later changes to its file are **ignored** (and noted in the
+  sync log as `skipped — admin-managed`).
+- To keep editing an entry through PRs, don't edit it in the UI. Once someone
+  does, move further changes to the UI too.
+- A brand-new file still **creates** the entry; ownership only flips to the UI
+  after the first UI edit.
+
 ## Notes
 
 - The slug is the source of identity. Renaming a file is fine; **changing the

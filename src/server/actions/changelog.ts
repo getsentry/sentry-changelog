@@ -26,7 +26,7 @@ export async function unpublishChangelog(
   try {
     await prismaClient.changelog.update({
       where: { id },
-      data: { published: false, publishedAt: null },
+      data: { published: false, publishedAt: null, adminManaged: true },
     });
   } catch (error) {
     console.error("DELETE ACTION ERROR:", error);
@@ -53,7 +53,11 @@ export async function publishChangelog(
   try {
     await prismaClient.changelog.update({
       where: { id },
-      data: { published: true, publishedAt: new Date().toISOString() },
+      data: {
+        published: true,
+        publishedAt: new Date().toISOString(),
+        adminManaged: true,
+      },
     });
   } catch (error) {
     console.error("DELETE ACTION ERROR:", error);
@@ -97,6 +101,8 @@ export async function createChangelog(
     summary: formData.get("summary") as string,
     image: formData.get("image") as string,
     slug: formData.get("slug") as string,
+    // Created in the UI, so the UI owns it; the file sync will never touch it.
+    adminManaged: true,
     author: user ? { connect: { id: user.id } } : undefined,
     categories: formData.get("categories") !== "" ? { connect } : {},
   };
@@ -131,6 +137,8 @@ export async function editChangelog(
       summary: formData.get("summary") as string,
       image: formData.get("image") as string,
       slug: formData.get("slug") as string,
+      // Edited in the UI, so the UI now owns it; future file syncs skip it.
+      adminManaged: true,
       categories:
         formData.get("categories") !== "" ? { set: [...connect] } : { set: [] },
     };
