@@ -94,19 +94,25 @@ export function validateEntries(entries) {
       errors.push(`${prefix} "title" must be 255 characters or fewer`);
     }
 
-    if (!SLUG_RE.test(slug)) {
-      errors.push(
-        `${prefix} slug "${slug}" must be kebab-case (lowercase letters, digits, hyphens)`,
-      );
-    } else if (slug.length > 255) {
-      errors.push(`${prefix} slug "${slug}" must be 255 characters or fewer`);
-    }
-    if (seenSlugs.has(slug)) {
-      errors.push(
-        `${prefix} duplicate slug "${slug}" (also used in ${seenSlugs.get(slug)})`,
-      );
+    // Guard the type first: YAML can parse `slug: 123` as a number, which
+    // RegExp.test would silently coerce, and which dedup would mis-key.
+    if (typeof slug !== "string") {
+      errors.push(`${prefix} "slug" must be a string`);
     } else {
-      seenSlugs.set(slug, filename);
+      if (!SLUG_RE.test(slug)) {
+        errors.push(
+          `${prefix} slug "${slug}" must be kebab-case (lowercase letters, digits, hyphens)`,
+        );
+      } else if (slug.length > 255) {
+        errors.push(`${prefix} slug "${slug}" must be 255 characters or fewer`);
+      }
+      if (seenSlugs.has(slug)) {
+        errors.push(
+          `${prefix} duplicate slug "${slug}" (also used in ${seenSlugs.get(slug)})`,
+        );
+      } else {
+        seenSlugs.set(slug, filename);
+      }
     }
 
     if (
@@ -129,6 +135,10 @@ export function validateEntries(entries) {
         frontmatter.categories.some((c) => typeof c !== "string")
       ) {
         errors.push(`${prefix} "categories" must be a list of strings`);
+      } else if (frontmatter.categories.some((c) => c.length > 255)) {
+        // Mirrors the Category.name VarChar(255) limit so an overflow fails
+        // validation rather than rolling back the whole sync transaction.
+        errors.push(`${prefix} each category must be 255 characters or fewer`);
       }
     }
 

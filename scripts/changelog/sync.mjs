@@ -27,19 +27,26 @@ async function syncEntry(tx, entry) {
   }
   const connect = categoryNames.map((name) => ({ name }));
 
-  // Resolve the author by email if provided.
-  let authorConnect;
-  if (typeof frontmatter.author === "string") {
-    const user = await tx.user.findUnique({
-      where: { email: frontmatter.author },
-    });
+  // Resolve the author by email.
+  //  - email present + user found  -> connect
+  //  - email present + user missing -> leave unchanged (warn)
+  //  - no email in frontmatter      -> clear any existing author on update
+  let authorUpdate;
+  let authorCreate;
+  const authorEmail =
+    typeof frontmatter.author === "string" ? frontmatter.author.trim() : "";
+  if (authorEmail) {
+    const user = await tx.user.findUnique({ where: { email: authorEmail } });
     if (user) {
-      authorConnect = { connect: { id: user.id } };
+      authorUpdate = { connect: { id: user.id } };
+      authorCreate = { connect: { id: user.id } };
     } else {
       console.warn(
-        `  ! ${entry.filename}: author "${frontmatter.author}" not found; leaving author unset`,
+        `  ! ${entry.filename}: author "${authorEmail}" not found; leaving author unchanged`,
       );
     }
+  } else {
+    authorUpdate = { disconnect: true };
   }
 
   const deleted = frontmatter.deleted === true;
@@ -78,13 +85,13 @@ async function syncEntry(tx, entry) {
     where: { slug },
     update: {
       ...common,
-      ...(authorConnect && { author: authorConnect }),
+      ...(authorUpdate && { author: authorUpdate }),
     },
     create: {
       slug,
       ...common,
       categories: { connect },
-      ...(authorConnect && { author: authorConnect }),
+      ...(authorCreate && { author: authorCreate }),
     },
   });
 
