@@ -17,6 +17,8 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "migrate:dev": "dotenv -e .env.development -- pnpm prisma migrate reset",
+    "changelog:validate": "node scripts/changelog/validate.mjs",
+    "changelog:sync": "node scripts/changelog/sync.mjs",
     "prepare": "simple-git-hooks"
   },
   "lint-staged": {
