@@ -66,7 +66,7 @@ export async function publishChangelog(
         // Publishing clears any tombstone so a previously-deleted entry can't
         // go live while still flagged deleted.
         deleted: false,
-        publishedAt: current?.publishedAt ?? new Date().toISOString(),
+        publishedAt: current?.publishedAt ?? new Date(),
         adminManaged: true,
       },
     });
@@ -114,6 +114,11 @@ export async function createChangelog(
     slug: formData.get("slug") as string,
     // Created in the UI, so the UI owns it; the file sync will never touch it.
     adminManaged: true,
+    // Explicitly null so publishChangelog can distinguish a never-published
+    // draft (null) from a re-publish of a previously-published entry (Date).
+    // Without this, the schema @default(now()) fills publishedAt at creation
+    // time and publishChangelog would incorrectly use that stale timestamp.
+    publishedAt: null,
     author: user ? { connect: { id: user.id } } : undefined,
     categories: formData.get("categories") !== "" ? { connect } : {},
   };
