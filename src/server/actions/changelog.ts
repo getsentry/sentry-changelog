@@ -45,7 +45,7 @@ export async function publishChangelog(
   _currentState: ServerActionPayloadInterface,
   formData: FormData,
 ): Promise<ServerActionPayloadInterface> {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     return unauthorizedPayload;
