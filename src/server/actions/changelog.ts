@@ -26,7 +26,9 @@ export async function unpublishChangelog(
   try {
     await prismaClient.changelog.update({
       where: { id },
-      data: { published: false, publishedAt: null, adminManaged: true },
+      // Do NOT clear publishedAt — preserving it means a re-publish won't
+      // change the entry's chronological position in the sorted list.
+      data: { published: false, adminManaged: true },
     });
   } catch (error) {
     console.error("DELETE ACTION ERROR:", error);
@@ -51,6 +53,12 @@ export async function publishChangelog(
   const id = formData.get("id") as string;
 
   try {
+    // Preserve the original publishedAt if it exists — re-publishing an entry
+    // should keep its chronological position in the sorted list, not stamp now().
+    const current = await prismaClient.changelog.findUnique({
+      where: { id },
+      select: { publishedAt: true },
+    });
     await prismaClient.changelog.update({
       where: { id },
       data: {
@@ -58,7 +66,7 @@ export async function publishChangelog(
         // Publishing clears any tombstone so a previously-deleted entry can't
         // go live while still flagged deleted.
         deleted: false,
-        publishedAt: new Date().toISOString(),
+        publishedAt: current?.publishedAt ?? new Date().toISOString(),
         adminManaged: true,
       },
     });
@@ -172,12 +180,13 @@ export async function deleteChangelog(
   try {
     // Soft delete: mark deleted + admin-managed instead of removing the row,
     // so the file sync skips it and never re-creates the entry from its file.
+    // Do NOT clear publishedAt — preserving it means a restored entry keeps
+    // its original chronological position in the sorted list.
     await prismaClient.changelog.update({
       where: { id },
       data: {
         deleted: true,
         published: false,
-        publishedAt: null,
         adminManaged: true,
       },
     });

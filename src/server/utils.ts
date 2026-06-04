@@ -59,8 +59,8 @@ export async function getChangelogSummaries(): Promise<ChangelogEntry[]> {
 export async function getChangelog(slug: string) {
   cacheTag("changelog-detail");
   try {
-    return await prismaClient.changelog.findUnique({
-      where: { slug },
+    return await prismaClient.changelog.findFirst({
+      where: { slug, deleted: false },
       include: { categories: true },
     });
   } catch (_e) {
