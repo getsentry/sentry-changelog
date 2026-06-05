@@ -1,20 +1,15 @@
 "use client";
 
-export async function uploadImage(file: File) {
-  const result = await fetch(`/changelog/_admin/upload?file=${file.name}`);
-  const { response } = await result.json();
-  const { url, fields } = response;
-  const formData = new FormData();
-  for (const [key, value] of Object.entries({ ...fields, file })) {
-    formData.append(key, value as string | Blob);
-  }
+import { upload } from "@vercel/blob/client";
 
-  await fetch(url, {
-    method: "POST",
-    body: formData,
+export async function uploadImage(file: File) {
+  const blob = await upload(file.name, file, {
+    access: "public",
+    handleUploadUrl: "/changelog/_admin/upload",
   });
+
   return {
-    url: `${url}${encodeURIComponent(response.fields.key)}`,
+    url: blob.url,
     originalFilename: file.name,
   };
 }

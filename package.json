@@ -43,6 +43,7 @@
     "@radix-ui/themes": "^3.3.0",
     "@sentry/nextjs": "^10.52.0",
     "@spotlightjs/spotlight": "^2.13.3",
+    "@vercel/blob": "^2.4.0",
     "@vercel/oidc": "^3.3.1",
     "drizzle-orm": "^0.45.2",
     "google-auth-library": "^9.15.1",
