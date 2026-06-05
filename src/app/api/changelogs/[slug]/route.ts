@@ -28,11 +28,13 @@ export async function GET(
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    return NextResponse.json(changelog, {
-      headers: {
-        "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
-      },
-    });
+    // No explicit Cache-Control: this API is consumed by getsentry for
+    // broadcast targeting, where freshness of the platform field matters.
+    // Next.js defaults to no-store for dynamic API routes; the admin
+    // actions and sync script both call revalidateTag("changelog-detail")
+    // but that only busts the Next.js data cache, not an HTTP-level CDN
+    // cache, so we intentionally omit a public cache header here.
+    return NextResponse.json(changelog);
   } catch (error) {
     Sentry.captureException(error);
     return NextResponse.json(
