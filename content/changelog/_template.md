@@ -19,6 +19,13 @@ categories:
   - Performance
   - Web
 
+# Optional. Platform slugs to scope this entry (e.g. "javascript-react",
+# "python-django"). Mirrors getsentry's broadcast targeting dropdown.
+# Leave empty (or omit) to show to all platforms.
+# Valid slugs are defined in src/lib/platforms.ts.
+platform:
+  - javascript-react
+
 # Optional. Defaults to false. Set to true to make the entry live.
 published: false
 

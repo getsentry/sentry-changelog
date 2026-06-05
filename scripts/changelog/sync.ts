@@ -34,6 +34,7 @@ type ChangelogFileEntry = {
     deleted?: boolean;
     published?: boolean;
     categories?: string[];
+    platform?: string[];
     author?: string;
   };
   content: string;
@@ -133,6 +134,10 @@ async function syncEntry(
     publishedAt = new Date();
   }
 
+  const platformSlugs = Array.isArray(frontmatter.platform)
+    ? frontmatter.platform.filter((p) => typeof p === "string")
+    : [];
+
   const common = {
     title: frontmatter.title,
     content,
@@ -143,6 +148,7 @@ async function syncEntry(
     deleted,
     publishedAt,
     slug,
+    platform: platformSlugs,
   };
 
   const [changelog] = await tx
