@@ -1,0 +1,53 @@
+name: Sync Changelog
+
+# Upserts content/changelog/*.md into the production database after merge to
+# main. Only entries that exist as files are touched; admin-UI-only posts are
+# left untouched. See content/changelog/README.md.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/changelog/**"
+      - "scripts/changelog/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-changelog
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync to database
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@02f6c237bd2518259fed6c71566509edfb3f2b74 # v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: package.json
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm prisma generate
+
+      - name: Sync changelog entries
+        run: pnpm changelog:sync
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # Optional: bust the public cache after a successful sync. If unset,
+          # the sync still succeeds and caches expire on their own.
+          SITE_REVALIDATE_URL: ${{ secrets.SITE_REVALIDATE_URL }}
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}

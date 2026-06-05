@@ -67,6 +67,9 @@ model Changelog {
   summary     String?
   published   Boolean    @default(false)
   deleted     Boolean    @default(false)
+  // True once the entry has been touched in the admin UI. The file sync skips
+  // admin-managed entries so UI edits are never overwritten by their file.
+  adminManaged Boolean   @default(false)
   authorId    String?
   author      User?      @relation(fields: [authorId], references: [id])
   categories  Category[]

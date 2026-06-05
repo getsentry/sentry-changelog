@@ -26,7 +26,9 @@ export async function unpublishChangelog(
   try {
     await prismaClient.changelog.update({
       where: { id },
-      data: { published: false, publishedAt: null },
+      // Do NOT clear publishedAt — preserving it means a re-publish won't
+      // change the entry's chronological position in the sorted list.
+      data: { published: false, adminManaged: true },
     });
   } catch (error) {
     console.error("DELETE ACTION ERROR:", error);
@@ -43,7 +45,7 @@ export async function publishChangelog(
   _currentState: ServerActionPayloadInterface,
   formData: FormData,
 ): Promise<ServerActionPayloadInterface> {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     return unauthorizedPayload;
@@ -51,9 +53,22 @@ export async function publishChangelog(
   const id = formData.get("id") as string;
 
   try {
+    // Preserve the original publishedAt if it exists — re-publishing an entry
+    // should keep its chronological position in the sorted list, not stamp now().
+    const current = await prismaClient.changelog.findUnique({
+      where: { id },
+      select: { publishedAt: true },
+    });
     await prismaClient.changelog.update({
       where: { id },
-      data: { published: true, publishedAt: new Date().toISOString() },
+      data: {
+        published: true,
+        // Publishing clears any tombstone so a previously-deleted entry can't
+        // go live while still flagged deleted.
+        deleted: false,
+        publishedAt: current?.publishedAt ?? new Date(),
+        adminManaged: true,
+      },
     });
   } catch (error) {
     console.error("DELETE ACTION ERROR:", error);
@@ -97,6 +112,13 @@ export async function createChangelog(
     summary: formData.get("summary") as string,
     image: formData.get("image") as string,
     slug: formData.get("slug") as string,
+    // Created in the UI, so the UI owns it; the file sync will never touch it.
+    adminManaged: true,
+    // Explicitly null so publishChangelog can distinguish a never-published
+    // draft (null) from a re-publish of a previously-published entry (Date).
+    // Without this, the schema @default(now()) fills publishedAt at creation
+    // time and publishChangelog would incorrectly use that stale timestamp.
+    publishedAt: null,
     author: user ? { connect: { id: user.id } } : undefined,
     categories: formData.get("categories") !== "" ? { connect } : {},
   };
@@ -131,6 +153,8 @@ export async function editChangelog(
       summary: formData.get("summary") as string,
       image: formData.get("image") as string,
       slug: formData.get("slug") as string,
+      // Edited in the UI, so the UI now owns it; future file syncs skip it.
+      adminManaged: true,
       categories:
         formData.get("categories") !== "" ? { set: [...connect] } : { set: [] },
     };
@@ -159,8 +183,17 @@ export async function deleteChangelog(
   }
   const id = formData.get("id") as string;
   try {
-    await prismaClient.changelog.delete({
+    // Soft delete: mark deleted + admin-managed instead of removing the row,
+    // so the file sync skips it and never re-creates the entry from its file.
+    // Do NOT clear publishedAt — preserving it means a restored entry keeps
+    // its original chronological position in the sorted list.
+    await prismaClient.changelog.update({
       where: { id },
+      data: {
+        deleted: true,
+        published: false,
+        adminManaged: true,
+      },
     });
   } catch (error) {
     console.error("DELETE ACTION ERROR:", error);

@@ -33,6 +33,9 @@ jobs:
       - name: Run lint
         run: pnpm lint
 
+      - name: Validate changelog entries
+        run: pnpm changelog:validate
+
       - name: Run tests
         run: pnpm test:run
 

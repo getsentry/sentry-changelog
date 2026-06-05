@@ -90,6 +90,11 @@ export default async function ChangelogsListPage() {
             >
               <td className="px-6 py-2 font-medium text-gray-900">
                 {changelog.title}
+                {changelog.deleted && (
+                  <span className="ml-2 text-xs font-normal text-red-500">
+                    (deleted)
+                  </span>
+                )}
               </td>
 
               <td className="px-4 py-2 break-words">

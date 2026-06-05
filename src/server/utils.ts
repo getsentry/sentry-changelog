@@ -16,6 +16,7 @@ export async function getChangelogs() {
     },
     where: {
       published: true,
+      deleted: false,
     },
     orderBy: {
       publishedAt: "desc",
@@ -58,8 +59,8 @@ export async function getChangelogSummaries(): Promise<ChangelogEntry[]> {
 export async function getChangelog(slug: string) {
   cacheTag("changelog-detail");
   try {
-    return await prismaClient.changelog.findUnique({
-      where: { slug },
+    return await prismaClient.changelog.findFirst({
+      where: { slug, deleted: false },
       include: { categories: true },
     });
   } catch (_e) {
@@ -71,7 +72,7 @@ export async function getRecentChangelogs(excludeSlug: string) {
   cacheTag("changelogs");
   try {
     return await prismaClient.changelog.findMany({
-      where: { published: true, slug: { not: excludeSlug } },
+      where: { published: true, deleted: false, slug: { not: excludeSlug } },
       include: { categories: true },
       orderBy: { publishedAt: "desc" },
       take: 3,
