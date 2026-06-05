@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm prisma generate && next build",
+    "build": "pnpm prisma migrate deploy && pnpm prisma generate && next build",
     "start": "next start",
     "test": "vitest",
     "test:run": "vitest run",
