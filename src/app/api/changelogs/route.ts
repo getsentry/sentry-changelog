@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
-import { and, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, or, type SQL, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { _CategoryToChangelog, Category, Changelog } from "@/server/db/schema";
@@ -13,11 +13,7 @@ function isValidDate(str: string): boolean {
 }
 
 function sanitizeSearch(term: string): string {
-  // Remove PostgreSQL full-text search operators and limit length
-  return term
-    .replace(/[&|!:*()\\<>]/g, " ")
-    .trim()
-    .slice(0, MAX_SEARCH_LENGTH);
+  return term.trim().slice(0, MAX_SEARCH_LENGTH);
 }
 
 export async function GET(request: Request) {
@@ -50,7 +46,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const whereClauses = [
+    const whereClauses: SQL<unknown>[] = [
       eq(Changelog.published, true),
       eq(Changelog.deleted, false),
     ];
@@ -64,9 +60,13 @@ export async function GET(request: Request) {
 
     if (search) {
       const safeSearch = `%${search.replace(/[%_]/g, "\\$&").replace(/\s+/g, " ")}%`;
-      whereClauses.push(
-        sql`(${Changelog.title} ILIKE ${safeSearch} OR ${Changelog.summary} ILIKE ${safeSearch})`,
+      const searchFilter = or(
+        ilike(Changelog.title, safeSearch),
+        ilike(Changelog.summary, safeSearch),
       );
+      if (searchFilter) {
+        whereClauses.push(searchFilter);
+      }
     }
 
     if (category) {
@@ -80,12 +80,13 @@ export async function GET(request: Request) {
         return NextResponse.json([]);
       }
 
-      whereClauses.push(
-        inArray(
-          Changelog.id,
-          matchedCategoryChangelogIds.map((row) => row.id),
-        ),
+      const categoryFilter = inArray(
+        Changelog.id,
+        matchedCategoryChangelogIds.map((row) => row.id),
       );
+      if (categoryFilter) {
+        whereClauses.push(categoryFilter);
+      }
     }
 
     const rows = await db
@@ -116,7 +117,7 @@ export async function GET(request: Request) {
             inArray(
               _CategoryToChangelog.B,
               rows.map((row) => row.id),
-            ),
+            ) as SQL<unknown>,
           )
       : [];
 

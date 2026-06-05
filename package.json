@@ -16,6 +16,7 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
+    "db:seed": "tsx src/server/db/seed.ts",
     "migrate:dev": "dotenv -e .env.development -- pnpm prisma migrate reset",
     "changelog:validate": "node scripts/changelog/validate.mjs",
     "changelog:sync": "tsx scripts/changelog/sync.ts",
