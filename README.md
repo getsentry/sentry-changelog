@@ -34,8 +34,14 @@ A Next.js application for managing and displaying Sentry's product changelog.
 4. **Set up the database**
 
    ```bash
-   pnpm migrate:dev
+   pnpm db:push
+   pnpm db:migrate
+   pnpm db:seed
    ```
+
+   - Production uses Neon (`DATABASE_URL` should point to your Neon pooled connection)
+   - For local development, keep Docker Postgres (`DATABASE_URL` in `.env.development`)
+   - Configure Vercel Blob via `BLOB_READ_WRITE_TOKEN`
 
 5. **Start the development server**
 
@@ -117,9 +123,9 @@ pnpm test:run
 
 ## Contributing
 
-- The application uses Prisma for database management
+- Database management is powered by Drizzle and Neon-backed Postgres
 - Run `pnpm lint` to check code style with Biome
 - Run `pnpm format` to format code
 - Pre-commit hooks automatically format and lint staged files
-- Database migrations are managed through Prisma
+- Database migrations are managed with Drizzle (`db:generate`, `db:migrate`, `db:push`)
 - Sentry integration is configured for error monitoring

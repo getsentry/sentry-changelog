@@ -5,6 +5,14 @@ const nextConfig = {
   cacheComponents: true,
   trailingSlash: true,
   transpilePackages: ["next-mdx-remote"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
+    ],
+  },
   async redirects() {
     return [
       {
