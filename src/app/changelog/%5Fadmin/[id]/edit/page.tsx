@@ -1,25 +1,40 @@
+import { asc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { Fragment } from "react";
-
 import { EditChangelogForm } from "@/client/components/forms/editChangelogForm";
-import { prismaClient } from "@/server/prisma-client";
+import { db } from "@/server/db";
+import { _CategoryToChangelog, Category, Changelog } from "@/server/db/schema";
 
 export default async function ChangelogCreatePage(props: {
   params: Promise<{ id: string }>;
 }) {
   const params = await props.params;
-  const categories = await prismaClient.category.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
-  const changelog = await prismaClient.changelog.findUnique({
-    where: { id: params.id },
-    include: {
-      author: true,
-      categories: true,
-    },
-  });
+  const categories = await db
+    .select()
+    .from(Category)
+    .orderBy(asc(Category.name));
+
+  const changelogs = await db
+    .select()
+    .from(Changelog)
+    .where(eq(Changelog.id, params.id));
+
+  const changelogCategories = await db
+    .select({
+      id: Category.id,
+      name: Category.name,
+      deleted: Category.deleted,
+    })
+    .from(_CategoryToChangelog)
+    .innerJoin(Category, eq(_CategoryToChangelog.A, Category.id))
+    .where(eq(_CategoryToChangelog.B, params.id));
+
+  const changelog = changelogs[0]
+    ? {
+        ...changelogs[0],
+        categories: changelogCategories,
+      }
+    : null;
 
   if (!changelog) {
     return (

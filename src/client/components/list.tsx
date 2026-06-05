@@ -1,6 +1,5 @@
 "use client";
 
-import type { Category } from "@prisma/client";
 import Link from "next/link";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import {
@@ -10,6 +9,7 @@ import {
   useQueryState,
 } from "nuqs";
 import { Fragment, useState } from "react";
+import type { CategoryModel as Category } from "@/server/db/schema";
 import { Article } from "./article";
 import { Pagination } from "./pagination";
 

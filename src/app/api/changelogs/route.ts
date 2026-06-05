@@ -1,7 +1,8 @@
-import type { Prisma } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { prismaClient } from "@/server/prisma-client";
+import { db } from "@/server/db";
+import { _CategoryToChangelog, Category, Changelog } from "@/server/db/schema";
 
 const MAX_SEARCH_LENGTH = 100;
 const MAX_CATEGORY_LENGTH = 100;
@@ -49,37 +50,91 @@ export async function GET(request: Request) {
       );
     }
 
-    const where: Prisma.ChangelogWhereInput = {
-      published: true,
-      deleted: false,
-      ...(category && { categories: { some: { name: category } } }),
-      ...((from || to) && {
-        publishedAt: {
-          ...(from && { gte: new Date(from) }),
-          ...(to && { lte: new Date(to) }),
-        },
-      }),
-      ...(search && {
-        OR: [{ title: { search } }, { summary: { search } }],
-      }),
-    };
+    const whereClauses = [
+      eq(Changelog.published, true),
+      eq(Changelog.deleted, false),
+    ];
 
-    const changelogs = await prismaClient.changelog.findMany({
-      where,
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        summary: true,
-        image: true,
-        content: true,
-        publishedAt: true,
-        categories: { select: { id: true, name: true } },
-      },
-      orderBy: { publishedAt: "desc" },
-      take: limit,
-      skip: offset,
-    });
+    if (from || to) {
+      if (from)
+        whereClauses.push(sql`${Changelog.publishedAt} >= ${new Date(from)}`);
+      if (to)
+        whereClauses.push(sql`${Changelog.publishedAt} <= ${new Date(to)}`);
+    }
+
+    if (search) {
+      const safeSearch = `%${search.replace(/[%_]/g, "\\$&").replace(/\s+/g, " ")}%`;
+      whereClauses.push(
+        sql`(${Changelog.title} ILIKE ${safeSearch} OR ${Changelog.summary} ILIKE ${safeSearch})`,
+      );
+    }
+
+    if (category) {
+      const matchedCategoryChangelogIds = await db
+        .selectDistinct({ id: _CategoryToChangelog.B })
+        .from(_CategoryToChangelog)
+        .innerJoin(Category, eq(Category.id, _CategoryToChangelog.A))
+        .where(eq(Category.name, category));
+
+      if (matchedCategoryChangelogIds.length === 0) {
+        return NextResponse.json([]);
+      }
+
+      whereClauses.push(
+        inArray(
+          Changelog.id,
+          matchedCategoryChangelogIds.map((row) => row.id),
+        ),
+      );
+    }
+
+    const rows = await db
+      .select({
+        id: Changelog.id,
+        title: Changelog.title,
+        slug: Changelog.slug,
+        summary: Changelog.summary,
+        image: Changelog.image,
+        content: Changelog.content,
+        publishedAt: Changelog.publishedAt,
+      })
+      .from(Changelog)
+      .where(and(...whereClauses))
+      .orderBy(desc(Changelog.publishedAt))
+      .limit(limit)
+      .offset(offset);
+
+    const categoriesRows = rows.length
+      ? await db
+          .select({
+            changelogId: _CategoryToChangelog.B,
+            category: Category,
+          })
+          .from(_CategoryToChangelog)
+          .innerJoin(Category, eq(_CategoryToChangelog.A, Category.id))
+          .where(
+            inArray(
+              _CategoryToChangelog.B,
+              rows.map((row) => row.id),
+            ),
+          )
+      : [];
+
+    const categoriesByChangelog = new Map<
+      string,
+      (typeof Category.$inferSelect)[]
+    >();
+
+    for (const row of categoriesRows) {
+      const list = categoriesByChangelog.get(row.changelogId) ?? [];
+      list.push(row.category);
+      categoriesByChangelog.set(row.changelogId, list);
+    }
+
+    const changelogs = rows.map((row) => ({
+      ...row,
+      categories: categoriesByChangelog.get(row.id) || [],
+    }));
 
     return NextResponse.json(changelogs);
   } catch (error) {

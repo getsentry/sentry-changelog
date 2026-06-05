@@ -1,5 +1,6 @@
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Button, Text } from "@radix-ui/themes";
+import { desc, eq, inArray } from "drizzle-orm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth/next";
@@ -10,7 +11,13 @@ import {
   unpublishChangelog,
 } from "@/server/actions/changelog";
 import { authOptions } from "@/server/authOptions";
-import { prismaClient } from "@/server/prisma-client";
+import { db } from "@/server/db";
+import {
+  _CategoryToChangelog,
+  Category,
+  Changelog,
+  User,
+} from "@/server/db/schema";
 import Confirm from "./confirm";
 
 export default async function ChangelogsListPage() {
@@ -20,15 +27,66 @@ export default async function ChangelogsListPage() {
     return notFound();
   }
 
-  const changelogs = await prismaClient.changelog.findMany({
-    include: {
-      categories: true,
-      author: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const changelogsRaw = await db
+    .select({
+      id: Changelog.id,
+      title: Changelog.title,
+      slug: Changelog.slug,
+      deleted: Changelog.deleted,
+      createdAt: Changelog.createdAt,
+      publishedAt: Changelog.publishedAt,
+      published: Changelog.published,
+      authorId: Changelog.authorId,
+      authorName: User.name,
+      authorEmail: User.email,
+    })
+    .from(Changelog)
+    .leftJoin(User, eq(Changelog.authorId, User.id))
+    .orderBy(desc(Changelog.createdAt));
+
+  const categoriesRows =
+    changelogsRaw.length > 0
+      ? await db
+          .select({
+            changelogId: _CategoryToChangelog.B,
+            category: Category,
+          })
+          .from(_CategoryToChangelog)
+          .innerJoin(Category, eq(_CategoryToChangelog.A, Category.id))
+          .where(
+            inArray(
+              _CategoryToChangelog.B,
+              changelogsRaw.map((changelog) => changelog.id),
+            ),
+          )
+      : [];
+
+  const categoriesMap = new Map<string, (typeof Category.$inferSelect)[]>();
+  for (const row of categoriesRows) {
+    const list = categoriesMap.get(row.changelogId) ?? [];
+    list.push(row.category);
+    categoriesMap.set(row.changelogId, list);
+  }
+
+  const changelogs = changelogsRaw.map((changelog) => ({
+    id: changelog.id,
+    title: changelog.title,
+    slug: changelog.slug,
+    deleted: changelog.deleted,
+    createdAt: changelog.createdAt,
+    publishedAt: changelog.publishedAt,
+    published: changelog.published,
+    authorId: changelog.authorId,
+    author:
+      changelog.authorName || changelog.authorEmail
+        ? {
+            id: changelog.authorId,
+            name: changelog.authorName,
+            email: changelog.authorEmail,
+          }
+        : null,
+    categories: categoriesMap.get(changelog.id) ?? [],
+  }));
 
   return (
     <Fragment>

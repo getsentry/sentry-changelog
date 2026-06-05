@@ -1,6 +1,5 @@
 "use client";
 
-import type { Category } from "@prisma/client";
 import Link from "next/link";
 import { useActionState } from "react";
 import { FileUpload } from "@/client/components/fileUpload";
@@ -9,6 +8,7 @@ import { TitleSlug } from "@/client/components/titleSlug";
 import { Button } from "@/client/components/ui/Button";
 import { Select } from "@/client/components/ui/Select";
 import { createChangelog } from "@/server/actions/changelog";
+import type { CategoryModel as Category } from "@/server/db/schema";
 
 export const CreateChangelogForm = ({
   categories,
