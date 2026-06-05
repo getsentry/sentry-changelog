@@ -59,7 +59,7 @@ export async function GET(request: Request) {
     }
 
     if (search) {
-      const safeSearch = `%${search.replace(/[%_]/g, "\\$&").replace(/\s+/g, " ")}%`;
+      const safeSearch = `%${search.replace(/[\\%_]/g, "\\$&").replace(/\s+/g, " ")}%`;
       const searchFilter = or(
         ilike(Changelog.title, safeSearch),
         ilike(Changelog.summary, safeSearch),
