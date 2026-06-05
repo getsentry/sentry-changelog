@@ -18,7 +18,7 @@ const schema = {
 };
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.NEON_DATABASE_URL,
   options: "-c statement_timeout=60000",
 });
 

@@ -39,8 +39,8 @@ A Next.js application for managing and displaying Sentry's product changelog.
    pnpm db:seed
    ```
 
-   - Production uses Neon (`DATABASE_URL` should point to your Neon pooled connection)
-   - For local development, keep Docker Postgres (`DATABASE_URL` in `.env.development`)
+   - Production uses Neon (`NEON_DATABASE_URL` should point to your Neon pooled connection)
+   - For local development, keep Docker Postgres (`NEON_DATABASE_URL` in `.env.development`)
    - Configure Vercel Blob via `BLOB_READ_WRITE_TOKEN`
 
 5. **Start the development server**
@@ -60,7 +60,7 @@ Keep this section until migration is complete, then remove it.
 
 1. Create a project in the Neon console.
 2. Create a database (example name: `changelog`) and copy both connection strings:
-   - **Pooled**: use for runtime `DATABASE_URL`
+   - **Pooled**: use for runtime `NEON_DATABASE_URL`
    - **Direct**: use for import/migration commands
 
 ### 2) Export from Cloud SQL and import into Neon
@@ -122,7 +122,7 @@ psql "postgresql://USER:PASS@DIRECT_HOST.neon.tech/neondb?sslmode=require" -c "S
 
 ### 4) Configure Vercel env vars
 
-- Set `DATABASE_URL` to Neon **pooled** connection string.
+- Set `NEON_DATABASE_URL` to Neon **pooled** connection string.
 - Ensure `BLOB_READ_WRITE_TOKEN` is set (Vercel provides this when Blob is linked).
 - Remove old GCP/Google storage/auth settings:
   - `GCP_BUCKET`

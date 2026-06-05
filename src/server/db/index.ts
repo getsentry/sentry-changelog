@@ -8,7 +8,9 @@ declare global {
 
 const db =
   global._db ||
-  drizzle(new Pool({ connectionString: process.env.DATABASE_URL }), { schema });
+  drizzle(new Pool({ connectionString: process.env.NEON_DATABASE_URL }), {
+    schema,
+  });
 
 if (process.env.NODE_ENV === "development") {
   global._db = db;

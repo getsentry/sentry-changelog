@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { _CategoryToChangelog, Category, Changelog } from "./schema";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({ connectionString: process.env.NEON_DATABASE_URL });
 const db = drizzle(pool);
 
 const changelogs = [
