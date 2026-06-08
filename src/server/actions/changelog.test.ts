@@ -15,9 +15,7 @@ let capturedChangelogUpdate: Record<string, unknown> | null = null;
 vi.mock("../db", () => {
   const makeInsertChain = (vals: unknown) => {
     const isChangelogRow =
-      vals !== null &&
-      typeof vals === "object" &&
-      "slug" in (vals as object);
+      vals !== null && typeof vals === "object" && "slug" in (vals as object);
     if (isChangelogRow) {
       capturedChangelogInsert = vals as Record<string, unknown>;
     }
