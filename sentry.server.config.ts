@@ -1,16 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
-import {PrismaInstrumentation} from '@prisma/instrumentation';
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   tracesSampleRate: 1,
   traceLifecycle: 'stream',
   environment: process.env.NODE_ENV,
-  integrations: [
-    Sentry.nodeRuntimeMetricsIntegration(),
-    Sentry.prismaIntegration({
-      prismaInstrumentation: new PrismaInstrumentation(),
-    }),
-  ],
+  integrations: [Sentry.nodeRuntimeMetricsIntegration()],
   spotlight: process.env.NODE_ENV === 'development',
 });

@@ -1,10 +1,11 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import type { NextAuthOptions } from "next-auth";
 import type { Adapter } from "next-auth/adapters";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import type { Provider } from "next-auth/providers/index";
-import { prismaClient } from "@/server/prisma-client";
+import { db } from "@/server/db";
+import { Account, Session, User, VerificationToken } from "@/server/db/schema";
 
 const providers: Provider[] = [
   GoogleProvider({
@@ -30,7 +31,12 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prismaClient) as Adapter,
+  adapter: DrizzleAdapter(db, {
+    usersTable: User,
+    accountsTable: Account,
+    sessionsTable: Session as unknown as any,
+    verificationTokensTable: VerificationToken,
+  } as const) as Adapter,
   providers: providers,
   session: {
     strategy: "jwt",

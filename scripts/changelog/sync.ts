@@ -1,18 +1,66 @@
 #!/usr/bin/env node
-import { PrismaClient } from "@prisma/client";
+import { eq, inArray, sql } from "drizzle-orm";
+import { drizzle, type NodePgTransaction } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import {
+  _CategoryToChangelog,
+  Category,
+  Changelog,
+  User,
+} from "../../src/server/db/schema";
 import { loadChangelogFiles, resolveDate, validateEntries } from "./lib.mjs";
 
-const prisma = new PrismaClient();
+const schema = {
+  Category,
+  Changelog,
+  User,
+  _CategoryToChangelog,
+};
+
+const pool = new Pool({
+  connectionString: process.env.NEON_DATABASE_URL,
+  options: "-c statement_timeout=60000",
+});
+
+const db = drizzle(pool, { schema });
+
+type ChangelogFileEntry = {
+  filename: string;
+  slug: string;
+  frontmatter: {
+    title: string;
+    summary?: string | null;
+    image?: string | null;
+    deleted?: boolean;
+    published?: boolean;
+    categories?: string[];
+    author?: string;
+  };
+  content: string;
+};
+
+type LockedChangelogRow = {
+  publishedAt: Date | null;
+  adminManaged: boolean | null;
+};
 
 /**
  * Upserts every file in content/changelog/ into the Changelog table, keyed by
  * slug. Only slugs that exist as files are touched — posts created solely
  * through the admin UI are never modified or deleted by this script.
  *
- * Receives a Prisma transaction client (`tx`) so the whole run is atomic: if
+ * Receives a Drizzle transaction client (`tx`) so the whole run is atomic: if
  * any entry fails, every upsert in the run is rolled back.
  */
-async function syncEntry(tx, entry) {
+async function syncEntry(
+  tx: NodePgTransaction<any, any>,
+  entry: ChangelogFileEntry,
+): Promise<{
+  slug: string;
+  skipped?: boolean;
+  published?: boolean;
+  deleted?: boolean;
+}> {
   const { slug, frontmatter, content } = entry;
 
   // Lock the row (if it exists) for the rest of the transaction with SELECT …
@@ -20,13 +68,13 @@ async function syncEntry(tx, entry) {
   // either committed before this lock (so we read adminManaged=true and skip)
   // or blocks until this sync commits and then applies on top — so a UI edit
   // is never silently overwritten.
-  const lockedRows = await tx.$queryRaw`
+  const lockedRows = await tx.execute(sql`
     SELECT "publishedAt", "adminManaged"
     FROM "Changelog"
     WHERE "slug" = ${slug}
     FOR UPDATE
-  `;
-  const existing = lockedRows[0];
+  `);
+  const existing = lockedRows.rows[0] as LockedChangelogRow | undefined;
 
   // Once an entry has been touched in the admin UI it is owned by the UI;
   // never overwrite it from its file.
@@ -39,33 +87,35 @@ async function syncEntry(tx, entry) {
     : [];
 
   if (categoryNames.length > 0) {
-    await tx.category.createMany({
-      data: categoryNames.map((name) => ({ name })),
-      skipDuplicates: true,
-    });
+    await tx
+      .insert(Category)
+      .values(categoryNames.map((name: string) => ({ name })))
+      .onConflictDoNothing({ target: Category.name });
   }
-  const connect = categoryNames.map((name) => ({ name }));
 
   // Resolve the author by email.
   //  - email present + user found  -> connect
   //  - email present + user missing -> leave unchanged (warn)
   //  - no email in frontmatter      -> clear any existing author on update
-  let authorUpdate;
-  let authorCreate;
+  let authorId: string | undefined;
+  let clearAuthorOnUpdate = false;
   const authorEmail =
     typeof frontmatter.author === "string" ? frontmatter.author.trim() : "";
   if (authorEmail) {
-    const user = await tx.user.findUnique({ where: { email: authorEmail } });
+    const [user] = await tx
+      .select({ id: User.id })
+      .from(User)
+      .where(eq(User.email, authorEmail))
+      .limit(1);
     if (user) {
-      authorUpdate = { connect: { id: user.id } };
-      authorCreate = { connect: { id: user.id } };
+      authorId = user.id;
     } else {
       console.warn(
         `  ! ${entry.filename}: author "${authorEmail}" not found; leaving author unchanged`,
       );
     }
   } else {
-    authorUpdate = { disconnect: true };
+    clearAuthorOnUpdate = true;
   }
 
   const deleted = frontmatter.deleted === true;
@@ -92,24 +142,50 @@ async function syncEntry(tx, entry) {
     published,
     deleted,
     publishedAt,
-    categories: { set: connect },
+    slug,
   };
 
-  await tx.changelog.upsert({
-    where: { slug },
-    update: {
+  const [changelog] = await tx
+    .insert(Changelog)
+    .values({
       ...common,
-      ...(authorUpdate && { author: authorUpdate }),
-    },
-    create: {
-      slug,
-      ...common,
-      // Created from a file, so it stays file-managed until edited in the UI.
       adminManaged: false,
-      categories: { connect },
-      ...(authorCreate && { author: authorCreate }),
-    },
-  });
+      ...(authorId ? { authorId } : {}),
+    })
+    .onConflictDoUpdate({
+      target: Changelog.slug,
+      set: {
+        ...common,
+        ...(authorId
+          ? { authorId }
+          : clearAuthorOnUpdate
+            ? { authorId: null }
+            : {}),
+      },
+    })
+    .returning({ id: Changelog.id });
+
+  const changelogId = changelog.id;
+
+  await tx
+    .delete(_CategoryToChangelog)
+    .where(eq(_CategoryToChangelog.B, changelogId));
+
+  if (categoryNames.length > 0) {
+    const categoryRows = await tx
+      .select({ id: Category.id })
+      .from(Category)
+      .where(inArray(Category.name, categoryNames));
+
+    if (categoryRows.length > 0) {
+      await tx.insert(_CategoryToChangelog).values(
+        categoryRows.map((row: { id: string }) => ({
+          A: row.id,
+          B: changelogId,
+        })),
+      );
+    }
+  }
 
   return { slug, published, deleted };
 }
@@ -142,9 +218,11 @@ async function revalidateSite() {
     }
     console.log("Revalidated site cache.");
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+
     // Don't fail the whole sync just because revalidation didn't go through;
     // the data is already committed and caches will expire on their own.
-    console.warn(`  ! Cache revalidation failed: ${error.message}`);
+    console.warn(`  ! Cache revalidation failed: ${message}`);
   }
 }
 
@@ -167,16 +245,19 @@ async function main() {
 
   // All upserts run in one transaction: a failure on any entry rolls back the
   // entire run rather than leaving the database half-updated.
-  const results = await prisma.$transaction(
-    async (tx) => {
-      const out = [];
-      for (const entry of entries) {
-        out.push(await syncEntry(tx, entry));
-      }
-      return out;
-    },
-    { timeout: 60_000, maxWait: 10_000 },
-  );
+  const typedEntries = entries as ChangelogFileEntry[];
+  const results = await db.transaction(async (tx) => {
+    const out: Array<{
+      slug: string;
+      skipped?: boolean;
+      published?: boolean;
+      deleted?: boolean;
+    }> = [];
+    for (const entry of typedEntries) {
+      out.push(await syncEntry(tx as NodePgTransaction<any, any>, entry));
+    }
+    return out;
+  });
 
   // Only logged after the transaction has committed.
   for (const result of results) {
@@ -197,10 +278,14 @@ async function main() {
 }
 
 main()
-  .catch((error) => {
-    console.error(error);
+  .catch((error: unknown) => {
+    if (error instanceof Error) {
+      console.error(error);
+    } else {
+      console.error(`Unknown error: ${String(error)}`);
+    }
     process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await pool.end();
   });

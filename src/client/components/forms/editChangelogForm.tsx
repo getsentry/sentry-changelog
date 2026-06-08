@@ -1,6 +1,5 @@
 "use client";
 
-import type { Category, Changelog } from "@prisma/client";
 import Link from "next/link";
 import { Suspense, useActionState } from "react";
 import { FileUpload } from "@/client/components/fileUpload";
@@ -9,6 +8,10 @@ import { TitleSlug } from "@/client/components/titleSlug";
 import { Button } from "@/client/components/ui/Button";
 import { Select } from "@/client/components/ui/Select";
 import { editChangelog } from "@/server/actions/changelog";
+import type {
+  CategoryModel as Category,
+  ChangelogModel as Changelog,
+} from "@/server/db/schema";
 
 export const EditChangelogForm = ({
   changelog,

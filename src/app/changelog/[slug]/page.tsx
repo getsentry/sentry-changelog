@@ -1,4 +1,3 @@
-import type { Changelog } from "@prisma/client";
 import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,6 +9,7 @@ import { CopyPageButton } from "@/client/components/copyPageButton";
 import { DateComponent } from "@/client/components/date";
 import { ShareButtons } from "@/client/components/shareButtons";
 import { authOptions } from "@/server/authOptions";
+import type { ChangelogModel as Changelog } from "@/server/db/schema";
 import { mdxOptions } from "@/server/mdxOptions";
 import { getChangelog, getRecentChangelogs } from "@/server/utils";
 
