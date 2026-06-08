@@ -6,42 +6,47 @@ A Next.js application for managing and displaying Sentry's product changelog.
 
 ### Prerequisites
 
-- [Volta](https://volta.sh/) for Node.js version management
-- pnpm 9.15.0
+- [Volta](https://volta.sh/) — pins the Node.js and pnpm versions automatically
+- A [Neon](https://neon.tech/) account with access to this project's database
+
+There is **no local database**. Local development runs against a Neon dev branch —
+the same serverless Postgres used in production — so there's no Docker to manage.
 
 ### Development
 
-1. **Install Node.js via Volta**
-
-   ```bash
-   # Volta will automatically install the correct Node.js version
-   # when you enter the project directory
-   volta install node
-   ```
-
-2. **Start the database**
-
-   ```bash
-   docker compose up -d
-   ```
-
-3. **Install dependencies**
+1. **Install dependencies**
 
    ```bash
    pnpm install
    ```
 
-4. **Set up the database**
+2. **Create a Neon dev branch**
+
+   In the [Neon console](https://console.neon.tech/), open this project and create
+   a branch off `production` (e.g. `dev`, or `dev/<your-name>` for an isolated
+   copy). Copy its **pooled** connection string.
+
+3. **Configure your local environment**
+
+   Create `.env.development.local` (gitignored) with your dev-branch URL:
 
    ```bash
-   pnpm db:push
-   pnpm db:migrate
-   pnpm db:seed
+   NEON_DATABASE_URL=postgresql://<user>:<password>@<endpoint>-pooler.<region>.aws.neon.tech/neondb?sslmode=require
+   # Optional — only needed to test admin image uploads locally:
+   # BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
    ```
 
-   - Production uses Neon (`NEON_DATABASE_URL` should point to your Neon pooled connection)
-   - For local development, keep Docker Postgres (`NEON_DATABASE_URL` in `.env.development`)
-   - Configure Vercel Blob via `BLOB_READ_WRITE_TOKEN`
+   Non-secret defaults (`NEXTAUTH_URL`, `NEXTAUTH_SECRET`) come from the committed
+   `.env.development`. See `.env.example` for the full list of variables.
+
+4. **Apply the schema and (optionally) seed**
+
+   These commands auto-load `.env.development.local`:
+
+   ```bash
+   pnpm db:push     # apply the Drizzle schema to your dev branch
+   pnpm db:seed     # optional: insert sample changelog data
+   ```
 
 5. **Start the development server**
 

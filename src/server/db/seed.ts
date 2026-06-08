@@ -1,6 +1,11 @@
+import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { _CategoryToChangelog, Category, Changelog } from "./schema";
+
+// Load the Neon dev-branch URL from .env.development.local locally; no-op in CI.
+config({ path: ".env.development.local" });
+config({ path: ".env.local" });
 
 const pool = new Pool({ connectionString: process.env.NEON_DATABASE_URL });
 const db = drizzle(pool);

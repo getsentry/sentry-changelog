@@ -21,7 +21,6 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "migrate:dev": "dotenv -e .env.development -- pnpm drizzle-kit push",
     "changelog:validate": "node scripts/changelog/validate.mjs",
     "changelog:sync": "tsx scripts/changelog/sync.ts",
     "prepare": "simple-git-hooks"
@@ -80,6 +79,7 @@
     "@types/unist": "^3.0.3",
     "@vitejs/plugin-react": "^5.2.0",
     "autoprefixer": "^10.5.0",
+    "dotenv": "^16.4.5",
     "dotenv-cli": "^7.4.4",
     "drizzle-kit": "^0.31.10",
     "lint-staged": "^15.5.2",

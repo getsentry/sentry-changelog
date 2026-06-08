@@ -40,13 +40,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma client
-        run: pnpm prisma generate
-
       - name: Sync changelog entries
         run: pnpm changelog:sync
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
           # Optional: bust the public cache after a successful sync. If unset,
           # the sync still succeeds and caches expire on their own.
           SITE_REVALIDATE_URL: ${{ secrets.SITE_REVALIDATE_URL }}
