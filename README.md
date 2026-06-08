@@ -20,17 +20,36 @@ the same serverless Postgres used in production — so there's no Docker to mana
    pnpm install
    ```
 
-2. **Create a Neon dev branch**
+2. **Create your own Neon dev branch**
 
-   In the [Neon console](https://console.neon.tech/), open this project and create
-   a branch off `production` (e.g. `dev`, or `dev/<your-name>` for an isolated
-   copy). Copy its **pooled** connection string.
-
-3. **Configure your local environment**
-
-   Create `.env.development.local` (gitignored) with your dev-branch URL:
+   Each developer works against an isolated branch of the production database,
+   created with the [Neon CLI](https://neon.tech/docs/reference/neon-cli). Branches
+   are instant copy-on-write forks, so your local work never touches production
+   data.
 
    ```bash
+   npx neonctl auth                        # first time only — opens the browser to log in
+   export NEON_DEV_BRANCH="dev/$(whoami)"   # or pick any name you like
+   npx neonctl branches create --project-id tiny-hill-05698860 --name "$NEON_DEV_BRANCH"
+   ```
+
+   (Prefer clicking? Create the branch in the [Neon console](https://console.neon.tech/)
+   → **Branches** instead.)
+
+3. **Point local dev at your branch**
+
+   Write your branch's **pooled** connection string into `.env.development.local`
+   (gitignored):
+
+   ```bash
+   echo "NEON_DATABASE_URL=$(npx neonctl connection-string "$NEON_DEV_BRANCH" \
+     --project-id tiny-hill-05698860 --pooled)" >> .env.development.local
+   ```
+
+   Or set it by hand:
+
+   ```bash
+   # .env.development.local
    NEON_DATABASE_URL=postgresql://<user>:<password>@<endpoint>-pooler.<region>.aws.neon.tech/neondb?sslmode=require
    # Optional — only needed to test admin image uploads locally:
    # BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
