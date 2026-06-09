@@ -1,8 +1,10 @@
+import * as Sentry from "@sentry/nextjs";
 import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { serialize } from "next-mdx-remote/serialize";
 import { Suspense } from "react";
 import ArticleFooter from "@/client/components/articleFooter";
 import { CopyPageButton } from "@/client/components/copyPageButton";
@@ -65,6 +67,21 @@ export default async function ChangelogEntry(props: {
   }
 
   const readTime = estimateReadTime(changelog.content);
+
+  // Pre-compile the MDX so a malformed entry reports the real underlying error
+  // (with its slug) to Sentry instead of crashing the render with the opaque
+  // "Server Components render" digest error.
+  const mdxSource = changelog.content ?? "No content found.";
+  let mdxIsValid = true;
+  try {
+    await serialize(mdxSource, { mdxOptions } as any);
+  } catch (e) {
+    Sentry.captureException(e, {
+      tags: { changelog_stage: "changelogDetailMdx" },
+      extra: { slug: params.slug },
+    });
+    mdxIsValid = false;
+  }
 
   return (
     <div className="bg-white min-h-screen">
@@ -139,12 +156,13 @@ export default async function ChangelogEntry(props: {
         </div>
 
         <div className="prose prose-lg max-w-none blog-prose blog-content">
-          <Suspense fallback="Loading...">
-            <MDXRemote
-              source={changelog.content ?? "No content found."}
-              options={{ mdxOptions } as any}
-            />
-          </Suspense>
+          {mdxIsValid ? (
+            <Suspense fallback="Loading...">
+              <MDXRemote source={mdxSource} options={{ mdxOptions } as any} />
+            </Suspense>
+          ) : (
+            <p>This entry could not be displayed.</p>
+          )}
         </div>
 
         <div className="mt-12">

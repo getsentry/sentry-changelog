@@ -1,5 +1,6 @@
 "use cache";
 
+import * as Sentry from "@sentry/nextjs";
 import { and, desc, eq, inArray, not } from "drizzle-orm";
 import type { Element } from "hast";
 import { cacheTag } from "next/cache";
@@ -49,52 +50,74 @@ async function getChangelogCategoryMap(
 
 export async function getChangelogs(): Promise<ChangelogWithCategories[]> {
   cacheTag("changelogs");
-  const changelogs = await db
-    .select()
-    .from(Changelog)
-    .where(and(eq(Changelog.published, true), eq(Changelog.deleted, false)))
-    .orderBy(desc(Changelog.publishedAt));
+  try {
+    const changelogs = await db
+      .select()
+      .from(Changelog)
+      .where(and(eq(Changelog.published, true), eq(Changelog.deleted, false)))
+      .orderBy(desc(Changelog.publishedAt));
 
-  const categoryMap = await getChangelogCategoryMap(
-    changelogs.map((row) => row.id),
-  );
+    const categoryMap = await getChangelogCategoryMap(
+      changelogs.map((row) => row.id),
+    );
 
-  return changelogs.map((changelog) => ({
-    ...changelog,
-    categories: categoryMap.get(changelog.id) ?? [],
-  }));
+    return changelogs.map((changelog) => ({
+      ...changelog,
+      categories: categoryMap.get(changelog.id) ?? [],
+    }));
+  } catch (e) {
+    // Surface the real underlying error (e.g. DB failure) to Sentry instead of
+    // the opaque "Server Components render" digest error Next.js would emit.
+    Sentry.captureException(e, {
+      tags: { changelog_stage: "getChangelogs" },
+    });
+    throw e;
+  }
 }
 
 export async function getChangelogSummaries(): Promise<ChangelogEntry[]> {
   cacheTag("changelogs");
   const changelogs = await getChangelogs();
 
-  return Promise.all(
+  const entries = await Promise.all(
     changelogs
       .filter((changelog) => changelog.publishedAt !== null)
-      .map(async (changelog): Promise<ChangelogEntry> => {
-        const mdxSummary = await serialize(
-          changelog.summary || "",
-          {
-            mdxOptions: {
-              rehypePlugins: [
-                // @ts-expect-error
-                stripLinks,
-              ],
+      .map(async (changelog): Promise<ChangelogEntry | null> => {
+        try {
+          const mdxSummary = await serialize(
+            changelog.summary || "",
+            {
+              mdxOptions: {
+                rehypePlugins: [
+                  // @ts-expect-error
+                  stripLinks,
+                ],
+              },
             },
-          },
-          true,
-        );
-        return {
-          id: changelog.id,
-          title: changelog.title,
-          slug: changelog.slug,
-          publishedAt: new Date(changelog.publishedAt!).toUTCString(),
-          categories: changelog.categories,
-          mdxSummary,
-        };
+            true,
+          );
+          return {
+            id: changelog.id,
+            title: changelog.title,
+            slug: changelog.slug,
+            publishedAt: new Date(changelog.publishedAt!).toUTCString(),
+            categories: changelog.categories,
+            mdxSummary,
+          };
+        } catch (e) {
+          // A single entry with malformed MDX should not crash the whole list.
+          // Report the real compile error (with the offending slug) to Sentry
+          // instead of letting it bubble up as the opaque digest error.
+          Sentry.captureException(e, {
+            tags: { changelog_stage: "getChangelogSummaries" },
+            extra: { changelogId: changelog.id, slug: changelog.slug },
+          });
+          return null;
+        }
       }),
   );
+
+  return entries.filter((entry): entry is ChangelogEntry => entry !== null);
 }
 
 export async function getChangelog(
