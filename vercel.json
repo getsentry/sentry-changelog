@@ -1,4 +1,5 @@
 {
+  "buildCommand": "pnpm exec drizzle-kit push --force && pnpm build",
   "headers": [
     {
       "source": "/(.*)",
