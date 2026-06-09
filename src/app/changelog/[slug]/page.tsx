@@ -1,8 +1,8 @@
+import * as Sentry from "@sentry/nextjs";
 import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth/next";
-import * as Sentry from "@sentry/nextjs";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { serialize } from "next-mdx-remote/serialize";
 import { Suspense } from "react";
