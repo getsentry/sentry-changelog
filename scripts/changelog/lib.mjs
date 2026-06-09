@@ -173,6 +173,21 @@ export function validateEntries(entries) {
       errors.push(`${prefix} "author" must be an email string`);
     }
 
+    if (frontmatter.platform !== undefined) {
+      if (
+        !Array.isArray(frontmatter.platform) ||
+        frontmatter.platform.some((p) => typeof p !== "string")
+      ) {
+        errors.push(
+          `${prefix} "platform" must be a list of platform slug strings`,
+        );
+      } else if (frontmatter.platform.some((p) => p.length > 255)) {
+        errors.push(
+          `${prefix} each platform slug must be 255 characters or fewer`,
+        );
+      }
+    }
+
     if (!frontmatter.deleted && content.trim() === "") {
       errors.push(`${prefix} body content is empty`);
     }

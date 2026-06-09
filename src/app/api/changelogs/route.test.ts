@@ -154,6 +154,7 @@ describe("GET /api/changelogs", () => {
         image: Changelog.image,
         content: Changelog.content,
         publishedAt: Changelog.publishedAt,
+        platform: Changelog.platform,
       });
     });
   });

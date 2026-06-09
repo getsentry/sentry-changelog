@@ -7,6 +7,7 @@ import { ForwardRefEditor } from "@/client/components/forwardRefEditor";
 import { TitleSlug } from "@/client/components/titleSlug";
 import { Button } from "@/client/components/ui/Button";
 import { Select } from "@/client/components/ui/Select";
+import { PLATFORM_GROUPS, platformLabel } from "@/lib/platforms";
 import { editChangelog } from "@/server/actions/changelog";
 import type {
   CategoryModel as Category,
@@ -56,6 +57,26 @@ export const EditChangelogForm = ({
           }))}
           isMulti
         />
+      </div>
+
+      <div>
+        <Select
+          name="platform"
+          className="mt-1 mb-6"
+          label="Platform"
+          placeholder="Select Platform (optional)"
+          defaultValue={changelog.platform.map((platform) => ({
+            label: platformLabel(platform),
+            value: platform,
+          }))}
+          options={PLATFORM_GROUPS}
+          creatable={false}
+          isMulti
+        />
+        <span className="text-xs text-gray-500 italic">
+          Scopes auto-generated broadcasts to these Sentry platforms. Leave
+          empty to target all platforms.
+        </span>
       </div>
 
       <Suspense fallback={null}>
