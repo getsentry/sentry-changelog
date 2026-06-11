@@ -49,6 +49,7 @@ Body content here…
 | `date`       | no       | `YYYY-MM-DD`. Controls ordering. Defaults to merge date if published. |
 | `author`     | no       | Email of an existing user to attribute.                               |
 | `platform`   | no       | List of Sentry platform slugs (e.g. `javascript-react`, `python-django`). Scopes getsentry broadcast targeting to matching orgs. Empty = all platforms. Valid slugs are in `src/lib/platforms.ts`. |
+| `broadcastCategory` | no | Controls the label pill in Sentry's "What's New" panel. One of: `announcement`, `feature`, `sdk_update`. Defaults to `feature` when omitted. |
 | `deleted`    | no       | Set `true` to unpublish/soft-delete while keeping the file as a record. |
 
 Files starting with `_` (like `_template.md`) or `.` are ignored.

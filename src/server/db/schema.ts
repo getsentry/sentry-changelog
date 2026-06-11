@@ -110,6 +110,7 @@ export const Changelog = pgTable(
     deleted: boolean("deleted").notNull().default(false),
     adminManaged: boolean("adminManaged").notNull().default(false),
     platform: text("platform").array().notNull().default([]),
+    broadcastCategory: text("broadcastCategory"),
     authorId: text("authorId").references(() => User.id, {
       onDelete: "set null",
       onUpdate: "cascade",

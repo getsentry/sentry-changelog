@@ -173,6 +173,18 @@ export function validateEntries(entries) {
       errors.push(`${prefix} "author" must be an email string`);
     }
 
+    if (frontmatter.broadcastCategory !== undefined) {
+      const validCategories = ["announcement", "feature", "sdk_update"];
+      if (
+        typeof frontmatter.broadcastCategory !== "string" ||
+        !validCategories.includes(frontmatter.broadcastCategory)
+      ) {
+        errors.push(
+          `${prefix} "broadcastCategory" must be one of: ${validCategories.join(", ")}`,
+        );
+      }
+    }
+
     if (frontmatter.platform !== undefined) {
       if (
         !Array.isArray(frontmatter.platform) ||

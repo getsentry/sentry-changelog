@@ -99,6 +99,7 @@ export async function GET(request: Request) {
         content: Changelog.content,
         publishedAt: Changelog.publishedAt,
         platform: Changelog.platform,
+        broadcastCategory: Changelog.broadcastCategory,
       })
       .from(Changelog)
       .where(and(...whereClauses))
