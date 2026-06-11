@@ -32,10 +32,8 @@ author: rahul.chhabria@sentry.io
 
 ## Releases Covered
 
-| Release | Date | Summary |
-| --- | --- | --- |
-| [10.55.0](https://github.com/getsentry/sentry-javascript/releases/tag/10.55.0) | 2026-05-28 | `@sentry/hono` stable, `shouldHandleError` for middleware, TanStack Start distributed tracing |
-| [10.54.0](https://github.com/getsentry/sentry-javascript/releases/tag/10.54.0) | 2026-05-26 | Array attributes for spans/logs/metrics, `fetchStreamPerformanceIntegration`, `dataCollection` option |
-| [10.53.1](https://github.com/getsentry/sentry-javascript/releases/tag/10.53.1) | 2026-05-12 | Bug fixes: streamed span user data, subpath type shims |
-| [10.53.0](https://github.com/getsentry/sentry-javascript/releases/tag/10.53.0) | 2026-05-12 | `streamGenAiSpans` option, Node 26 support, MCP handler retroactive wrapping |
-| [10.52.0](https://github.com/getsentry/sentry-javascript/releases/tag/10.52.0) | 2026-05-07 | `@sentry/hono` beta, Cloudflare WorkerEntrypoint tracing, vendored Redis instrumentations |
+- **[10.55.0](https://github.com/getsentry/sentry-javascript/releases/tag/10.55.0)** (2026-05-28) — `@sentry/hono` stable, `shouldHandleError` for middleware, TanStack Start distributed tracing
+- **[10.54.0](https://github.com/getsentry/sentry-javascript/releases/tag/10.54.0)** (2026-05-26) — Array attributes for spans/logs/metrics, `fetchStreamPerformanceIntegration`, `dataCollection` option
+- **[10.53.1](https://github.com/getsentry/sentry-javascript/releases/tag/10.53.1)** (2026-05-12) — Bug fixes: streamed span user data, subpath type shims
+- **[10.53.0](https://github.com/getsentry/sentry-javascript/releases/tag/10.53.0)** (2026-05-12) — `streamGenAiSpans` option, Node 26 support, MCP handler retroactive wrapping
+- **[10.52.0](https://github.com/getsentry/sentry-javascript/releases/tag/10.52.0)** (2026-05-07) — `@sentry/hono` beta, Cloudflare WorkerEntrypoint tracing, vendored Redis instrumentations
