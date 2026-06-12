@@ -155,6 +155,7 @@ describe("GET /api/changelogs", () => {
         content: Changelog.content,
         publishedAt: Changelog.publishedAt,
         platform: Changelog.platform,
+        broadcastCategory: Changelog.broadcastCategory,
       });
     });
   });

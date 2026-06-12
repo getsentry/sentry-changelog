@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Suspense, useActionState } from "react";
+import ReactSelect from "react-select";
 import { FileUpload } from "@/client/components/fileUpload";
 import { ForwardRefEditor } from "@/client/components/forwardRefEditor";
 import { TitleSlug } from "@/client/components/titleSlug";
@@ -9,6 +10,13 @@ import { Button } from "@/client/components/ui/Button";
 import { Select } from "@/client/components/ui/Select";
 import { PLATFORM_GROUPS, platformLabel } from "@/lib/platforms";
 import { editChangelog } from "@/server/actions/changelog";
+
+const BROADCAST_CATEGORY_OPTIONS = [
+  { label: "New Feature", value: "feature" },
+  { label: "Announcement", value: "announcement" },
+  { label: "SDK Update", value: "sdk_update" },
+];
+
 import type {
   CategoryModel as Category,
   ChangelogModel as Changelog,
@@ -76,6 +84,35 @@ export const EditChangelogForm = ({
         <span className="text-xs text-gray-500 italic">
           Scopes auto-generated broadcasts to these Sentry platforms. Leave
           empty to target all platforms.
+        </span>
+      </div>
+
+      <div className="mb-6">
+        <label
+          htmlFor="broadcastCategory"
+          className="block text-xs font-medium text-gray-700"
+        >
+          Broadcast Label (shown in &quot;What&apos;s New&quot;)
+        </label>
+        {/* Sentinel so the server action knows the field was rendered,
+            even when react-select removes its hidden input on clear. */}
+        <input type="hidden" name="broadcastCategoryPresent" value="1" />
+        <ReactSelect
+          name="broadcastCategory"
+          placeholder="Defaults to New Feature"
+          options={BROADCAST_CATEGORY_OPTIONS}
+          defaultValue={
+            changelog.broadcastCategory
+              ? BROADCAST_CATEGORY_OPTIONS.find(
+                  (o) => o.value === changelog.broadcastCategory,
+                )
+              : undefined
+          }
+          isClearable
+        />
+        <span className="text-xs text-gray-500 italic">
+          Controls the label pill in Sentry&apos;s &quot;What&apos;s New&quot;
+          panel
         </span>
       </div>
 
