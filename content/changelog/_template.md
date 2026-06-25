@@ -26,6 +26,11 @@ categories:
 platform:
   - javascript-react
 
+# Optional. Controls the label pill in Sentry's "What's New" broadcast panel.
+# Valid values: announcement, feature, sdk_update
+# Defaults to "feature" (New Feature) when omitted or null.
+# broadcastCategory: announcement
+
 # Optional. Defaults to false. Set to true to make the entry live.
 published: false
 

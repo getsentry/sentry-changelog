@@ -21,6 +21,7 @@ export async function GET(
         content: Changelog.content,
         publishedAt: Changelog.publishedAt,
         platform: Changelog.platform,
+        broadcastCategory: Changelog.broadcastCategory,
       })
       .from(Changelog)
       .where(

@@ -35,6 +35,7 @@ type ChangelogFileEntry = {
     published?: boolean;
     categories?: string[];
     platform?: string[];
+    broadcastCategory?: string;
     author?: string;
   };
   content: string;
@@ -138,6 +139,17 @@ async function syncEntry(
     ? frontmatter.platform.filter((p) => typeof p === "string")
     : [];
 
+  const validBroadcastCategories = new Set([
+    "announcement",
+    "feature",
+    "sdk_update",
+  ]);
+  const broadcastCategory =
+    typeof frontmatter.broadcastCategory === "string" &&
+    validBroadcastCategories.has(frontmatter.broadcastCategory)
+      ? frontmatter.broadcastCategory
+      : null;
+
   const common = {
     title: frontmatter.title,
     content,
@@ -149,6 +161,7 @@ async function syncEntry(
     publishedAt,
     slug,
     platform: platformSlugs,
+    broadcastCategory,
   };
 
   const [changelog] = await tx
