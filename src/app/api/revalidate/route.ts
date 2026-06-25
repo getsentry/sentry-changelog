@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
@@ -14,12 +15,26 @@ export async function POST(request: Request) {
   const provided = request.headers.get("x-revalidate-secret");
 
   if (!secret || provided !== secret) {
+    // Forensic security event: a request hit the out-of-band revalidation hook
+    // without the shared secret. `secret_configured` separates a real rejected
+    // caller from the hook simply being misconfigured (env var missing).
+    Sentry.logger.warn(
+      "Rejected changelog cache revalidation: invalid secret",
+      {
+        "revalidate.authorized": false,
+        "revalidate.secret_configured": Boolean(secret),
+      },
+    );
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   for (const tag of TAGS) {
     revalidateTag(tag, "max");
   }
+
+  Sentry.logger.info("Changelog caches revalidated out-of-band", {
+    "revalidate.tags": TAGS.join(","),
+  });
 
   return NextResponse.json({ revalidated: true, tags: TAGS });
 }
