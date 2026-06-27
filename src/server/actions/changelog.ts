@@ -1,5 +1,6 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
 import { eq, inArray } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
@@ -71,6 +72,7 @@ export async function unpublishChangelog(
   if (!session) {
     return unauthorizedPayload;
   }
+  Sentry.setUser({ id: session.user?.id });
   const id = formData.get("id") as string;
 
   try {
@@ -79,9 +81,19 @@ export async function unpublishChangelog(
       .set({ published: false, adminManaged: true })
       .where(eq(Changelog.id, id));
   } catch (error) {
-    console.error("DELETE ACTION ERROR:", error);
+    Sentry.logger.error("Changelog unpublish failed", {
+      "changelog.id": id,
+      "changelog.action": "unpublish",
+      "error.message": error instanceof Error ? error.message : String(error),
+    });
     return { message: "Unable to unpublish changelog", success: false };
   }
+
+  // Audit: a previously public entry was hidden from the changelog.
+  Sentry.logger.info("Changelog unpublished", {
+    "changelog.id": id,
+    "changelog.action": "unpublish",
+  });
 
   revalidateTag("changelogs", "max");
   revalidateTag("changelog-detail", "max");
@@ -98,6 +110,7 @@ export async function publishChangelog(
   if (!session) {
     return unauthorizedPayload;
   }
+  Sentry.setUser({ id: session.user?.id });
   const id = formData.get("id") as string;
 
   try {
@@ -120,9 +133,19 @@ export async function publishChangelog(
       })
       .where(eq(Changelog.id, id));
   } catch (error) {
-    console.error("DELETE ACTION ERROR:", error);
+    Sentry.logger.error("Changelog publish failed", {
+      "changelog.id": id,
+      "changelog.action": "publish",
+      "error.message": error instanceof Error ? error.message : String(error),
+    });
     return { message: "Unable to publish changelog", success: false };
   }
+
+  // Audit: an entry became publicly visible on the changelog.
+  Sentry.logger.info("Changelog published", {
+    "changelog.id": id,
+    "changelog.action": "publish",
+  });
 
   revalidateTag("changelogs", "max");
   revalidateTag("changelog-detail", "max");
@@ -138,6 +161,7 @@ export async function createChangelog(
   if (!session) {
     return unauthorizedPayload;
   }
+  Sentry.setUser({ id: session.user?.id });
   const categoryNames = uniqueCategoryNames(getFormCategoryNames(formData));
 
   if (categoryNames.length > 0) {
@@ -184,6 +208,16 @@ export async function createChangelog(
 
   await syncChangelogCategories(changelog.id, categoryNames);
 
+  // Audit: a new entry was authored through the admin UI (always a draft;
+  // platform/category counts show how the entry was targeted at creation).
+  Sentry.logger.info("Changelog created", {
+    "changelog.id": changelog.id,
+    "changelog.slug": formData.get("slug") as string,
+    "changelog.action": "create",
+    "changelog.platform_count": parsePlatforms(formData).length,
+    "changelog.category_count": categoryNames.length,
+  });
+
   return redirect("/changelog/_admin");
 }
 
@@ -195,6 +229,7 @@ export async function editChangelog(
   if (!session) {
     return unauthorizedPayload;
   }
+  Sentry.setUser({ id: session.user?.id });
   const id = formData.get("id") as string;
   const categoryNames = uniqueCategoryNames(getFormCategoryNames(formData));
 
@@ -222,9 +257,23 @@ export async function editChangelog(
 
     await syncChangelogCategories(id, categoryNames);
   } catch (error: any) {
-    console.error("EDIT ACTION ERROR:", error);
+    Sentry.logger.error("Changelog edit failed", {
+      "changelog.id": id,
+      "changelog.action": "edit",
+      "error.message": error instanceof Error ? error.message : String(error),
+    });
     return { message: (error as Error).message, success: false };
   }
+
+  // Audit: an existing entry's content or targeting was changed via the admin
+  // UI, which also marks it admin-managed so the file sync no longer touches it.
+  Sentry.logger.info("Changelog updated", {
+    "changelog.id": id,
+    "changelog.slug": formData.get("slug") as string,
+    "changelog.action": "edit",
+    "changelog.platform_count": parsePlatforms(formData).length,
+    "changelog.category_count": categoryNames.length,
+  });
 
   revalidateTag("changelogs", "max");
   revalidateTag("changelog-detail", "max");
@@ -239,6 +288,7 @@ export async function deleteChangelog(
   if (!session) {
     return unauthorizedPayload;
   }
+  Sentry.setUser({ id: session.user?.id });
   const id = formData.get("id") as string;
   try {
     // Soft delete: mark deleted + admin-managed instead of removing the row,
@@ -254,9 +304,19 @@ export async function deleteChangelog(
       })
       .where(eq(Changelog.id, id));
   } catch (error) {
-    console.error("DELETE ACTION ERROR:", error);
+    Sentry.logger.error("Changelog delete failed", {
+      "changelog.id": id,
+      "changelog.action": "delete",
+      "error.message": error instanceof Error ? error.message : String(error),
+    });
     return { message: "Unable to delete changelog", success: false };
   }
+
+  // Audit: an entry was soft-deleted (hidden, but the row is retained).
+  Sentry.logger.info("Changelog deleted", {
+    "changelog.id": id,
+    "changelog.action": "delete",
+  });
 
   revalidateTag("changelogs", "max");
   revalidateTag("changelog-detail", "max");

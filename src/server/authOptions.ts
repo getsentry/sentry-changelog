@@ -41,4 +41,14 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+  callbacks: {
+    // Surface the opaque user id (the JWT subject) on the session so server
+    // code can attach it to Sentry via setUser without logging the email (PII).
+    session({ session, token }) {
+      if (session.user && token.sub) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+  },
 };
