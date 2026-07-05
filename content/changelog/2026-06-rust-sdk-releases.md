@@ -25,5 +25,3 @@ Releases covered: **0.48.3**
 - **`EnvelopeFilter` / `EnvelopeFilterCallbacks` (0.48.3):** New types to observe envelope items removed by `Envelope::filter`, including attachments dropped alongside their filtered event or transaction.
 - **Deprecation (0.48.3):** `Hub::with` is deprecated — use `Hub::current` instead.
 - **Bug fix (0.48.3):** Fixed `ureq` transport handling for 429 rate-limit and 413 payload-too-large HTTP responses.
-
-_Tagged by @rahulchhabria_
