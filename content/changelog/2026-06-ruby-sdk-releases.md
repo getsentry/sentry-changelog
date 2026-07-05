@@ -27,5 +27,3 @@ Releases covered: **6.6.0 · 6.6.1 · 6.6.2**
 - **Sidekiq fix (6.6.0):** Errors are now correctly reported when the Sidekiq retry limit is set below the attempt threshold.
 - **Stacktrace fix (6.6.0):** Stopped leaking internal frame state into the event payload.
 - **Concurrency fix (6.6.1):** `TelemetryEventBuffer` is now guarded against re-entrant mutex acquisition.
-
-_Tagged by @rahulchhabria_
