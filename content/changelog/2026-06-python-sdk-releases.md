@@ -28,5 +28,3 @@ Releases covered: **2.61.1 · 2.62.0 · 2.63.0 · 2.64.0**
 - **MCP SDK v2 support (2.64.0):** The MCP integration now handles MCP SDK v2 handler signatures and the removed `request_ctx`.
 - **PII gating hardened (2.64.0 · 2.63.0):** `url.full`, `url.query`, and `url.path` are now consistently gated behind `send_default_pii` across aiohttp, asyncpg, boto3, httpx, sanic, tornado, wsgi, stdlib, and ASGI integrations.
 - **FastAPI fixes (2.63.0):** Fixed double-wrapping of sync handlers on FastAPI ≥ 0.137 and incorrect route paths for prefixed routers.
-
-_Tagged by @rahulchhabria_
