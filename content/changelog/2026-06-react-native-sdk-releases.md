@@ -29,5 +29,3 @@ Releases covered: **8.14.0 · 8.14.1 · 8.15.0 · 8.15.1 · 8.16.0**
 - **Mobile Session Replay network details (8.15.0):** XHR request/response headers and bodies can now be captured via `networkDetailAllowUrls` and `networkCaptureBodies: true`. Authorization headers are always stripped; bodies capped at ~150 KB.
 - **Profiling & linked errors (8.14.0 · 8.15.0):** Added memory, CPU, and frame measurements to Android profiling; JVM stack traces of rejected native module promises now captured as linked exceptions via `nativeStackAndroid`.
 - **Bug fixes (8.15.1 · 8.16.0):** Fixed fatal iOS crash in `RNSentryReplayBreadcrumbConverter`; fixed Android `ClassCastException` with numeric breadcrumb timestamps; fixed Android Gradle source map upload being silently skipped.
-
-_Tagged by @rahulchhabria_
