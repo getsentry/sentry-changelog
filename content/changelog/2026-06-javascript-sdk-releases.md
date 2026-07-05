@@ -33,5 +33,3 @@ Releases covered: **10.56.0 · 10.57.0 · 10.58.0 · 10.59.0 · 10.60.0 · 10.61
 - **New integrations & runtime support (10.59.0 · 10.62.0):** `vercelAiIntegration` adds Vercel AI SDK v7 support; AWS SDK clients ≥ 3.1046.0 are auto-instrumented; Bun and Deno get orchestrion runtime hooks.
 - **New APIs (10.61.0):** Top-level `Sentry.setAttribute(s)` APIs added; Hono transactions now named after matched route handlers; `bindScopeToEmitter` added for event-emitter-scoped traces.
 - **Bug fixes (10.57.0 · 10.58.0):** React Router v6/v7 navigation detection moved to layout effect for correct trace propagation; PostgresJS no longer emits duplicate spans per query; Next.js redirects no longer reported as `internal_error`.
-
-_Tagged by @rahulchhabria_
