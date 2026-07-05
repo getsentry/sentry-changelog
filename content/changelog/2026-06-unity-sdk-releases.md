@@ -27,5 +27,3 @@ Releases covered: **4.4.0 · 4.5.0 · 4.6.0**
 - **Experimental sentry-native backend (4.4.0 · 4.5.0):** Extended to macOS, Windows, and Linux for immediate crash upload via an out-of-process crash handler. Opt in per platform via `options.Experimental.*Backend = *Backend.Native`.
 - **.NET Standard 2.1 support (4.6.0):** SDK now supports .NET Standard 2.1 for both source builds and the Unity Player Settings Api Compatibility Level.
 - **Bug fixes (4.5.0):** Breadcrumb data now synced to native layer; fixed Android debug symbol upload on Unity 6.4 using Gradle's `Exec` task type.
-
-_Tagged by @rahulchhabria_
