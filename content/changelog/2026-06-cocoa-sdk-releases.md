@@ -31,5 +31,3 @@ Releases covered: **9.16.0 · 9.16.1 · 9.17.0 · 9.17.1 · 9.18.0 · 9.19.0**
 - **Extended app start instrumentation (9.19.0):** `extendAppLaunch()` → `extendAppStart()` / `finishExtendedAppLaunch()` → `finishExtendedAppStart()`; app start sub-span operations renamed for clarity (e.g. `app.start.pre_runtime_init`, `app.start.uikit_init`).
 - **Session Replay improvements (9.19.0):** Reduced capture stutters by scheduling screenshots after run-loop UI work; video assembly drops empty segments and avoids frame duplication at segment boundaries.
 - **Bug fixes (9.19.0):** Fixed crash from concurrent breadcrumb mutations; prevented feedback form appearing on external displays; fixed iOS 26 crash in `SentryFramesTracker`.
-
-_Tagged by @rahulchhabria_
