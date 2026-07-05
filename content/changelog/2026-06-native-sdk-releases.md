@@ -27,5 +27,3 @@ Releases covered: **0.15.0 · 0.15.1 · 0.15.2**
 - **Improved symbolication (0.15.0 · 0.15.2):** Linux crash daemon symbolicates from on-disk ELF tables; macOS crash reports now include full stack traces for all threads; Windows and Crashpad multi-module symbol resolution fixed.
 - **Module limit raised (0.15.0):** `SENTRY_CRASH_MAX_MODULES` increased from 512 to 2048, fixing unsymbolicated frames in processes that load many shared libraries.
 - **Bug fixes (0.15.1 · 0.15.2):** Fixed partial disk writes for streamed envelopes; Android breadcrumb `data` now sent as structured object; partial disk write detection now reports failure correctly.
-
-_Tagged by @rahulchhabria_
