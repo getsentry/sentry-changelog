@@ -32,5 +32,3 @@ Releases covered: **8.43.1 · 8.43.2 · 8.43.3 · 8.44.0 · 8.44.1 · 8.45.0 · 
 - **Experimental `SentrySQLiteDriver` (8.44.1):** New driver in `sentry-android-sqlite` for instrumenting `androidx.sqlite.SQLiteDriver` (Room/SQLDelight 2.5.0+).
 - **Session Replay fixes (8.43.1 · 8.43.2):** Fixed freeze on continuous-animation screens; populated `trace_ids` for replay-by-trace search; fixed `VerifyError` in Compose masking under DexGuard/R8.
 - **Performance (8.43.2 · 8.46.0):** Multiple reductions across JSON serialization, scope access, timestamp parsing, breadcrumb allocation, and DSN parsing overhead.
-
-_Tagged by @rahulchhabria_
