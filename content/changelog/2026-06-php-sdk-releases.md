@@ -25,5 +25,3 @@ Releases covered: **4.28.0 · 4.29.0**
 - **gen_ai span v2 protocol (4.29.0):** `gen_ai` spans are now sent using the span v2 protocol, aligning with other SDKs.
 - **Proxy-Authorization scrubbed by default (4.29.0):** `Proxy-Authorization` request headers are now scrubbed in addition to `Authorization`.
 - **Bug fixes (4.28.0 · 4.29.0):** Feature flag values now correctly serialize as a JSON list when a flag is updated multiple times; fatal error handler state is reset when starting a new runtime context.
-
-_Tagged by @rahulchhabria_
