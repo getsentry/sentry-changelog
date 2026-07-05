@@ -22,5 +22,3 @@ Releases covered: **0.27.0**
 ## What changed
 
 - **C++ exception monitoring option (0.27.0):** Added `enableUnhandledCppExceptionMonitoring` to the SDK options. Note: on Apple/Compose Multiplatform targets it's recommended to disable this (`options.enableUnhandledCppExceptionMonitoring = false`) — unhandled Kotlin exceptions from CMP can otherwise be reported as generic `ExceptionObjHolderImpl` C++ crashes instead of useful Kotlin stack traces.
-
-_Tagged by @rahulchhabria_
