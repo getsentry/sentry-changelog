@@ -24,5 +24,3 @@ Releases covered: **9.22.0**
 - **Android replay trace ID sync (9.22.0):** Replay trace IDs are now synchronized on Android, enabling replay-by-trace lookup across platforms.
 - **Span v2 envelope metadata (9.22.0):** Added `ingest_settings` metadata to span v2 envelopes for improved server-side processing.
 - **Bug fix (9.22.0):** Fixed missing log byte outcomes that could cause incorrect data-discarded reporting.
-
-_Tagged by @rahulchhabria_
