@@ -12,16 +12,34 @@ date: 2026-06-30
 author: rahulchhabria@sentry.io
 ---
 
-Releases covered: **0.48.3**
+Releases covered:
 
 | Version | Date | Link |
 |---------|------|------|
-| 0.48.3 | Jun 2026 | [Release notes](https://github.com/getsentry/sentry-rust/releases/tag/0.48.3) |
+| 0.48.3 | 2026-06-25 | [Release notes](https://github.com/getsentry/sentry-rust/releases/tag/0.48.3) |
 
-## What changed
+## TL;DR
 
-- **Client report support (0.48.3):** The SDK now reports data it discards to Sentry's Stats page — covering transport drops, queue drops, rate-limit backoff, sampling, event processors, and `before_send*` callbacks, with span counts for dropped transactions.
-- **New `TransportFactory` APIs (0.48.3):** Added `create_transport_with_options` and transport-specific options types (`ReqwestHttpTransportOptions`, `CurlHttpTransportOptions`, `UreqHttpTransportOptions`, `EmbeddedSVCHttpTransportOptions`) for cleaner custom transport construction.
-- **`EnvelopeFilter` / `EnvelopeFilterCallbacks` (0.48.3):** New types to observe envelope items removed by `Envelope::filter`, including attachments dropped alongside their filtered event or transaction.
-- **Deprecation (0.48.3):** `Hub::with` is deprecated — use `Hub::current` instead.
-- **Bug fix (0.48.3):** Fixed `ureq` transport handling for 429 rate-limit and 413 payload-too-large HTTP responses.
+- SDK now reports discarded data to Sentry's Stats page — transport drops, sampling, event processors, and `before_send*` callbacks are all tracked automatically.
+- New `TransportFactory::create_transport_with_options` and transport-specific options types for cleaner custom transport construction.
+- `EnvelopeFilter` / `EnvelopeFilterCallbacks` to observe all items removed by `Envelope::filter`, including attachments.
+- `Hub::with` deprecated — use `Hub::current()` instead.
+- Fixed `ureq` transport handling of 429 and 413 HTTP responses.
+
+## Release notes
+
+### New Features
+
+0.48.3 makes the SDK automatically track data it discards and report aggregate counts to Sentry's Stats page. Drops from transport layers, background queues, rate-limit backoff, sampling decisions, event processors, and `before_send`/`before_send_transaction` callbacks are all covered. For dropped transactions, span counts are included; for dropped logs and metrics, byte counts are included. No configuration is required — the SDK batches these reports and sends them in future envelopes automatically.
+
+The transport API is modernised in 0.48.3. `TransportFactory::create_transport_with_options` is added as the preferred way to construct transports. It receives a `TransportOptions` struct containing only transport-relevant fields (DSN, user agent, proxy settings, TLS configuration) rather than full `ClientOptions`, making custom transports simpler to write. Transport-specific options types are also introduced — `ReqwestHttpTransportOptions`, `CurlHttpTransportOptions`, `UreqHttpTransportOptions`, and `EmbeddedSVCHttpTransportOptions` — each with `with_options` constructors. The existing `TransportFactory::create_transport` continues to work but now receives `ClientOptions` reconstructed from `TransportOptions`, which only includes transport-relevant fields.
+
+`EnvelopeFilter` and `EnvelopeFilterCallbacks` are new in 0.48.3 and allow callers to observe which envelope items are removed by `Envelope::filter`. Previously, the closure received items as they were removed but attachments dropped alongside their parent event or transaction were not surfaced. The new types make all filtered items visible.
+
+### Deprecations
+
+0.48.3 deprecates `Hub::with`. Use `Hub::current()` to access the current hub.
+
+### Bug Fixes
+
+The `ureq` HTTP transport was not correctly handling 429 (Too Many Requests) and 413 (Payload Too Large) response codes. Both are now processed as the appropriate transport-level errors.
