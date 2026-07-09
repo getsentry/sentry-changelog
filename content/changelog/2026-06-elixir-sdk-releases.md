@@ -12,14 +12,24 @@ date: 2026-06-30
 author: rahulchhabria@sentry.io
 ---
 
-Releases covered: **13.2.0**
+Releases covered:
 
 | Version | Date | Link |
 |---------|------|------|
-| 13.2.0 | Jun 2026 | [Release notes](https://github.com/getsentry/sentry-elixir/releases/tag/13.2.0) |
+| 13.2.0 | 2026-06-11 | [Release notes](https://github.com/getsentry/sentry-elixir/releases/tag/13.2.0) |
 
-## What changed
+## TL;DR
 
-- **PII scrubbing for stacktrace args (13.2.0):** Implemented PII scrubbing for stacktrace arguments to prevent accidental capture of sensitive data.
-- **Broader Plug scrubbing (13.2.0):** Extended PII scrubbing coverage in the Plug integration for more request fields.
-- **Oban fix (13.2.0):** The Oban error reporter now handles non-list stacktraces without crashing.
+- PII scrubbing now applies to stacktrace arguments — function args captured in stack traces are run through the configured scrubber before sending.
+- Broader PII scrubbing coverage in the Plug integration.
+- Oban error reporter now handles non-list stacktraces without crashing.
+
+## Release notes
+
+### New Features
+
+13.2.0 extends PII scrubbing to stacktrace arguments. Previously, function arguments captured as part of an exception's stack trace were included verbatim; they are now passed through the configured scrubber so values matching patterns such as passwords, tokens, and other sensitive keys are redacted before the event is sent. The Plug integration also receives broader scrubbing coverage in this release — more request fields are now run through PII scrubbing rather than being included as-is.
+
+### Bug Fixes
+
+The Oban error reporter was crashing when a job produced a stacktrace in non-list form, which can happen with certain error types. It now handles that case gracefully. The release also excludes the `:bandit` domain from error capturing by default, reducing noise from expected Bandit HTTP server events.
