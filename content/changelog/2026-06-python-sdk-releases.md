@@ -26,7 +26,7 @@ Releases covered:
 - `gen_ai` spans now stream as v2 envelope items by default — prevents drops on large transactions and removes size-based AI message truncation; self-hosted users can opt out with `stream_gen_ai_spans=False`.
 - New `aiomysql` integration for async MySQL tracing; added automatic HTTPX2 instrumentation.
 - MCP SDK v2 handler signature is now supported in the MCP integration.
-- `url.full`, `url.query`, and `url.path` are now consistently gated behind `send_default_pii` across aiohttp, asyncpg, boto3, httpx, sanic, tornado, wsgi, stdlib, and ASGI integrations.
+- `url.full`, `url.query`, `url.path`, and `url.fragment` are now consistently gated behind `send_default_pii` across aiohttp, asyncpg, boto3, httpx, sanic, tornado, wsgi, stdlib, and ASGI integrations.
 - FastAPI: fixed double-wrapping of sync handlers on FastAPI ≥ 0.137 and incorrect route paths for prefixed routers.
 
 ## Release notes
