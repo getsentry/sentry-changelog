@@ -28,10 +28,10 @@ Releases covered:
 
 ## TL;DR
 
-- `streamGenAiSpans` is now enabled by default — `gen_ai` spans stream as v2 envelope items, preventing drops and disabling default message truncation; self-hosted users can opt out with `streamGenAiSpans: false`.
+- `streamGenAiSpans` is now enabled by default — `gen_ai` spans are sent as v2 envelope items, preventing size limit drops and disabling default message truncation; self-hosted users can opt out with `streamGenAiSpans: false`.
 - Expanded Cloudflare instrumentation: R2 buckets, D1 batch/exec/withSession, SQLite Durable Objects SQL API, and sync KV are all now auto-instrumented.
-- `vercelAiIntegration` adds Vercel AI SDK v7 support; AWS SDK clients ≥ 3.1046.0 are auto-instrumented; Bun and Deno get orchestrion runtime hooks.
-- New top-level `Sentry.setAttribute(s)` APIs; Hono transactions named after matched route handlers; `bindScopeToEmitter` for event-emitter-scoped traces.
+- `vercelAiIntegration` adds Vercel AI SDK v7 support
+- New top-level `Sentry.setAttribute(s)` APIs; Hono transactions named after matched route handlers
 - React Router v6/v7 navigation tracing fix; PostgresJS duplicate span fix; Next.js redirect classification fix.
 
 ## Release notes
@@ -42,9 +42,9 @@ Releases covered:
 
 Cloudflare storage instrumentation expanded across four releases: 10.60.0 added R2 bucket auto-instrumentation, 10.61.0 added D1 batch operations, `exec()`, and `withSession()`, as well as SQL API instrumentation for SQLite Durable Objects. 10.59.0 added synchronous KV instrumentation. Together these give complete zero-config coverage for Cloudflare storage primitives.
 
-10.62.0 extends `vercelAiIntegration` to support v7 of the Vercel AI SDK (note: not yet available on Cloudflare Workers). In 10.59.0, AWS SDK clients at v3.1046.0 or later are automatically instrumented. Bun gained an orchestrion build plugin in 10.59.0 and Deno a runtime hook, enabling zero-config instrumentation for those runtimes.
+10.62.0 extends `vercelAiIntegration` to support v7 of the Vercel AI SDK (note: not yet available on Cloudflare Workers).
 
-10.61.0 adds two new top-level APIs — `Sentry.setAttribute(key, value)` and `Sentry.setAttributes(attributes)` — for setting custom attributes on the currently active span without a direct span reference. Hono transactions are now named after the matched route handler. 10.60.0 introduces `bindScopeToEmitter(emitter)`, which propagates the active Sentry scope to all listeners of a Node.js `EventEmitter`.
+10.61.0 adds two new top-level APIs — `Sentry.setAttribute(key, value)` and `Sentry.setAttributes(attributes)` — for setting custom attributes on the currently active span without a direct span reference. Hono transactions are now named after the matched route handler.
 
 ### Bug Fixes
 
