@@ -40,7 +40,7 @@ Releases covered:
 
 10.61.0 enables `streamGenAiSpans` by default. `gen_ai` spans are extracted from transactions and sent as v2 envelope items, which means they can no longer be dropped when the transaction payload exceeds size limits, and AI message data is no longer truncated by default. Pass `enableTruncation: true` on the respective AI integration to re-enable truncation. Self-hosted Sentry users should set `streamGenAiSpans: false` until their instance supports streamed spans.
 
-Cloudflare storage instrumentation expanded across four releases: 10.60.0 added R2 bucket auto-instrumentation, 10.61.0 added D1 batch operations, `exec()`, and `withSession()`, as well as SQL API instrumentation for SQLite Durable Objects. 10.59.0 added synchronous KV instrumentation. Together these give complete zero-config coverage for Cloudflare storage primitives.
+Cloudflare storage instrumentation expanded across three releases: 10.60.0 added R2 bucket auto-instrumentation, 10.61.0 added D1 batch operations, `exec()`, and `withSession()`, as well as SQL API instrumentation for SQLite Durable Objects. 10.59.0 added synchronous KV instrumentation. Together these give complete zero-config coverage for Cloudflare storage primitives.
 
 10.62.0 extends `vercelAiIntegration` to support v7 of the Vercel AI SDK (note: not yet available on Cloudflare Workers).
 
