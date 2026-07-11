@@ -28,7 +28,7 @@ Releases covered:
 - Deep links correlated with resulting navigation transactions, tagged with trigger, URL, and dispatch delay.
 - Mobile Session Replay network details: XHR headers/bodies capturable via `networkDetailAllowUrls` + `networkCaptureBodies`.
 - Android profiling gains memory, CPU, and frame measurements; JVM stack traces of rejected native module promises captured as linked errors.
-- Fixed fatal iOS crash in `RNSentryReplayBreadcrumbConverter`; Android Gradle source map upload fix; Android `ClassCastException` with numeric breadcrumb timestamps.
+- Fixed fatal iOS crash in `RNSentryReplayBreadcrumbConverter` (8.16.0); Android Gradle source map upload fix (8.15.1 / 8.14.1); Android `ClassCastException` with numeric breadcrumb timestamps (8.15.0).
 
 ## Release notes
 
@@ -44,8 +44,8 @@ Also in 8.14.0: memory, CPU, and frame measurements are now included in Android 
 
 ### Bug Fixes
 
-8.15.1 and 8.14.1 fix Android Gradle source map upload being silently skipped in some build configurations.
+In 8.15.0, Android threw a `ClassCastException` when syncing breadcrumbs whose `timestamp` was a number (epoch seconds, as stamped by the JS SDK) rather than a string; breadcrumbs were being discarded on the native scope as a result. That cast is fixed in 8.15.0 ([#6308](https://github.com/getsentry/sentry-react-native/pull/6308)).
 
-8.15.0 fixes an Android `ClassCastException` thrown when syncing breadcrumbs with a numeric (non-string) `timestamp` field to the native scope.
+Separately, 8.15.1 and 8.14.1 fix Android Gradle source map upload being silently skipped in some build configurations ([#6320](https://github.com/getsentry/sentry-react-native/pull/6320)).
 
 8.16.0 fixes a fatal `NSInvalidArgumentException` crash in `RNSentryReplayBreadcrumbConverter` when a touch breadcrumb's path array contained a non-dictionary element such as `NSNull`. Also in 8.16.0: `SENTRY_ENVIRONMENT`, `SENTRY_RELEASE`, and `SENTRY_DIST` environment variables now apply to the JavaScript bundle options, preventing the native and JS layers from disagreeing on release or environment. User `geo` data was being dropped from the native scope because it was forwarded as a JSON string instead of a structured object — this is now fixed.
