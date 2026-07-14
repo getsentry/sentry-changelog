@@ -35,7 +35,7 @@ Releases covered:
 
 In 2.62.0 a new `aiomysql` integration lands for async MySQL query tracing — add `AioMySQLIntegration()` to your `integrations` list to enable it. The same release adds automatic HTTPX2 support: requests made through the `httpx2` package are instrumented with no extra setup required.
 
-2.64.0 makes `gen_ai` span streaming the default. Previously AI spans were embedded inside their parent transaction and subject to the same payload size limits; with streaming they travel as independent v2 envelope items. This means they can no longer be dropped when a transaction payload grows too large, and AI message data is no longer truncated by the SDK. Self-hosted Sentry users whose instance does not yet support streamed spans should opt out via `stream_gen_ai_spans=False`.
+2.64.0 makes `gen_ai` use streamed spans (v2) by default, rather than transaction-based spans (v1). Previously AI spans were embedded inside their parent transaction and subject to the same payload size limits; with streaming they travel as independent v2 envelope items. This means they can no longer be dropped when a transaction payload grows too large, and AI message data is no longer truncated by the SDK. Self-hosted Sentry users whose instance does not yet support streamed spans should opt out via `stream_gen_ai_spans=False`.
 
 Also in 2.64.0, the MCP integration now handles the handler signature introduced in MCP SDK v2, where the `request_ctx` parameter was removed.
 
