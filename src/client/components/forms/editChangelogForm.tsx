@@ -26,7 +26,7 @@ export const EditChangelogForm = ({
   changelog,
   categories,
 }: {
-  changelog: Changelog;
+  changelog: Changelog & { categories: Category[] };
   categories: Category[];
 }) => {
   const [_state, formAction] = useActionState(editChangelog, {});
@@ -55,7 +55,7 @@ export const EditChangelogForm = ({
           className="mt-1 mb-6"
           label="Category"
           placeholder="Select Category"
-          defaultValue={categories.map((category) => ({
+          defaultValue={changelog.categories.map((category) => ({
             label: category.name,
             value: category.name,
           }))}
