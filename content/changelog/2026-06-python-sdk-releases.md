@@ -7,7 +7,7 @@ categories:
 platform:
   - python
 broadcastCategory: sdk_update
-published: false
+published: true
 date: 2026-06-30
 author: rahulchhabria@sentry.io
 ---
