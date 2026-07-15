@@ -56,4 +56,4 @@ In 10.58.0, Next.js server actions that perform redirects were incorrectly class
 
 10.56.0 fixes `instrumentDurableObjectWithSentry` accidentally breaking Cloudflare Agents when applied to Durable Objects that use the Agents SDK.
 
-10.62.0 makes the SDK resilient to runtimes where `tracingChannel` is not available (Node < 22), instead of throwing at runtime.
+10.62.0 makes the SDK resilient to runtimes where `tracingChannel` is not available (older Node 18 releases before 18.19.0, and other runtimes lacking the API), instead of throwing at runtime.
