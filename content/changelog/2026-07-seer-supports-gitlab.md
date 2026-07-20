@@ -2,6 +2,7 @@
 title: Seer now supports GitLab
 slug: seer-supports-gitlab
 summary: Seer can now use your GitLab code files in Root Cause Analysis and open Merge Requests with a proposed fix — now generally available.
+image: /img/hero.png
 categories:
   - AI
   - Integrations
@@ -18,3 +19,5 @@ When Seer investigates an issue, it can now use your GitLab code files as part o
 
 - **Root Cause Analysis with GitLab context** — Seer reads the relevant files from your GitLab repositories to pinpoint what went wrong.
 - **Merge Requests from RCA** — Turn a root cause into action. Seer can create a new Merge Request with a proposed fix straight from its analysis.
+
+![Seer creating a GitLab merge request](https://cslswue7zohm4cat.public.blob.vercel-storage.com/gitlab-merge-request.webp)
