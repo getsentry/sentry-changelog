@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { config } from "dotenv";
 import { eq, inArray, sql } from "drizzle-orm";
 import { drizzle, type NodePgTransaction } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
@@ -11,10 +10,6 @@ import {
 } from "../../src/server/db/schema";
 import { loadChangelogFiles, resolveDate, validateEntries } from "./lib.mjs";
 
-// Load the Neon dev-branch URL from .env.development.local locally; no-op in CI.
-config({ path: ".env.development.local" });
-config({ path: ".env.local" });
-
 const schema = {
   Category,
   Changelog,
@@ -24,12 +19,7 @@ const schema = {
 
 const pool = new Pool({
   connectionString: process.env.NEON_DATABASE_URL,
-});
-
-// Neon pooled connections reject startup `options` like statement_timeout.
-// Set it after connect instead (works with both pooled and unpooled URLs).
-pool.on("connect", (client) => {
-  client.query("SET statement_timeout = 60000");
+  options: "-c statement_timeout=60000",
 });
 
 const db = drizzle(pool, { schema });
