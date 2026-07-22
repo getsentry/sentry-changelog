@@ -1,24 +1,53 @@
 import * as Sentry from "@sentry/nextjs";
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse, userAgent } from "next/server";
 
-// best effort bot detection here
-const BOT_UA_REGEX =
-  /bot|crawl|spider|slurp|mediapartners|facebookexternalhit|embedly|quora link preview|showyoubot|outbrain|pinterest|slackbot|vkshare|w3c_validator|whatsapp|telegrambot|discordbot|preview|scan|monitor|headless|curl|wget|python-requests|axios|go-http-client/i;
-
-function isBot(userAgent: string | null): boolean {
-  if (!userAgent) {
-    return true;
+// Reduce a Referer URL to just its hostname so it stays low-cardinality
+// ("github.com", "google.com", …). Same-origin and empty referers count as
+// "direct" traffic.
+function referrerSource(request: NextRequest): string {
+  const referer = request.headers.get("referer");
+  if (!referer) return "direct";
+  try {
+    const host = new URL(referer).hostname;
+    return host === request.nextUrl.hostname ? "direct" : host;
+  } catch {
+    return "unknown";
   }
-  return BOT_UA_REGEX.test(userAgent);
 }
 
 export function proxy(request: NextRequest) {
-  Sentry.metrics.count("page_visit", 1, {
-    attributes: {
-      path: request.nextUrl.pathname,
-      bot: isBot(request.headers.get("user-agent")),
-    },
-  });
+  const { isBot, browser, device, os, engine } = userAgent(request);
+
+  // Metric attributes must be primitives; drop any field we couldn't resolve
+  // so we don't emit empty values.
+  const attributes: Record<string, string | boolean> = {
+    path: request.nextUrl.pathname,
+    method: request.method,
+    bot: isBot,
+    // device.type is undefined for desktop browsers.
+    device: device.type ?? "desktop",
+    referrer: referrerSource(request),
+  };
+
+  if (browser.name) attributes.browser = browser.name;
+  if (os.name) attributes.os = os.name;
+  if (engine.name) attributes.engine = engine.name;
+
+  // First subtag of Accept-Language, e.g. "en-US,en;q=0.9" -> "en".
+  const language = request.headers
+    .get("accept-language")
+    ?.split(",")[0]
+    ?.split("-")[0]
+    ?.trim();
+  if (language) attributes.language = language;
+
+  // Vercel injects geo headers at the edge on every request — no
+  // @vercel/functions dependency needed. Country is low-cardinality; we skip
+  // region/city to keep the metric manageable.
+  const country = request.headers.get("x-vercel-ip-country");
+  if (country) attributes.country = country;
+
+  Sentry.metrics.count("page_visit", 1, { attributes });
 
   return NextResponse.next();
 }
