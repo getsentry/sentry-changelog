@@ -54,6 +54,14 @@
                 },
                 {
                   "__typename": "Button",
+                  "label": "Agent Tracing Menu Button",
+                  "cta": "Agent Tracing",
+                  "destination": "https://sentry.io/product/tracing/ai-agent/",
+                  "variant": "default",
+                  "class": "nested"
+                },
+                {
+                  "__typename": "Button",
                   "label": "Profiling Menu Button",
                   "cta": "Profiling",
                   "destination": "https://sentry.io/product/profiling/",
@@ -79,6 +87,15 @@
                   "cta": "Uptime Monitoring",
                   "destination": "https://sentry.io/product/uptime-monitoring/",
                   "variant": "default"
+                },
+                {
+                  "__typename": "Button",
+                  "label": "Labs Menu Button",
+                  "cta": "Labs",
+                  "destination": "https://labs.sentry.dev/",
+                  "variant": "default",
+                  "target": ["_blank"],
+                  "class": "new"
                 }
               ]
             }
@@ -114,7 +131,7 @@
                         "cta": "Agent",
                         "destination": "https://sentry.io/product/seer/agent/",
                         "variant": "default",
-                        "class": "new nested"
+                        "class": "nested"
                       },
                       {
                         "__typename": "Button",
@@ -122,7 +139,7 @@
                         "cta": "Autofix",
                         "destination": "https://sentry.io/product/seer/autofix/",
                         "variant": "default",
-                        "class": "new nested"
+                        "class": "nested"
                       },
                       {
                         "__typename": "Button",
@@ -130,7 +147,7 @@
                         "cta": "AI Code Review",
                         "destination": "https://sentry.io/product/seer/ai-code-review/",
                         "variant": "default",
-                        "class": "new nested"
+                        "class": "nested"
                       }
                     ]
                   }
@@ -268,6 +285,13 @@
             "label": "Ecommerce",
             "cta": "Ecommerce",
             "destination": "https://sentry.io/solutions/ecommerce/",
+            "variant": "default"
+          },
+          {
+            "__typename": "Button",
+            "label": "OpenTelemetry Menu Button",
+            "cta": "OpenTelemetry",
+            "destination": "https://sentry.io/solutions/opentelemetry/",
             "variant": "default"
           },
           {
@@ -437,9 +461,9 @@
                     "items": [
                       {
                         "__typename": "Button",
-                        "label": "Build Menu Button",
-                        "cta": "Sentry Build",
-                        "destination": "https://sentry.io/resources/sentry-build/",
+                        "label": "Community Menu Button",
+                        "cta": "Community",
+                        "destination": "https://sentry.io/community/",
                         "variant": "default"
                       },
                       {
