@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
-import { type NextRequest, NextResponse, userAgent } from "next/server";
+import { after, type NextRequest, NextResponse, userAgent } from "next/server";
 
 // Reduce a Referer URL to just its hostname so it stays low-cardinality
 // ("github.com", "google.com", …). Same-origin and empty referers count as
@@ -48,6 +48,10 @@ export function proxy(request: NextRequest) {
   if (country) attributes.country = country;
 
   Sentry.metrics.count("page_visit", 1, { attributes });
+
+  // Metrics are buffered by the SDK. Keep the request alive long enough to
+  // flush them after the response has been sent.
+  after(() => Sentry.flush(2000));
 
   return NextResponse.next();
 }
