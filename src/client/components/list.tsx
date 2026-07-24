@@ -212,6 +212,7 @@ export function ChangelogList({
           {visibleMonths.length > 0 && (
             <select
               value={monthAndYearParam ?? ""}
+              aria-label="Filter by month"
               onChange={(e) => {
                 setMonthParam(e.target.value || null);
                 setPageParam(null);
@@ -299,7 +300,7 @@ export function ChangelogList({
               </search>
               {visibleMonths.length > 0 && (
                 <>
-                  <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
+                  <span className="text-xs font-semibold uppercase tracking-widest text-white/60">
                     Jump to
                   </span>
                   <div className="mt-3 flex flex-col gap-2">
