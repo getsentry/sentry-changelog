@@ -21,7 +21,7 @@ export function Article({
   children,
 }: ArticleProps) {
   return (
-    <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] mb-5 overflow-hidden transition-all duration-300 group-hover:bg-white/[0.06] group-hover:border-[#fd44b0]/30 group-hover:shadow-[0_8px_32px_rgba(253,68,176,0.08),0_2px_8px_rgba(0,0,0,0.3)]">
+    <article className="rounded-xl border border-white/[0.07] bg-white/[0.03] mb-5 overflow-hidden transition-all duration-300 group-hover:bg-white/[0.06] group-hover:border-[#fd44b0]/30 group-hover:shadow-[0_8px_32px_rgba(253,68,176,0.08),0_2px_8px_rgba(0,0,0,0.3)]">
       {image && (
         // biome-ignore lint/performance/noImgElement: <Image> does not resolve here for some reason
         <img
@@ -56,7 +56,7 @@ export function Article({
           </span>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -71,7 +71,9 @@ export function LoadingArticle({
   const bg = variant === "light" ? "bg-white" : "bg-white/[0.03]";
 
   return (
-    <div className={`rounded-xl border ${border} ${bg} mb-5 overflow-hidden`}>
+    <article
+      className={`rounded-xl border ${border} ${bg} mb-5 overflow-hidden`}
+    >
       <div className="p-5">
         <div className={`h-5 ${sk} w-3/4 animate-pulse rounded mb-2`} />
         <div className="space-y-1.5 mb-4">
@@ -84,6 +86,6 @@ export function LoadingArticle({
           <div className={`h-3 ${sk} w-16 animate-pulse rounded`} />
         </div>
       </div>
-    </div>
+    </article>
   );
 }
