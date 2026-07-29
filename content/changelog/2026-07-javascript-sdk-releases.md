@@ -44,8 +44,6 @@ Also in 10.64.0, the Node SDK registers Sentry's minimal `SentryTracerProvider` 
 
 10.65.0 standardizes URL attributes on pageload and navigation spans across Angular, Astro, browser, Ember, Next.js, React, React Router, Remix, Solid, SvelteKit, Vue, and Nuxt. Spans now carry `url.template`, `url.path`, and/or `url.full` so route grouping and filtering stay consistent across frameworks.
 
-Orchestrion and diagnostics-channel instrumentation rolled out broadly this month. 10.66.0 adds orchestrion bundler plugins, a Next.js opt-in, NestJS diagnostics-channel instrumentation, and knex/mysql2/kafkajs/dataloader/generic-pool rewrites. 10.67.0 extends that to MongoDB, Mongoose, Remix, Koa, AWS SDK extensions (S3, SQS, SNS, Lambda, Bedrock, and more), LangChain/LangGraph, and Cloudflare Workers AI and rate-limiter bindings. 10.68.0 continues with a Cloudflare Vite orchestrion plugin, Firebase migration, NestJS WebSocket error support in `SentryGlobalFilter`, and auto-instrumentation for Durable Object, WorkerEntrypoint, and Workflow classes on the v10 Cloudflare path.
-
 10.66.0 also adds `dataCollection.databaseQueryData` (for example Supabase filter values and mutation bodies) and `dataCollection.graphQL` controls for opting into richer query payloads.
 
 ### Bug Fixes
