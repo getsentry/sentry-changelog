@@ -1,7 +1,7 @@
 ---
 title: JavaScript SDK Releases — July 2026
 slug: 2026-07-javascript-sdk-releases
-summary: SvelteKit 3 support, Cloudflare nodejs_compat entrypoint, minimal OTel tracer by default, richer URL attributes on routing spans, and broad orchestrion instrumentation.
+summary: SvelteKit 3 support, Cloudflare nodejs_compat entrypoint, minimal OTel tracer by default, and richer URL attributes on routing spans.
 categories:
   - SDK
 platform:
