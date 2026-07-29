@@ -31,7 +31,6 @@ Releases covered:
 - New `@sentry/cloudflare/nodejs_compat` entrypoint unlocks Node SDK features on Workers with the `nodejs_compat` flag, including `prismaIntegration` and Vercel AI v7.
 - Node now uses Sentry's minimal OpenTelemetry tracer provider by default for lower overhead; opt back into the full provider with `openTelemetryBasicTracerProvider: true`.
 - Routing spans across browser and framework SDKs now include `url.template`, `url.path`, and `url.full` attributes.
-- Orchestrion / diagnostics-channel instrumentation expanded across Express, Remix, MongoDB/Mongoose, AWS SDK, Next.js (opt-in), bundler plugins, and Cloudflare Durable Objects / WorkerEntrypoint / Workflows.
 
 ## Release notes
 
