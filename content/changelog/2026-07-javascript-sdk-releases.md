@@ -16,14 +16,12 @@ author: rahulchhabria@sentry.io
 
 Releases covered:
 
-| Version | Date | Link |
-|---------|------|------|
-| 10.68.0 | 2026-07-24 | [Release notes](https://github.com/getsentry/sentry-javascript/releases/tag/10.68.0) |
-| 10.67.0 | 2026-07-20 | [Release notes](https://github.com/getsentry/sentry-javascript/releases/tag/10.67.0) |
-| 10.66.0 | 2026-07-16 | [Release notes](https://github.com/getsentry/sentry-javascript/releases/tag/10.66.0) |
-| 10.65.0 | 2026-07-10 | [Release notes](https://github.com/getsentry/sentry-javascript/releases/tag/10.65.0) |
-| 10.64.0 | 2026-07-07 | [Release notes](https://github.com/getsentry/sentry-javascript/releases/tag/10.64.0) |
-| 10.63.0 | 2026-07-01 | [Release notes](https://github.com/getsentry/sentry-javascript/releases/tag/10.63.0) |
+- [`10.68.0`](https://github.com/getsentry/sentry-javascript/releases/tag/10.68.0) (2026-07-24)
+- [`10.67.0`](https://github.com/getsentry/sentry-javascript/releases/tag/10.67.0) (2026-07-20)
+- [`10.66.0`](https://github.com/getsentry/sentry-javascript/releases/tag/10.66.0) (2026-07-16)
+- [`10.65.0`](https://github.com/getsentry/sentry-javascript/releases/tag/10.65.0) (2026-07-10)
+- [`10.64.0`](https://github.com/getsentry/sentry-javascript/releases/tag/10.64.0) (2026-07-07)
+- [`10.63.0`](https://github.com/getsentry/sentry-javascript/releases/tag/10.63.0) (2026-07-01)
 
 ## TL;DR
 
