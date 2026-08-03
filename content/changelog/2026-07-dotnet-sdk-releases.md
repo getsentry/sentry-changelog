@@ -7,7 +7,7 @@ categories:
 platform:
   - dotnet
 broadcastCategory: sdk_update
-published: false
+published: true
 date: 2026-07-31
 author: rahulchhabria@sentry.io
 ---
@@ -16,8 +16,6 @@ Releases covered:
 
 - [`6.8.0`](https://github.com/getsentry/sentry-dotnet/releases/tag/6.8.0) (2026-07-27)
 - [`6.7.0`](https://github.com/getsentry/sentry-dotnet/releases/tag/6.7.0) (2026-07-15)
-
-## TL;DR
 
 - Structured logs integrations for `log4net` and `NLog`; Serilog `restrictedToMinimumLevel` supported when configuring in code.
 - New `IgnoreTransactions` option filters transactions by name (substring/regex); `BeforeSendFeedback` inspects/modifies/drops user feedback.
