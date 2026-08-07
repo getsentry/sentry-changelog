@@ -37,9 +37,11 @@ export default withSentryConfig(nextConfig, {
   // Route Sentry events through the server to avoid ad blockers
   tunnelRoute: "/sentry-tunnel",
 
+  // Marks first-party code for `thirdPartyErrorFilterIntegration`
+  applicationKey: "sentry-changelog",
+
   _experimental: {
     thirdPartyOriginStackFrames: true,
-    turbopackApplicationKey: "sentry-changelog",
     turbopackReactComponentAnnotation: {
       enabled: true,
     },
