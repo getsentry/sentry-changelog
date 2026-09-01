@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
-import * as Spotlight from "@spotlightjs/spotlight";
+import * as Spotlight from "@spotlightjs/overlay";
 import { dataCollection } from "../sentry.data-collection";
 
 Sentry.init({
