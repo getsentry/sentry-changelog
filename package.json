@@ -23,6 +23,7 @@
     "db:studio": "drizzle-kit studio",
     "changelog:validate": "node scripts/changelog/validate.mjs",
     "changelog:sync": "tsx scripts/changelog/sync.ts",
+    "spotlight": "spotlight",
     "prepare": "simple-git-hooks"
   },
   "lint-staged": {
@@ -39,7 +40,6 @@
     "@radix-ui/react-toolbar": "^1.1.11",
     "@radix-ui/themes": "^3.3.0",
     "@sentry/nextjs": "^11.0.0-alpha.2",
-    "@spotlightjs/spotlight": "^2.13.3",
     "@vercel/blob": "^2.4.0",
     "drizzle-orm": "^0.45.2",
     "import-in-the-middle": "^1.15.0",
@@ -66,6 +66,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.13",
+    "@spotlightjs/spotlight": "^4.11.8",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/typography": "^0.5.19",
     "@types/hast": "^3.0.4",
