@@ -30,9 +30,6 @@ importers:
       '@sentry/nextjs':
         specifier: ^11.0.0-alpha.2
         version: 11.0.0-alpha.2(next@16.3.0(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@20.19.39)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.99.0))(react@19.2.5)(webpack@5.99.9(postcss@8.5.25))
-      '@spotlightjs/overlay':
-        specifier: ^4.5.0
-        version: 4.5.0
       '@vercel/blob':
         specifier: ^2.4.0
         version: 2.4.0
@@ -2426,9 +2423,6 @@ packages:
   '@sentry/vercel-edge@11.0.0-alpha.2':
     resolution: {integrity: sha512-wN81u8DFag5dAQQoRyibTjEAac1JDKFA8ZTKdLnbgMxITa+PbIHDDFAyG0s3LBFC5MI2K88bT4R73sqoigwpkg==}
     engines: {node: '>=20.19.0 <22.0.0 || >=22.12.0 <23.0.0 || >=23.2.0'}
-
-  '@spotlightjs/overlay@4.5.0':
-    resolution: {integrity: sha512-Pn8qnVI68082y/RCuZXX6lUctMRFxH5v48IctbC8WogOCWZ3VSdZoKqCAcDQpafZwTgoGADGPp/vIeYyqfNCaQ==}
 
   '@spotlightjs/spotlight@4.11.8':
     resolution: {integrity: sha512-653j6YqzaWoTMGXB1l8jJonQuc/ssa3CDqP6RIyiclekm3UwGJVFtPkccfHll8nJiv0qJDmYXlJlrbmyFPfQjw==}
@@ -7109,8 +7103,6 @@ snapshots:
       '@opentelemetry/api': 1.9.1
       '@sentry/core': 11.0.0-alpha.2
       '@sentry/server-utils': 11.0.0-alpha.2
-
-  '@spotlightjs/overlay@4.5.0': {}
 
   '@spotlightjs/spotlight@4.11.8(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(hono-rate-limiter@0.4.2(hono@4.13.5))':
     dependencies:

@@ -1,5 +1,4 @@
 import * as Sentry from "@sentry/nextjs";
-import * as Spotlight from "@spotlightjs/overlay";
 import { dataCollection } from "../sentry.data-collection";
 
 Sentry.init({
@@ -16,10 +15,7 @@ Sentry.init({
       behaviour: "apply-tag-if-contains-third-party-frames",
     }),
   ],
+  spotlight: process.env.NODE_ENV === "development",
 });
-
-if (process.env.NODE_ENV === "development") {
-  Spotlight.init();
-}
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
