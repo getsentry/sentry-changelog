@@ -11,7 +11,7 @@ const SENSITIVE_KEYS = ["forwarded", "-ip", "remote-", "via", "-user"];
  *
  * v11 replaced `sendDefaultPii` with `dataCollection`, whose defaults collect
  * user info, cookies, headers and request/response bodies. Each category is set
- * explicitly here so the three runtimes (client, server, edge) stay aligned.
+ * explicitly here so the client and server runtimes stay aligned.
  */
 export const dataCollection: DataCollection = {
   userInfo: false,
