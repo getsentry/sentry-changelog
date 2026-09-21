@@ -10,7 +10,7 @@ date: 2026-09-21
 author: peter.mccarron@sentry.io
 ---
 
-Seer now has the ability to continue iterating pull requests including responding to comments or making updates to pass certain CI checks. 
+Seer now has the ability to continue iterating on pull requests including responding to comments or making updates to pass certain CI checks. 
 
 Before this, changing anything about a Seer PR meant re-running Autofix and getting a brand-new PR. Now each iteration lands as follow-up commits on the existing PR, so the diff, the review thread, and the history stay in one place.
 
