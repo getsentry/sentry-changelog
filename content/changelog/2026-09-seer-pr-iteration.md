@@ -5,7 +5,7 @@ summary: Seer can push follow-up commits to a pull request it opened — fixing 
 categories:
   - AI
 broadcastCategory: feature
-published: false
+published: true
 date: 2026-09-21
 author: peter.mccarron@sentry.io
 ---
