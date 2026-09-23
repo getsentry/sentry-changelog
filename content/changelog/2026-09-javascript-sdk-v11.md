@@ -1,7 +1,7 @@
 ---
 title: JavaScript SDK v11
 slug: javascript-sdk-v11
-summary: Version 11 of the Sentry JavaScript SDK is out, with better OpenTelemetry compatibility, instrumentation for Cloudflare, Bun and Deno, and span streaming by default.
+summary: Version 11 of the Sentry JavaScript SDK is out, with better OpenTelemetry compatibility and more complete instrumentation for Cloudflare, Bun and Deno. Spans are now streamed by default and `sendDefaultPii` is replaced by more granular data collection options.
 categories:
   - SDK
 platform:
@@ -21,13 +21,13 @@ This is a major release with breaking changes. Read the [migration guide](https:
 
 ## New Features
 
-- **Better OpenTelemetry compatibility:** Sentry no longer takes over your OpenTelemetry setup. You can keep your own OpenTelemetry configuration next to Sentry.
+- **Better OpenTelemetry compatibility:** Sentry no longer takes over your OpenTelemetry setup. You can keep your own [OpenTelemetry configuration](https://docs.sentry.io/platforms/javascript/guides/node/opentelemetry/) next to Sentry.
 - **Run-time and build-time instrumentation:** The SDK can instrument your code at run time or at build time. Build-time instrumentation gives better tracing on platforms like Vercel and Netlify.
-- **Integrations for Cloudflare, Bun and Deno:** Our integrations now also work on Cloudflare Workers, Bun and Deno.
-- **Span streaming by default:** Spans are sent as they finish, so the size and span limits of transactions no longer apply. Span names have low cardinality across all SDKs.
-- **Granular data collection:** The new `dataCollection` option replaces `sendDefaultPii`. It gives you control per data type and has more permissive defaults.
-- **Logs without a second opt-in:** The `enableLogs` option was removed. Logs are sent when you use `Sentry.logger` or a logging integration.
-- **New integrations:** Groq, Together AI, eve and Flue, plus web vitals for soft navigations and back/forward cache restores.
+- **Integrations for Cloudflare, Bun and Deno:** Our integrations now also work on [Cloudflare Workers](https://docs.sentry.io/platforms/javascript/guides/cloudflare/), [Bun](https://docs.sentry.io/platforms/javascript/guides/bun/) and [Deno](https://docs.sentry.io/platforms/javascript/guides/deno/).
+- **Span streaming by default:** Spans are sent as they finish, so large traces are no longer cut off by size or span limits. Span names have low cardinality across all SDKs.
+- **Granular data collection:** The new [`dataCollection`](https://docs.sentry.io/platforms/javascript/configuration/options/#dataCollection) option replaces `sendDefaultPii`. It gives you control per data type and has more permissive defaults.
+- **Logs without a second opt-in:** The `enableLogs` option was removed. [Logs](https://docs.sentry.io/platforms/javascript/guides/node/logs/) are sent when you use `Sentry.logger` or a logging integration.
+- **New integrations:** [Mastra](https://docs.sentry.io/platforms/javascript/guides/mastra/), [Mistral AI](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/mistral/), Groq, Together AI, eve and Flue, plus web vitals for soft navigations and back/forward cache restores.
 
 ## How to Upgrade
 
