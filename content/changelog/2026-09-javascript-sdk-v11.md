@@ -31,7 +31,7 @@ This is a major release with breaking changes. Read the [migration guide](https:
 
 ## How to Upgrade
 
-The [Sentry Wizard 8.0.0](https://github.com/getsentry/sentry-wizard/releases/tag/v8.0.0) installs v11 of the SDK for Angular, Cloudflare, Next.js, Nuxt, React Router, Remix and SvelteKit.
+The [Sentry Wizard 8.0.0](https://github.com/getsentry/sentry-wizard/releases/tag/v8.0.0) installs v11 of the SDK for Angular, Cloudflare, Next.js, Nuxt, React Router, Remix and SvelteKit. For all other SDKs, follow the [setup guide in the Sentry docs](https://docs.sentry.io/platforms/javascript/).
 
 - [v10 to v11 migration guide](https://docs.sentry.io/platforms/javascript/migration/v10-to-v11/) in the Sentry docs (select your platform or framework)
 - [Full migration guide](https://github.com/getsentry/sentry-javascript/blob/develop/MIGRATION.md) in the SDK repository
