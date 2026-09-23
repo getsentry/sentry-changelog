@@ -20,7 +20,7 @@ Version 11.0.0 of the Sentry JavaScript SDK is now available. This is a major re
 ## New Features
 
 - **Better OpenTelemetry compatibility:** Sentry no longer takes over your OpenTelemetry setup. You can keep your own OpenTelemetry configuration next to Sentry.
-- **Run-time and build-time instrumentation:** The SDK can instrument your code during the build. This gives better tracing on platforms like Vercel and Netlify.
+- **Run-time and build-time instrumentation:** The SDK can instrument your code at run time or at build time. Build-time instrumentation gives better tracing on platforms like Vercel and Netlify.
 - **Integrations for Cloudflare, Bun and Deno:** Our integrations now also work on Cloudflare Workers, Bun and Deno.
 - **Span streaming by default:** Spans are sent as they finish, so the size and span limits of transactions no longer apply. Span names have low cardinality across all SDKs.
 - **Granular data collection:** The new `dataCollection` option replaces `sendDefaultPii`. It gives you control per data type and has more permissive defaults.
