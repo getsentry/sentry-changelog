@@ -29,12 +29,6 @@ This is a major release with breaking changes. Read the [migration guide](https:
 - **Logs without a second opt-in:** The `enableLogs` option was removed. Logs are sent when you use `Sentry.logger` or a logging integration.
 - **New integrations:** Groq, Together AI, eve and Flue, plus web vitals for soft navigations and back/forward cache restores.
 
-## Breaking Changes
-
-- Node.js 20.19.0 is the new minimum version, and the minimum TypeScript version is higher.
-- Drop support for Next.js 13, React 16, Astro 3, React Router < 7.15, Fastify < 3.21 and webpack < 5.1.
-- Many span ops, span names and span attributes changed to follow the Sentry conventions.
-
 ## How to Upgrade
 
 - [v10 to v11 migration guide](https://docs.sentry.io/platforms/javascript/migration/v10-to-v11/) in the Sentry docs (select your platform or framework)
