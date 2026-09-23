@@ -27,7 +27,7 @@ This is a major release with breaking changes. Read the [migration guide](https:
 - **Span streaming by default:** Spans are sent as they finish, so large traces are no longer cut off by size or span limits. Span names have low cardinality across all SDKs.
 - **Granular data collection:** The new [`dataCollection`](https://docs.sentry.io/platforms/javascript/configuration/options/#dataCollection) option replaces `sendDefaultPii`. It gives you control per data type and has more permissive defaults.
 - **Logs without a second opt-in:** The `enableLogs` option was removed. [Logs](https://docs.sentry.io/platforms/javascript/guides/node/logs/) are sent when you use `Sentry.logger` or a logging integration.
-- **New integrations:** [Mastra](https://docs.sentry.io/platforms/javascript/guides/mastra/), [Mistral AI](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/mistral/), Groq, Together AI, eve and Flue, plus web vitals for soft navigations and back/forward cache restores.
+- **New integrations:** [Mastra](https://docs.sentry.io/platforms/javascript/guides/mastra/), [Mistral AI](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/mistral/), [Groq](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/groq/), [Together AI](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/together-ai/), [eve](https://docs.sentry.io/platforms/javascript/guides/eve/) and [Flue](https://docs.sentry.io/platforms/javascript/guides/node/agent-tracing/flue/), plus web vitals for soft navigations and back/forward cache restores.
 
 ## How to Upgrade
 
