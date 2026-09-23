@@ -15,7 +15,9 @@ date: 2026-09-23
 author: andrei.borza@sentry.io
 ---
 
-Version 11.0.0 of the Sentry JavaScript SDK is now available. This is a major release with breaking changes. Read the [migration guide](https://docs.sentry.io/platforms/javascript/migration/v10-to-v11/) before you upgrade.
+Version 11.0.0 of the Sentry JavaScript SDK is now available. The goal of this release is to be better compatible with OpenTelemetry, make our integrations work across Node.js, Cloudflare, Bun and Deno through run-time and build-time instrumentation, and make span streaming and more permissive data collection the default.
+
+This is a major release with breaking changes. Read the [migration guide](https://docs.sentry.io/platforms/javascript/migration/v10-to-v11/) before you upgrade.
 
 ## New Features
 
