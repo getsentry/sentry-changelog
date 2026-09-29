@@ -3,7 +3,7 @@ import { dataCollection } from "../sentry.data-collection";
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  environment: process.env.NODE_ENV,
+  environment: process.env.NEXT_PUBLIC_VERCEL_ENV ?? process.env.NODE_ENV,
   tracesSampleRate: 1,
   dataCollection,
   replaysOnErrorSampleRate: 1.0,
