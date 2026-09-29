@@ -60,7 +60,10 @@ export function CopyDropdown({
   return (
     <div className={wrapperClass}>
       {/* Split button */}
+      {/* biome-ignore lint/a11y/useSemanticElements: split-button group, not a fieldset */}
       <div
+        role="group"
+        aria-label="Copy options"
         className={`flex items-center rounded-lg border ${s.border} overflow-hidden text-sm ${s.text}`}
       >
         <button
