@@ -40,5 +40,11 @@ Follow conventional commits matching existing history:
 - Pinned deps documented in `package.json` `"//"` field — check before bumping
 - Avoid `pnpm.overrides` for transitive deps — bump the parent instead
 
+## Telemetry
+- Sentry org `sentry`, project `changelog`
+- `environment` is the Vercel environment (`production`, `preview`), or `development` locally
+- `release` is the deployed git commit SHA
+- Web vitals (LCP, CLS, INP) are reported for page loads and soft navigations; soft navigation vitals are Chromium-only
+
 ## Security Vulnerabilities
 Use `fix-security-vulnerability` skill. See `.claude/skills/fix-security-vulnerability/SKILL.md`

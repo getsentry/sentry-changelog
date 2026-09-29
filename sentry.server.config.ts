@@ -5,7 +5,7 @@ import {dataCollection} from './sentry.data-collection';
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   tracesSampleRate: 1,
-  environment: process.env.NODE_ENV,
+  environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV,
   dataCollection,
   integrations: [Sentry.nodeRuntimeMetricsIntegration()],
   spotlight: process.env.NODE_ENV === 'development',
