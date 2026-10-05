@@ -138,3 +138,73 @@ describe("editChangelog platform persistence", () => {
     expect(capturedChangelogUpdate?.platform).toEqual(["python-flask"]);
   });
 });
+
+describe("MDX validation on save", () => {
+  const invalidContent =
+    "- **Issue linking** — resolve issues by adding fixes <SENTRY-SHORT-ID> to your commit messages";
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    capturedChangelogInsert = null;
+    capturedChangelogUpdate = null;
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { email: "test.user@sentry.io" },
+    } as never);
+  });
+
+  it("rejects creating an entry whose content does not compile", async () => {
+    const result = await createChangelog(
+      {},
+      buildFormData({
+        title: "Broken",
+        content: invalidContent,
+        summary: "summary",
+        image: "",
+        slug: "broken",
+      }),
+    );
+
+    expect(result.success).toBe(false);
+    expect(result.message).toContain("Invalid MDX in content");
+    expect(result.message).toContain("SENTRY-SHORT-ID");
+    expect(capturedChangelogInsert).toBeNull();
+  });
+
+  it("rejects editing an entry whose summary does not compile", async () => {
+    const result = await editChangelog(
+      {},
+      buildFormData({
+        id: "changelog-1",
+        title: "Broken",
+        content: "body",
+        summary: invalidContent,
+        image: "",
+        slug: "broken",
+      }),
+    );
+
+    expect(result.success).toBe(false);
+    expect(result.message).toContain("Invalid MDX in summary");
+    expect(capturedChangelogUpdate).toBeNull();
+  });
+
+  it("accepts the placeholder once it is escaped as inline code", async () => {
+    const result = await editChangelog(
+      {},
+      buildFormData({
+        id: "changelog-1",
+        title: "Fixed",
+        content: invalidContent.replace(
+          "<SENTRY-SHORT-ID>",
+          "`<SENTRY-SHORT-ID>`",
+        ),
+        summary: "summary",
+        image: "",
+        slug: "fixed",
+      }),
+    );
+
+    expect(result?.success).not.toBe(false);
+    expect(capturedChangelogUpdate).not.toBeNull();
+  });
+});
