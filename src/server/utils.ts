@@ -9,17 +9,11 @@ import type { Plugin } from "unified";
 import { visit } from "unist-util-visit";
 import type { ChangelogEntry } from "@/client/components/list";
 import { db } from "@/server/db";
+import { _CategoryToChangelog, Category, Changelog } from "@/server/db/schema";
 import {
-  _CategoryToChangelog,
-  Category,
-  type CategoryModel,
-  Changelog,
-  type ChangelogModel,
-} from "@/server/db/schema";
-
-type ChangelogWithCategories = ChangelogModel & {
-  categories: CategoryModel[];
-};
+  type ChangelogWithCategories,
+  loadPreviewChangelogs,
+} from "@/server/preview-changelogs";
 
 async function getChangelogCategoryMap(
   changelogIds: string[],
@@ -48,9 +42,28 @@ async function getChangelogCategoryMap(
   return map;
 }
 
+async function getPreviewChangelogs(): Promise<ChangelogWithCategories[]> {
+  const changelogs = await db.select().from(Changelog);
+  const categoryMap = await getChangelogCategoryMap(
+    changelogs.map((row) => row.id),
+  );
+  return loadPreviewChangelogs(
+    changelogs.map((changelog) => ({
+      ...changelog,
+      categories: categoryMap.get(changelog.id) ?? [],
+    })),
+  );
+}
+
 export async function getChangelogs(): Promise<ChangelogWithCategories[]> {
   cacheTag("changelogs");
   try {
+    if (process.env.VERCEL_ENV === "preview") {
+      return (await getPreviewChangelogs()).filter(
+        (changelog) => changelog.published && !changelog.deleted,
+      );
+    }
+
     const changelogs = await db
       .select()
       .from(Changelog)
@@ -124,6 +137,14 @@ export async function getChangelog(
   slug: string,
 ): Promise<ChangelogWithCategories | null> {
   cacheTag("changelog-detail");
+  if (process.env.VERCEL_ENV === "preview") {
+    return (
+      (await getPreviewChangelogs()).find(
+        (changelog) => changelog.slug === slug && !changelog.deleted,
+      ) ?? null
+    );
+  }
+
   try {
     const rows = await db
       .select()
@@ -149,6 +170,12 @@ export async function getChangelog(
 
 export async function getRecentChangelogs(excludeSlug: string) {
   cacheTag("changelogs");
+  if (process.env.VERCEL_ENV === "preview") {
+    return (await getChangelogs())
+      .filter((changelog) => changelog.slug !== excludeSlug)
+      .slice(0, 3);
+  }
+
   try {
     const changelogs = await db
       .select()

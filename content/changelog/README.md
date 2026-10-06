@@ -10,13 +10,34 @@ both write to the same database, so use whichever you prefer.
    `2026-06-improved-traces.md`. Copy [`_template.md`](./_template.md) as a
    starting point.
 2. Open a pull request. CI validates the frontmatter of every entry and fails
-   with a clear message if something is wrong.
+   with a clear message if something is wrong. Open the Vercel preview to review
+   the entry before merging.
 3. A maintainer reviews and merges to `main`.
 4. On merge, the **Sync Changelog** GitHub Action upserts the file into the
    database (keyed by `slug`). The entry goes live if `published: true`.
 
 Editing an existing entry is the same flow: change the file (keep the same
 `slug`) and open a PR. The sync overwrites the matching database row.
+
+## Previewing a pull request
+
+Vercel preview deployments read the Markdown/MDX files from their own branch
+alongside existing database entries. Published files appear in the changelog
+list, detail pages, related entries, RSS, and the site's Markdown views without
+running the sync or writing to the database. Open `/changelog/<slug>/` on the
+deployment to review a specific entry.
+
+The same ownership and publication rules apply: admin-managed entries keep
+their database content, `deleted: true` entries stay hidden, and unpublished
+entries require sign-in on the detail page and do not appear in public lists.
+Files without an explicit date keep their existing publication date, or use
+the preview's current time for a new published entry. Removing a file does not
+delete its existing database entry.
+
+This overlay is enabled only when `VERCEL_ENV=preview`. Production and the
+public JSON APIs continue to read the database; merging still uses the sync
+workflow above. For a local preview, run `VERCEL_ENV=preview pnpm dev` with a
+development database configured.
 
 ## File format
 

@@ -5,6 +5,11 @@ const nextConfig = {
   cacheComponents: true,
   trailingSlash: true,
   transpilePackages: ["next-mdx-remote"],
+  outputFileTracingIncludes: {
+    "/changelog": ["./content/changelog/**/*"],
+    "/changelog/**": ["./content/changelog/**/*"],
+    "/api/changelog/**": ["./content/changelog/**/*"],
+  },
   images: {
     remotePatterns: [
       {
