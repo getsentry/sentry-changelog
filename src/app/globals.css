@@ -121,6 +121,12 @@
   clip-path: polygon(0 0, 100% 0, 100% 40%, 0 100%);
 }
 
+/* Inline code already uses monospace; omit Typography's decorative backticks. */
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none;
+}
+
 /* Prose overrides for dark background (article excerpts on dark bg) */
 .blog-prose-dark {
   --tw-prose-body: rgba(255, 255, 255, 0.7);
