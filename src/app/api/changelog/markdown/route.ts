@@ -2,21 +2,25 @@ import { desc, eq } from "drizzle-orm";
 import { connection, NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { Changelog } from "@/server/db/schema";
+import { getChangelogs } from "@/server/utils";
 
 export async function GET() {
   await connection();
 
-  const changelogs = await db
-    .select({
-      title: Changelog.title,
-      slug: Changelog.slug,
-      summary: Changelog.summary,
-      publishedAt: Changelog.publishedAt,
-    })
-    .from(Changelog)
-    .where(eq(Changelog.published, true))
-    .orderBy(desc(Changelog.publishedAt))
-    .limit(20);
+  const changelogs =
+    process.env.VERCEL_ENV === "preview"
+      ? (await getChangelogs()).slice(0, 20)
+      : await db
+          .select({
+            title: Changelog.title,
+            slug: Changelog.slug,
+            summary: Changelog.summary,
+            publishedAt: Changelog.publishedAt,
+          })
+          .from(Changelog)
+          .where(eq(Changelog.published, true))
+          .orderBy(desc(Changelog.publishedAt))
+          .limit(20);
 
   const lines: string[] = [
     "# Sentry Changelog",

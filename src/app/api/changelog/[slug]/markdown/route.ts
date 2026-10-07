@@ -1,7 +1,8 @@
 import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/server/db";
-import { Changelog } from "@/server/db/schema";
+import { Changelog, type ChangelogModel } from "@/server/db/schema";
+import { getChangelog } from "@/server/utils";
 
 export async function GET(
   _request: Request,
@@ -9,17 +10,24 @@ export async function GET(
 ) {
   const { slug } = await params;
 
-  const rows = await db
-    .select({
-      title: Changelog.title,
-      content: Changelog.content,
-      publishedAt: Changelog.publishedAt,
-    })
-    .from(Changelog)
-    .where(and(eq(Changelog.slug, slug), eq(Changelog.published, true)))
-    .limit(1);
-
-  const changelog = rows[0];
+  let changelog:
+    | Pick<ChangelogModel, "title" | "content" | "publishedAt">
+    | null
+    | undefined;
+  if (process.env.VERCEL_ENV === "preview") {
+    const entry = await getChangelog(slug);
+    changelog = entry?.published ? entry : null;
+  } else {
+    [changelog] = await db
+      .select({
+        title: Changelog.title,
+        content: Changelog.content,
+        publishedAt: Changelog.publishedAt,
+      })
+      .from(Changelog)
+      .where(and(eq(Changelog.slug, slug), eq(Changelog.published, true)))
+      .limit(1);
+  }
 
   if (!changelog) {
     return new NextResponse("Not found", { status: 404 });
