@@ -44,7 +44,7 @@ Popular classifiers like [Jev](https://docs.typesafe.ai/introduction/coding-agen
 
 - The [`vercelAIIntegration`](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/vercelai/#trace-jev-evaluations) traces `experimental_evaluate` Jev calls (since [11.1.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.1.0)).
 
-- [Workers AI](https://docs.sentry.io/platforms/javascript/guides/cloudflare/agent-tracing/workers-ai/#trace-jev-evaluations) calls to [TypeSafe Jev](https://docs.typesafe.ai/introduction/coding-agents) and [Cloudflare Clef](https://developers.cloudflare.com/workers-ai/models/clef/) are traced (since [11.5.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.5.0)).
+- [Workers AI](https://docs.sentry.io/platforms/javascript/guides/cloudflare/agent-tracing/workers-ai/#trace-jev-evaluations) calls to [TypeSafe Jev](https://docs.typesafe.ai/introduction/coding-agents) and [Cloudflare Clef](https://developers.cloudflare.com/workers-ai/models/clef/) are traced (since [11.3.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.3.0)).
 
 - [Mastra](https://docs.sentry.io/platforms/javascript/guides/mastra/) Classifier calls are traced (since [11.6.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.6.0)).
 
