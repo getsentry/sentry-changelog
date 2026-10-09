@@ -34,7 +34,7 @@ This includes Anthropic, OpenAI, Google GenAI, Vercel AI, LangChain, and LangGra
 
 - [**Groq**](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/groq/), [**Together AI**](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/together-ai/), and [**Mistral AI**](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/mistral/): New integrations expand provider coverage (since [11.0.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.0.0)).
 
-- **MCP servers:** The default `mcpServerIntegration` automatically instruments `McpServer` instances, replacing the need to call `wrapMcpServerWithSentry` (since [11.1.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.1.0)).
+- [**MCP servers**](https://docs.sentry.io/platforms/javascript/guides/node/mcp-monitoring/): The default `mcpServerIntegration` automatically instruments `McpServer` instances, replacing the need to call `wrapMcpServerWithSentry` (since [11.1.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.1.0)).
 
 ## Classifier tracing
 
