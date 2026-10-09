@@ -21,7 +21,7 @@ export function Article({
   children,
 }: ArticleProps) {
   return (
-    <article className="rounded-xl border border-white/[0.07] bg-white/[0.03] mb-5 overflow-hidden transition-all duration-300 group-hover:bg-white/[0.06] group-hover:border-[#fd44b0]/30 group-hover:shadow-[0_8px_32px_rgba(253,68,176,0.08),0_2px_8px_rgba(0,0,0,0.3)]">
+    <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] mb-5 overflow-hidden transition-all duration-300 group-hover:bg-white/[0.06] group-hover:border-[#fd44b0]/30 group-hover:shadow-[0_8px_32px_rgba(253,68,176,0.08),0_2px_8px_rgba(0,0,0,0.3)]">
       {image && (
         // biome-ignore lint/performance/noImgElement: <Image> does not resolve here for some reason
         <img
@@ -56,7 +56,7 @@ export function Article({
           </span>
         </div>
       </div>
-    </article>
+    </div>
   );
 }
 
