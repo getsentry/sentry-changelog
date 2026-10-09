@@ -13,7 +13,7 @@ platform:
   - node-cloudflare-workers
   - node-cloudflare-pages
 broadcastCategory: sdk_update
-published: false
+published: true
 date: 2026-10-09
 author: andrei.borza@sentry.io
 ---
