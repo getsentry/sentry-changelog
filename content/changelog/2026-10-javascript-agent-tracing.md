@@ -20,7 +20,7 @@ author: andrei.borza@sentry.io
 
 The JavaScript SDKs now support more AI frameworks and providers, with automatic instrumentation across Node.js, Bun, Cloudflare and Deno out of the box since [11.0.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.0.0).
 
-This includes Anthropic, OpenAI, Google GenAI, Vercel AI, TypeSafe, LangChain, and LangGraph, alongside the new integrations below.
+This includes Anthropic, OpenAI, Google GenAI, Vercel AI, LangChain, and LangGraph, alongside the new integrations below.
 
 ## New frameworks and providers support
 
