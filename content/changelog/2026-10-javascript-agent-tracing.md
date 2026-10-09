@@ -30,7 +30,7 @@ This includes Anthropic, OpenAI, Google GenAI, Vercel AI, TypeSafe, LangChain, a
 
 - [**Flue**](https://docs.sentry.io/platforms/javascript/guides/node/agent-tracing/flue/): Instrumentation registers automatically in bundled Workers. Messages and token usage follow the `gen_ai` conventions (since [11.5.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.5.0)).
 
-- [**Pi Durable**](https://earendil.com/posts/pi-durable/): The new `piDurableIntegration` captures agent runs, model requests, and tool calls (since [11.6.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.6.0)).
+- [**Pi Durable**](https://docs.sentry.io/platforms/javascript/guides/pi-durable/): The new `piDurableIntegration` captures agent runs, model requests, and tool calls (since [11.6.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.6.0)).
 
 - [**Groq**](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/groq/), [**Together AI**](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/together-ai/), and [**Mistral AI**](https://docs.sentry.io/platforms/javascript/guides/node/configuration/integrations/mistral/): New integrations expand provider coverage (since [11.0.0](https://github.com/getsentry/sentry-javascript/releases/tag/11.0.0)).
 
