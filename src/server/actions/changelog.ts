@@ -4,10 +4,12 @@ import { eq, inArray } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
+import { serialize } from "next-mdx-remote/serialize";
 import { isValidPlatform } from "@/lib/platforms";
 import { authOptions } from "../authOptions";
 import { db } from "../db";
 import { _CategoryToChangelog, Category, Changelog, User } from "../db/schema";
+import { mdxOptions } from "../mdxOptions";
 import type { ServerActionPayloadInterface } from "./serverActionPayload.interface";
 
 const VALID_BROADCAST_CATEGORIES = new Set([
@@ -31,6 +33,21 @@ function parsePlatforms(formData: FormData): string[] {
     .getAll("platform")
     .map((value) => value as string)
     .filter(isValidPlatform);
+}
+
+// Reject MDX that does not compile so the author sees the error on save,
+// instead of the entry failing to render ("This entry could not be displayed.").
+async function getMdxError(formData: FormData): Promise<string | null> {
+  for (const field of ["summary", "content"]) {
+    try {
+      await serialize(String(formData.get(field) ?? ""), {
+        mdxOptions,
+      } as any);
+    } catch (error) {
+      return `Invalid MDX in ${field}: ${(error as Error).message}`;
+    }
+  }
+  return null;
 }
 
 const unauthorizedPayload: ServerActionPayloadInterface = {
@@ -152,6 +169,10 @@ export async function createChangelog(
   if (!session) {
     return unauthorizedPayload;
   }
+  const mdxError = await getMdxError(formData);
+  if (mdxError) {
+    return { message: mdxError, success: false };
+  }
   const categoryNames = uniqueCategoryNames(getFormCategoryNames(formData));
 
   if (categoryNames.length > 0) {
@@ -209,6 +230,10 @@ export async function editChangelog(
   const session = await getServerSession(authOptions);
   if (!session) {
     return unauthorizedPayload;
+  }
+  const mdxError = await getMdxError(formData);
+  if (mdxError) {
+    return { message: mdxError, success: false };
   }
   const id = formData.get("id") as string;
   const categoryNames = uniqueCategoryNames(getFormCategoryNames(formData));

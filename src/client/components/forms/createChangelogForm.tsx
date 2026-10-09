@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { type FormEvent, startTransition, useActionState } from "react";
 import ReactSelect from "react-select";
 import { FileUpload } from "@/client/components/fileUpload";
 import { ForwardRefEditor } from "@/client/components/forwardRefEditor";
@@ -24,9 +24,16 @@ export const CreateChangelogForm = ({
 }: {
   categories: Category[];
 }) => {
-  const [_state, formAction] = useActionState(createChangelog, {});
+  const [state, formAction] = useActionState(createChangelog, {});
+  // Submit manually instead of via `action` so a rejected save (e.g. invalid
+  // MDX) doesn't auto-reset the form and discard the author's edits.
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    startTransition(() => formAction(formData));
+  };
   return (
-    <form action={formAction} className="px-2 w-full">
+    <form onSubmit={onSubmit} className="px-2 w-full">
       <TitleSlug />
       <FileUpload />
       <div className="my-6">
@@ -91,6 +98,15 @@ export const CreateChangelogForm = ({
       </div>
 
       <ForwardRefEditor name="content" className="w-full" />
+
+      {state.message && (
+        <pre
+          role="alert"
+          className="mt-4 p-3 text-sm text-red-700 bg-red-50 whitespace-pre-wrap"
+        >
+          {state.message}
+        </pre>
+      )}
 
       <footer className="flex items-center justify-between mt-2">
         <Link href="/changelog/_admin" className="underline text-gray-500">
