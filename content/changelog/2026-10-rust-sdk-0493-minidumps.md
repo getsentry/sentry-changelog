@@ -1,7 +1,7 @@
 ---
-title: "Rust SDK 0.49.3: Native crash reporting with minidumps"
+title: "Rust SDK 0.49.3: Native crash reporting"
 slug: rust-sdk-0493-native-crash-reporting-minidumps
-summary: The Rust SDK can now capture native crashes as minidumps and send them to Sentry.
+summary: The Rust SDK can now report native crashes, such as segfaults in unsafe code, to Sentry.
 categories:
   - SDK
 platform:
@@ -12,13 +12,11 @@ date: 2026-10-12
 author: daniel.szoke@sentry.io
 ---
 
-Version 0.49.3 of the Sentry Rust SDK adds the [`sentry-minidump`](https://docs.sentry.io/platforms/rust/native-crash-reporting/) integration. It captures native crashes, such as segfaults, as minidumps and sends them to Sentry.
+Version [0.49.3](https://github.com/getsentry/sentry-rust/releases/tag/0.49.3) of the Sentry Rust SDK adds native crash reporting on Linux, macOS, and Windows. The SDK captures native crashes, such as segmentation faults, as minidumps and sends them to Sentry.
 
-- **Out-of-process capture:** A separate crash reporter process writes the minidump and sends it to Sentry, so crashes are reported even when your app can't recover.
-- **Scope sync:** Send the user, tags, extra data and breadcrumbs to the crash reporter through the integration, so crash events include the same context as your other events.
-- **Supported platforms:** Linux, macOS and Windows.
+Safe Rust shouldn't crash without panicking, and the SDK already reports panics. But `unsafe` code and calls into C libraries through FFI can crash your app without a panic. Native crash reporting captures these crashes.
 
-Enable the `minidump` feature on the `sentry` crate and add the integration to your client options:
+To enable it, turn on the `minidump` feature of the `sentry` crate and add the integration when you initialize the SDK:
 
 ```rust
 let _guard = sentry::init(
@@ -28,4 +26,4 @@ let _guard = sentry::init(
 );
 ```
 
-See the [release notes](https://github.com/getsentry/sentry-rust/releases/tag/0.49.3) for all changes.
+See the [Native Crash Reporting docs](https://docs.sentry.io/platforms/rust/native-crash-reporting/) for setup details.
