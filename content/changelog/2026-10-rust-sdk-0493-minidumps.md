@@ -12,7 +12,7 @@ date: 2026-10-12
 author: daniel.szoke@sentry.io
 ---
 
-Version 0.49.3 of the Sentry Rust SDK adds the [`sentry-minidump`](https://docs.rs/sentry-minidump/0.49.3/sentry_minidump/) integration. It captures native crashes, such as segfaults, as minidumps and sends them to Sentry.
+Version 0.49.3 of the Sentry Rust SDK adds the [`sentry-minidump`](https://docs.sentry.io/platforms/rust/native-crash-reporting/) integration. It captures native crashes, such as segfaults, as minidumps and sends them to Sentry.
 
 - **Out-of-process capture:** A separate crash reporter process writes the minidump and sends it to Sentry, so crashes are reported even when your app can't recover.
 - **Scope sync:** Send the user, tags, extra data and breadcrumbs to the crash reporter through the integration, so crash events include the same context as your other events.
