@@ -13,7 +13,7 @@ date: 2026-10-13
 author: aleksandr.pantiukhov@sentry.io
 ---
 
-Turbo Modules are the native modules of the React Native New Architecture. Your JavaScript code calls them to use the camera, storage, sensors, and other native features. Starting with version [8.14.0](https://github.com/getsentry/sentry-react-native/releases/tag/8.14.0), the Sentry React Native SDK can record these calls. If you initialize the SDK with `enableNative` (the default), the `turboModuleContextIntegration` is active. By default, it records only the calls to the Sentry module. To record your own Turbo Modules, give them to the integration in the `modules` option:
+Turbo Modules are the native modules of the React Native New Architecture. Your JavaScript code calls them to use the camera, storage, sensors, and other native features. Starting with version [8.14.0](https://github.com/getsentry/sentry-react-native/releases/tag/8.14.0), the Sentry React Native SDK can record these calls. If you initialize the SDK with `enableNative` (the default), the `turboModuleContextIntegration` is active. By default, it wraps only the Sentry module, and uses these calls only for crash context. To get statistics, span attributes, and breadcrumbs for your own Turbo Modules, give them to the integration in the `modules` option:
 
 ```js
 import NativeCameraModule from "./specs/NativeCameraModule";
@@ -36,11 +36,11 @@ When your app crashes in native code, the crash report shows the Turbo Module me
 
 The SDK counts the calls, the errors, and the total duration for each module and method. When a transaction finishes, the SDK adds a `turbo_modules.aggregate` child span with the full breakdown. The root span gets the `turbo_modules.call_count`, `turbo_modules.error_count`, `turbo_modules.total_ms`, and `turbo_modules.top_module_ms` measurements.
 
-If your app runs for a long time without transactions, the SDK sends the statistics in an info-level event every 30 seconds. If there is no new data, the SDK does not send the event. Calls from the SDK itself (`RNSentry`) are not counted.
+If your app runs for a long time without transactions, the SDK sends the statistics in an info-level event every 30 seconds. If there is no new data, the SDK does not send the event.
 
 ## Performance data on spans
 
-When a transaction or a span ends, the SDK adds the call count, the duration, and the error count for each module and method. For example, a navigation span shows the native calls that occurred during the screen change. The summary attributes `turbo_module.total_call_count`, `turbo_module.total_duration_ms`, and `turbo_module.top_module` show the total cost.
+When a root span ends, the SDK adds the call count, the duration, and the error count for each module and method. For example, a navigation span shows the native calls that occurred during the screen change. The summary attributes `turbo_module.total_call_count`, `turbo_module.total_duration_ms`, and `turbo_module.top_module` show the total cost.
 
 Asynchronous calls that take more than 500 ms add a `native.turbo_module` breadcrumb. Methods that use success and failure callbacks instead of a Promise get correct durations too.
 
