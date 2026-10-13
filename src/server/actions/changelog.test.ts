@@ -52,7 +52,7 @@ vi.mock("../db", () => {
 });
 
 import { getServerSession } from "next-auth/next";
-import { createChangelog, editChangelog } from "./changelog";
+import { createChangelog, editChangelog, restoreChangelog } from "./changelog";
 
 function buildFormData(fields: Record<string, string | string[]>): FormData {
   const fd = new FormData();
@@ -136,5 +136,93 @@ describe("editChangelog platform persistence", () => {
 
     expect(capturedChangelogUpdate).not.toBeNull();
     expect(capturedChangelogUpdate?.platform).toEqual(["python-flask"]);
+  });
+});
+
+describe("changelog form validation", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    capturedChangelogInsert = null;
+    capturedChangelogUpdate = null;
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { email: "test.user@sentry.io" },
+    } as never);
+  });
+
+  it("returns field errors instead of inserting when required fields are blank", async () => {
+    const result = await createChangelog(
+      {},
+      buildFormData({ title: "  ", slug: "", summary: "", content: "" }),
+    );
+
+    expect(result.success).toBe(false);
+    expect(Object.keys(result.fieldErrors ?? {}).sort()).toEqual([
+      "content",
+      "slug",
+      "summary",
+      "title",
+    ]);
+    expect(capturedChangelogInsert).toBeNull();
+  });
+
+  it("rejects slugs that would break the URL", async () => {
+    const result = await editChangelog(
+      {},
+      buildFormData({
+        id: "changelog-1",
+        title: "t",
+        slug: "has spaces/and-slash",
+        summary: "s",
+        content: "c",
+      }),
+    );
+
+    expect(result.fieldErrors?.slug).toBeDefined();
+    expect(capturedChangelogUpdate).toBeNull();
+  });
+
+  it("returns the new id and stores an empty image as null", async () => {
+    const result = await createChangelog(
+      {},
+      buildFormData({
+        title: "New",
+        slug: "new",
+        summary: "s",
+        content: "c",
+        image: "",
+      }),
+    );
+
+    expect(result).toEqual({ success: true, id: "cl-1" });
+    expect(capturedChangelogInsert?.image).toBeNull();
+  });
+});
+
+describe("restoreChangelog", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    capturedChangelogUpdate = null;
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { email: "test.user@sentry.io" },
+    } as never);
+  });
+
+  it("brings a deleted post back as an admin-managed draft", async () => {
+    const result = await restoreChangelog({}, buildFormData({ id: "cl-1" }));
+
+    expect(result.success).toBe(true);
+    expect(capturedChangelogUpdate).toEqual({
+      deleted: false,
+      published: false,
+      adminManaged: true,
+    });
+  });
+
+  it("requires a session", async () => {
+    vi.mocked(getServerSession).mockResolvedValue(null as never);
+    const result = await restoreChangelog({}, buildFormData({ id: "cl-1" }));
+
+    expect(result.success).toBe(false);
+    expect(capturedChangelogUpdate).toBeNull();
   });
 });

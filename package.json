@@ -32,7 +32,6 @@
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
   },
-
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.3",
     "@paralleldrive/cuid2": "^3.3.0",
@@ -60,6 +59,7 @@
     "require-in-the-middle": "^7.5.2",
     "rss": "^1.2.2",
     "sass": "^1.99.0",
+    "sonner": "^2.0.8",
     "textarea-markdown-editor": "^1.0.4",
     "unified": "10.1.2",
     "unist-util-visit": "4.1.2"

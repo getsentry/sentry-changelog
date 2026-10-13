@@ -1,7 +1,7 @@
 import { asc } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth/next";
-import { CreateChangelogForm } from "@/client/components/forms/createChangelogForm";
+import { ChangelogForm } from "@/client/components/forms/changelogForm";
 import { authOptions } from "@/server/authOptions";
 import { db } from "@/server/db";
 import { Category } from "@/server/db/schema";
@@ -18,9 +18,5 @@ export default async function ChangelogCreatePage() {
     .from(Category)
     .orderBy(asc(Category.name));
 
-  return (
-    <section className="overflow-x-auto col-start-3 col-span-8">
-      <CreateChangelogForm categories={categories} />
-    </section>
-  );
+  return <ChangelogForm categories={categories} />;
 }
