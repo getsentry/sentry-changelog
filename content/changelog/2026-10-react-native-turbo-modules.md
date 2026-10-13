@@ -1,7 +1,7 @@
 ---
 title: "React Native SDK: Turbo Module insights"
 slug: react-native-sdk-turbo-module-insights
-summary: The React Native SDK now records the duration and errors of native module calls, and adds the active call to crash reports.
+summary: The React Native SDK now records the calls, duration, and errors of native modules, and adds the active call to crash reports.
 categories:
   - SDK
   - Performance
@@ -17,7 +17,13 @@ Turbo Modules are the native modules of the React Native New Architecture. Your 
 
 ## Crash context
 
-When your app crashes in native code, the crash report shows the Turbo Module method that was active at that time. The SDK adds the `turbo_module` context and the `turbo_module.name` and `turbo_module.method` tags to the event.
+When your app crashes in native code, the crash report shows the Turbo Module method that was active at that time. The SDK adds the `turbo_module` context and the `turbo_module.name` and `turbo_module.method` tags to the event. Version 8.30.0 fixes stale tags on Android native crashes.
+
+## Aggregated statistics
+
+The SDK counts the calls, the errors, and the total duration for each module and method. When a transaction finishes, the SDK adds a `turbo_modules.aggregate` child span with the full breakdown. The root span gets the `turbo_modules.call_count`, `turbo_modules.error_count`, `turbo_modules.total_ms`, and `turbo_modules.top_module_ms` measurements.
+
+If your app runs for a long time without transactions, the SDK sends the statistics in an info-level event every 30 seconds. If there is no new data, the SDK does not send the event. Calls from the SDK itself (`RNSentry`) are not counted.
 
 ## Performance data on spans
 
@@ -41,4 +47,4 @@ Sentry.init({
 });
 ```
 
-For all options and changes, read the React Native SDK [changelog](https://github.com/getsentry/sentry-react-native/blob/main/CHANGELOG.md). To get all the improvements, upgrade to version [8.23.0](https://github.com/getsentry/sentry-react-native/releases/tag/8.23.0) or later.
+For all options and changes, read the React Native SDK [changelog](https://github.com/getsentry/sentry-react-native/blob/main/CHANGELOG.md). To get all the improvements, upgrade to version [8.30.0](https://github.com/getsentry/sentry-react-native/releases/tag/8.30.0) or later.
