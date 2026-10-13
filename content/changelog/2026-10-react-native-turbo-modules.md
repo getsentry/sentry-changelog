@@ -13,7 +13,20 @@ date: 2026-10-13
 author: aleksandr.pantiukhov@sentry.io
 ---
 
-Turbo Modules are the native modules of the React Native New Architecture. Your JavaScript code calls them to use the camera, storage, sensors, and other native features. Starting with version [8.14.0](https://github.com/getsentry/sentry-react-native/releases/tag/8.14.0), the Sentry React Native SDK records these calls. If you initialize the SDK with `enableNative` (the default), the `turboModuleContextIntegration` is active and needs no setup.
+Turbo Modules are the native modules of the React Native New Architecture. Your JavaScript code calls them to use the camera, storage, sensors, and other native features. Starting with version [8.14.0](https://github.com/getsentry/sentry-react-native/releases/tag/8.14.0), the Sentry React Native SDK can record these calls. If you initialize the SDK with `enableNative` (the default), the `turboModuleContextIntegration` is active. By default, it records only the calls to the Sentry module. To record your own Turbo Modules, give them to the integration in the `modules` option:
+
+```js
+import NativeCameraModule from "./specs/NativeCameraModule";
+
+Sentry.init({
+  dsn: "___PUBLIC_DSN___",
+  integrations: [
+    Sentry.turboModuleContextIntegration({
+      modules: [{ name: "NativeCameraModule", module: NativeCameraModule }],
+    }),
+  ],
+});
+```
 
 ## Crash context
 
@@ -33,7 +46,7 @@ Asynchronous calls that take more than 500 ms add a `native.turbo_module` breadc
 
 ## Old Architecture support
 
-If your app uses the Old Architecture, you can get the same data for `NativeModules`. Use the `arch` field to tell the two sources apart:
+If your app uses the Old Architecture, the SDK can record all registered `NativeModules` automatically. You do not need the `modules` list for this. Use the `arch` field to tell the two sources apart:
 
 ```js
 Sentry.init({
