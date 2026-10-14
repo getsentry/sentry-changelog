@@ -16,6 +16,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "*.public.blob.vercel-storage.com",
       },
+      ...[
+        "images.ctfassets.net",
+        "lh7-qw.googleusercontent.com",
+        "lh3.googleusercontent.com",
+      ].map((hostname) => ({ protocol: "https", hostname })),
     ],
   },
   async redirects() {

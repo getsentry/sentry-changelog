@@ -41,7 +41,9 @@ vi.mock("../db", () => {
       select: vi.fn().mockReturnValue({
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
-            limit: vi.fn().mockResolvedValue([{ id: "user-1" }]),
+            limit: vi
+              .fn()
+              .mockResolvedValue([{ id: "user-1", slug: "original" }]),
           }),
         }),
       }),
@@ -145,8 +147,16 @@ describe("immediate article cache invalidation", () => {
       }),
     );
     expect(updateTag).toHaveBeenCalledWith("changelogs");
-    expect(updateTag).toHaveBeenCalledWith("changelog-detail");
-    expect(revalidatePath).toHaveBeenCalledWith("/changelog", "layout");
+    expect(updateTag).toHaveBeenCalledWith("changelog-recent");
+    expect(updateTag).not.toHaveBeenCalledWith("changelog-detail");
+    expect(revalidatePath).toHaveBeenCalledWith("/changelog", "page");
+    const expectedSlug = _name === "create" ? "updated" : "original";
+    expect(updateTag).toHaveBeenCalledWith(`changelog:${expectedSlug}`);
+    expect(revalidatePath).toHaveBeenCalledWith(`/changelog/${expectedSlug}`);
+    if (_name === "edit") {
+      expect(updateTag).toHaveBeenCalledWith("changelog:updated");
+      expect(revalidatePath).toHaveBeenCalledWith("/changelog/updated");
+    }
   });
 
   it("does not invalidate public content for a rejected write", async () => {
@@ -184,5 +194,97 @@ describe("editChangelog platform persistence", () => {
 
     expect(capturedChangelogUpdate).not.toBeNull();
     expect(capturedChangelogUpdate?.platform).toEqual(["python-flask"]);
+  });
+});
+
+describe("targeted sync revalidation", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("invalidates affected slugs and the feed without expiring every article", async () => {
+    const { POST } = await import("@/app/api/revalidate/route");
+    const { revalidateTag } = await import("next/cache");
+    vi.stubEnv("REVALIDATE_SECRET", "test-secret");
+    try {
+      const response = await POST(
+        new Request("https://example.com/api/revalidate", {
+          method: "POST",
+          headers: { "x-revalidate-secret": "test-secret" },
+          body: JSON.stringify({ slugs: ["original", "updated", "original"] }),
+        }),
+      );
+      expect(response.status).toBe(200);
+      expect(revalidateTag).toHaveBeenCalledWith("changelog:original", {
+        expire: 0,
+      });
+      expect(revalidateTag).toHaveBeenCalledWith("changelog:updated", {
+        expire: 0,
+      });
+      expect(revalidateTag).not.toHaveBeenCalledWith(
+        "changelog-detail",
+        expect.anything(),
+      );
+      expect(revalidatePath).toHaveBeenCalledWith("/changelog", "page");
+      expect(revalidatePath).not.toHaveBeenCalledWith("/changelog", "layout");
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
+  it("preserves empty-body full refreshes from older sync callers", async () => {
+    const { POST } = await import("@/app/api/revalidate/route");
+    const { revalidateTag } = await import("next/cache");
+    vi.stubEnv("REVALIDATE_SECRET", "test-secret");
+    try {
+      expect(
+        (
+          await POST(
+            new Request("https://example.com/api/revalidate", {
+              method: "POST",
+              headers: { "x-revalidate-secret": "test-secret" },
+            }),
+          )
+        ).status,
+      ).toBe(200);
+      expect(revalidateTag).toHaveBeenCalledWith("changelog-detail", {
+        expire: 0,
+      });
+      expect(revalidatePath).toHaveBeenCalledWith("/changelog", "layout");
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
+  it.each([
+    [{ slugs: ["../private"] }, "test-secret", 400],
+    [{ slugs: ["original"] }, "wrong-secret", 401],
+  ])("rejects an invalid request before invalidating content", async (payload, secret, status) => {
+    const { POST } = await import("@/app/api/revalidate/route");
+    const { revalidateTag } = await import("next/cache");
+    vi.stubEnv("REVALIDATE_SECRET", "test-secret");
+    try {
+      expect(
+        (
+          await POST(
+            new Request("https://example.com/api/revalidate", {
+              method: "POST",
+              headers: { "x-revalidate-secret": secret },
+              body: JSON.stringify(payload),
+            }),
+          )
+        ).status,
+      ).toBe(status);
+      expect(revalidateTag).not.toHaveBeenCalled();
+      expect(revalidatePath).not.toHaveBeenCalled();
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
+  it("bounds cache tags for the longest valid slugs without collisions", async () => {
+    const { changelogTag } = await import("@/server/changelog-cache");
+    const slug = "a".repeat(255);
+    expect(changelogTag(slug).length).toBeLessThanOrEqual(256);
+    expect(changelogTag(slug)).toBe(changelogTag(slug));
+    expect(changelogTag(slug)).not.toBe(changelogTag(`${slug.slice(0, -1)}b`));
   });
 });

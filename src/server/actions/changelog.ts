@@ -1,10 +1,10 @@
 "use server";
 
 import { eq, inArray } from "drizzle-orm";
-import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { isValidPlatform } from "@/lib/platforms";
+import { invalidateChangelogs } from "@/server/revalidate-changelog";
 import { authOptions } from "../authOptions";
 import { db } from "../db";
 import { _CategoryToChangelog, Category, Changelog, User } from "../db/schema";
@@ -87,7 +87,9 @@ export async function unpublishChangelog(
   }
   const id = formData.get("id") as string;
 
+  let slug = "";
   try {
+    slug = await getChangelogSlug(id);
     await db
       .update(Changelog)
       .set({ published: false, adminManaged: true })
@@ -97,9 +99,7 @@ export async function unpublishChangelog(
     return { message: "Unable to unpublish changelog", success: false };
   }
 
-  updateTag("changelogs");
-  updateTag("changelog-detail");
-  revalidatePath("/changelog", "layout");
+  invalidateChangelogs([slug]);
   return { success: true };
 }
 
@@ -114,16 +114,18 @@ export async function publishChangelog(
   }
   const id = formData.get("id") as string;
 
+  let slug = "";
   try {
     const current =
       (
         await db
-          .select({ publishedAt: Changelog.publishedAt })
+          .select({ publishedAt: Changelog.publishedAt, slug: Changelog.slug })
           .from(Changelog)
           .where(eq(Changelog.id, id))
           .limit(1)
       )[0] ?? null;
 
+    slug = current?.slug ?? "";
     await db
       .update(Changelog)
       .set({
@@ -138,9 +140,7 @@ export async function publishChangelog(
     return { message: "Unable to publish changelog", success: false };
   }
 
-  updateTag("changelogs");
-  updateTag("changelog-detail");
-  revalidatePath("/changelog", "layout");
+  invalidateChangelogs([slug]);
   return { success: true };
 }
 
@@ -199,9 +199,7 @@ export async function createChangelog(
 
   await syncChangelogCategories(changelog.id, categoryNames);
 
-  updateTag("changelogs");
-  updateTag("changelog-detail");
-  revalidatePath("/changelog", "layout");
+  invalidateChangelogs([formData.get("slug") as string]);
   return redirect("/changelog/_admin");
 }
 
@@ -223,7 +221,9 @@ export async function editChangelog(
       .onConflictDoNothing({ target: Category.name });
   }
 
+  let previousSlug = "";
   try {
+    previousSlug = await getChangelogSlug(id);
     await db
       .update(Changelog)
       .set({
@@ -252,9 +252,7 @@ export async function editChangelog(
     return { message: (error as Error).message, success: false };
   }
 
-  updateTag("changelogs");
-  updateTag("changelog-detail");
-  revalidatePath("/changelog", "layout");
+  invalidateChangelogs([previousSlug, formData.get("slug") as string]);
   return redirect("/changelog/_admin");
 }
 
@@ -267,7 +265,9 @@ export async function deleteChangelog(
     return unauthorizedPayload;
   }
   const id = formData.get("id") as string;
+  let slug = "";
   try {
+    slug = await getChangelogSlug(id);
     // Soft delete: mark deleted + admin-managed instead of removing the row,
     // so the file sync skips it and never re-creates the entry from its file.
     // Do NOT clear publishedAt — preserving it means a restored entry keeps
@@ -285,10 +285,17 @@ export async function deleteChangelog(
     return { message: "Unable to delete changelog", success: false };
   }
 
-  updateTag("changelogs");
-  updateTag("changelog-detail");
-  revalidatePath("/changelog", "layout");
+  invalidateChangelogs([slug]);
   return {
     success: true,
   };
+}
+
+async function getChangelogSlug(id: string): Promise<string> {
+  const [entry] = await db
+    .select({ slug: Changelog.slug })
+    .from(Changelog)
+    .where(eq(Changelog.id, id))
+    .limit(1);
+  return entry?.slug ?? "";
 }
