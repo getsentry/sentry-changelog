@@ -4,14 +4,15 @@ import { cacheLife, cacheTag } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth/next";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import { serialize } from "next-mdx-remote/serialize";
-import { Suspense } from "react";
+import { compileMDX } from "next-mdx-remote/rsc";
+import type { ReactNode } from "react";
 import ArticleFooter from "@/client/components/articleFooter";
+import { ChangelogImage } from "@/client/components/changelogImage";
 import { CopyPageButton } from "@/client/components/copyPageButton";
 import { DateComponent } from "@/client/components/date";
 import { ShareButtons } from "@/client/components/shareButtons";
 import { authOptions } from "@/server/authOptions";
+import { changelogTag } from "@/server/changelog-cache";
 import type { ChangelogModel as Changelog } from "@/server/db/schema";
 import { mdxOptions } from "@/server/mdxOptions";
 import {
@@ -23,10 +24,13 @@ import {
 // Newly published slugs remain available on demand after this build.
 export async function generateStaticParams() {
   const changelogs = await getChangelogs();
-  // Cache Components needs one validation path even for an empty database.
-  return changelogs.length
-    ? changelogs.map(({ slug }) => ({ slug }))
-    : [{ slug: "__empty_changelog__" }];
+  // Next 16.3 uses the first validation path's resume cache for on-demand
+  // routes. Validate a reserved, missing slug first so that fallback cannot
+  // retain a real article's build-time body after targeted revalidation.
+  return [
+    { slug: "__empty_changelog__" },
+    ...changelogs.map(({ slug }) => ({ slug })),
+  ];
 }
 
 export async function generateMetadata(
@@ -72,10 +76,7 @@ export default async function ChangelogEntry(props: {
   params: Promise<{ slug: string }>;
 }) {
   const params = await props.params;
-  const [changelog, relatedEntries] = await Promise.all([
-    getChangelog(params.slug),
-    getRecentChangelogs(params.slug),
-  ]);
+  const changelog = await getChangelog(params.slug);
 
   if (!changelog) {
     notFound();
@@ -89,47 +90,25 @@ export default async function ChangelogEntry(props: {
   }
 
   return (
-    <ChangelogArticle changelog={changelog} relatedEntries={relatedEntries} />
+    <ChangelogArticle changelog={changelog}>
+      <RecentEntries slug={params.slug} />
+    </ChangelogArticle>
   );
 }
 
 async function ChangelogArticle({
   changelog,
-  relatedEntries,
+  children,
 }: {
   changelog: NonNullable<Awaited<ReturnType<typeof getChangelog>>>;
-  relatedEntries: Awaited<ReturnType<typeof getRecentChangelogs>>;
+  children: ReactNode;
 }) {
-  "use cache";
-  cacheLife("max");
-  cacheTag("changelogs", "changelog-detail");
-
   const readTime = estimateReadTime(changelog.content);
-
-  // Pre-compile the MDX so a malformed entry reports the real underlying error
-  // (with its slug) to Sentry instead of crashing the render with the opaque
-  // "Server Components render" digest error.
-  const mdxSource = changelog.content ?? "No content found.";
-  let mdxIsValid = true;
-  try {
-    await serialize(mdxSource, { mdxOptions } as any);
-  } catch (e) {
-    Sentry.captureException(e, {
-      tags: { changelog_stage: "changelogDetailMdx" },
-      extra: { slug: changelog.slug },
-    });
-    mdxIsValid = false;
-  }
 
   return (
     <div className="bg-white min-h-screen">
       {changelog.image && (
-        // biome-ignore lint/performance/noImgElement: next/image doesn't resolve here
-        <img
-          src={changelog.image}
-          alt={changelog.title ?? ""}
-          className="w-full max-h-[480px] object-cover"
-        />
+        <ChangelogImage src={changelog.image} alt={changelog.title} hero />
       )}
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
@@ -195,55 +174,79 @@ async function ChangelogArticle({
         </div>
 
         <div className="prose prose-lg max-w-none blog-prose blog-content">
-          {mdxIsValid ? (
-            <Suspense fallback="Loading...">
-              <MDXRemote source={mdxSource} options={{ mdxOptions } as any} />
-            </Suspense>
-          ) : (
-            <p>This entry could not be displayed.</p>
-          )}
+          <ArticleBody slug={changelog.slug} content={changelog.content} />
         </div>
 
         <div className="mt-12">
           <ArticleFooter />
         </div>
 
-        {relatedEntries.length > 0 && (
-          <section className="mt-16 pt-10 border-t border-blog-border">
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-blog-muted mb-6">
-              Recent entries
-            </h2>
-            <div className="grid sm:grid-cols-3 gap-5">
-              {relatedEntries.map((entry) => (
-                <Link
-                  key={entry.id}
-                  href={`/changelog/${entry.slug}`}
-                  className="group block bg-white border border-blog-border rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200"
-                >
-                  {entry.image && (
-                    // biome-ignore lint/performance/noImgElement: next/image doesn't resolve here
-                    <img
-                      src={entry.image}
-                      alt={entry.title ?? ""}
-                      className="w-full aspect-video object-cover"
-                    />
-                  )}
-                  <div className="p-4">
-                    <h3 className="text-sm font-semibold text-blog-text group-hover:text-blog-accent transition-colors duration-150 line-clamp-2">
-                      {entry.title}
-                    </h3>
-                    {entry.publishedAt && (
-                      <p className="mt-2 text-xs text-blog-muted">
-                        <DateComponent date={entry.publishedAt} />
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
+        {children}
       </div>
     </div>
+  );
+}
+
+async function ArticleBody({
+  slug,
+  content,
+}: {
+  slug: string;
+  content: string | null;
+}) {
+  "use cache";
+  cacheLife("max");
+  cacheTag("changelog-detail", changelogTag(slug));
+  try {
+    const compiled = await compileMDX({
+      source: content ?? "No content found.",
+      options: { mdxOptions } as any,
+    });
+    return compiled.content;
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: { changelog_stage: "changelogDetailMdx" },
+      extra: { slug },
+    });
+    return <p>This entry could not be displayed.</p>;
+  }
+}
+
+async function RecentEntries({ slug }: { slug: string }) {
+  "use cache";
+  cacheTag("changelog-recent");
+  const relatedEntries = (await getRecentChangelogs())
+    .filter((entry) => entry.slug !== slug)
+    .slice(0, 3);
+  if (relatedEntries.length === 0) return null;
+  return (
+    <section className="mt-16 pt-10 border-t border-blog-border">
+      <h2 className="text-sm font-semibold uppercase tracking-widest text-blog-muted mb-6">
+        Recent entries
+      </h2>
+      <div className="grid sm:grid-cols-3 gap-5">
+        {relatedEntries.map((entry) => (
+          <Link
+            key={entry.slug}
+            href={`/changelog/${entry.slug}`}
+            className="group block bg-white border border-blog-border rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200"
+          >
+            {entry.image && (
+              <ChangelogImage src={entry.image} alt={entry.title} />
+            )}
+            <div className="p-4">
+              <h3 className="text-sm font-semibold text-blog-text group-hover:text-blog-accent transition-colors duration-150 line-clamp-2">
+                {entry.title}
+              </h3>
+              {entry.publishedAt && (
+                <p className="mt-2 text-xs text-blog-muted">
+                  <DateComponent date={entry.publishedAt} />
+                </p>
+              )}
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }

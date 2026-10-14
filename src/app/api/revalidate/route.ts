@@ -1,7 +1,8 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
+import { changelogTag } from "@/server/changelog-cache";
 
-const TAGS = ["changelogs", "changelog-detail"] as const;
+const FEED_TAGS = ["changelogs", "changelog-recent"];
 
 /**
  * Out-of-band cache revalidation hook. The changelog sync job (a GitHub
@@ -17,10 +18,42 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  for (const tag of TAGS) {
+  // Older callers can still request a full refresh with an empty body.
+  const body = await request.text();
+  let slugs: string[] | null = null;
+  if (body) {
+    try {
+      const payload = JSON.parse(body);
+      if (
+        !Array.isArray(payload.slugs) ||
+        payload.slugs.length > 1000 ||
+        payload.slugs.some(
+          (slug: unknown) =>
+            typeof slug !== "string" ||
+            !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ||
+            slug.length > 255,
+        )
+      ) {
+        throw new Error("Invalid slugs");
+      }
+      slugs = [...new Set<string>(payload.slugs)];
+    } catch {
+      return NextResponse.json({ error: "Invalid slugs" }, { status: 400 });
+    }
+  }
+  const tags = [
+    ...FEED_TAGS,
+    ...(slugs ? slugs.map((slug) => changelogTag(slug)) : ["changelog-detail"]),
+  ];
+  for (const tag of tags) {
     revalidateTag(tag, { expire: 0 });
   }
-  revalidatePath("/changelog", "layout");
+  if (slugs) {
+    revalidatePath("/changelog", "page");
+    for (const slug of slugs) revalidatePath(`/changelog/${slug}`);
+  } else {
+    revalidatePath("/changelog", "layout");
+  }
 
-  return NextResponse.json({ revalidated: true, tags: TAGS });
+  return NextResponse.json({ revalidated: true, tags });
 }

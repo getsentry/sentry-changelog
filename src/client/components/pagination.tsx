@@ -1,18 +1,8 @@
 "use client";
-import Link from "next/link";
-import {
-  createSerializer,
-  parseAsArrayOf,
-  parseAsInteger,
-  parseAsString,
-} from "nuqs";
 
-const serialize = createSerializer({
-  month: parseAsString,
-  categories: parseAsArrayOf(parseAsString),
-  page: parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
-  search: parseAsString,
-});
+import Link from "next/link";
+import type { MouseEvent } from "react";
+import { serializeFeedQuery } from "@/lib/changelog-feed";
 
 export function Pagination({
   totalPages,
@@ -27,158 +17,98 @@ export function Pagination({
   selectedCategoriesIds: string[];
   selectedMonth: string | null;
   search: string | null;
-  onPageNumberChange: (pageNumber: number) => void;
+  onPageNumberChange?: (pageNumber: number) => void;
 }) {
-  const navigationToPrevPageAllowed = currentPage - 1 > 0;
-  const navigationToNextPageAllowed = currentPage + 1 <= totalPages;
-
-  const pages: Array<number> = [];
-  let pushedMiddle = false;
-  for (let i = 1; i <= totalPages; i++) {
+  const pages: number[] = [];
+  for (let page = 1; page <= totalPages; page++) {
     if (
-      i === 1 ||
-      i === totalPages ||
-      (i >= currentPage - 2 && i <= currentPage + 2)
+      page === 1 ||
+      page === totalPages ||
+      Math.abs(page - currentPage) <= 2
     ) {
-      pages.push(i);
-    } else if (!pushedMiddle) {
+      pages.push(page);
+    } else if (pages.at(-1) !== 0) {
       pages.push(0);
-      pushedMiddle = true;
     }
   }
 
+  const href = (page: number) =>
+    `/changelog/${serializeFeedQuery({
+      month: selectedMonth,
+      categories: selectedCategoriesIds,
+      search,
+      page,
+    })}`;
+  const navigate = (event: MouseEvent<HTMLAnchorElement>, page: number) => {
+    // Preserve normal open-in-new-tab and modifier-click behavior.
+    if (
+      !onPageNumberChange ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      event.button !== 0
+    )
+      return;
+    event.preventDefault();
+    onPageNumberChange(page);
+  };
+  const edgeClass =
+    "hidden md:flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-white uppercase rounded-lg hover:bg-white/10 active:bg-white/20";
   return (
-    <div className="flex items-center justify-center gap-0 md:gap-4">
-      <ConditionalLink
-        href={serialize({
-          month: selectedMonth,
-          categories:
-            selectedCategoriesIds.length === 0 ? null : selectedCategoriesIds,
-          page: Math.max(currentPage - 1, 1),
-          search,
-        })}
-        handleClick={(e: React.MouseEvent<HTMLElement>) => {
-          e.preventDefault();
-          onPageNumberChange(Math.max(currentPage - 1, 1));
-        }}
-        condition={navigationToPrevPageAllowed}
-      >
-        <button
-          disabled={!navigationToPrevPageAllowed}
-          className="hidden md:flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-white uppercase align-middle transition-all rounded-lg select-none hover:bg-white/10 active:bg-white/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-          type="button"
+    <nav
+      aria-label="Changelog pages"
+      className="flex items-center justify-center gap-0 md:gap-4"
+    >
+      {currentPage > 1 ? (
+        <Link
+          href={href(currentPage - 1)}
+          onClick={(event) => navigate(event, currentPage - 1)}
+          className={edgeClass}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            aria-hidden="true"
-            className="w-4 h-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-            />
-          </svg>
-          Previous
-        </button>
-      </ConditionalLink>
+          ← Previous
+        </Link>
+      ) : (
+        <span aria-disabled="true" className={`${edgeClass} opacity-50`}>
+          ← Previous
+        </span>
+      )}
       <div className="flex items-center gap-0 md:gap-2">
-        {pages.map((page) => (
-          <Link
-            key={page}
-            href={serialize({
-              month: selectedMonth,
-              categories:
-                selectedCategoriesIds.length === 0
-                  ? null
-                  : selectedCategoriesIds,
-              page: page,
-              search,
-            })}
-            onClick={(e) => {
-              e.preventDefault();
-              onPageNumberChange(page);
-            }}
-          >
-            <button
-              className={`${
-                page === currentPage
-                  ? "bg-white/20 relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-white shadow-md hover:bg-white/25 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  : "relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-white hover:bg-white/10 active:bg-white/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              }`}
-              type="button"
+        {pages.map((page, index) =>
+          page === 0 ? (
+            <span
+              key={`ellipsis-${pages[index - 1]}`}
+              aria-hidden="true"
+              className="w-10 text-center text-white/60"
             >
-              <span className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                {page === 0 ? "..." : page}
-              </span>
-            </button>
-          </Link>
-        ))}
+              …
+            </span>
+          ) : (
+            <Link
+              key={page}
+              href={href(page)}
+              onClick={(event) => navigate(event, page)}
+              aria-current={page === currentPage ? "page" : undefined}
+              className={`inline-flex h-10 w-10 items-center justify-center select-none rounded-lg text-center font-sans text-xs font-medium text-white hover:bg-white/10 active:bg-white/20 ${page === currentPage ? "bg-white/20 shadow-md hover:bg-white/25" : ""}`}
+            >
+              {page}
+            </Link>
+          ),
+        )}
       </div>
-      <ConditionalLink
-        href={serialize({
-          month: selectedMonth,
-          categories:
-            selectedCategoriesIds.length === 0 ? null : selectedCategoriesIds,
-          page: currentPage + 1,
-          search,
-        })}
-        handleClick={(e: React.MouseEvent<HTMLElement>) => {
-          e.preventDefault();
-          onPageNumberChange(currentPage + 1);
-        }}
-        condition={navigationToNextPageAllowed}
-      >
-        <button
-          disabled={!navigationToNextPageAllowed}
-          className="hidden md:flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-white uppercase align-middle rounded-lg select-none hover:bg-white/10 active:bg-white/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-          type="button"
+      {currentPage < totalPages ? (
+        <Link
+          href={href(currentPage + 1)}
+          onClick={(event) => navigate(event, currentPage + 1)}
+          className={edgeClass}
         >
-          Next
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            aria-hidden="true"
-            className="w-4 h-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-            />
-          </svg>
-        </button>
-      </ConditionalLink>
-    </div>
-  );
-}
-
-interface ConditionalLinkProps extends React.PropsWithChildren {
-  condition: boolean;
-  handleClick: (e: React.MouseEvent<HTMLElement>) => void;
-  href: string;
-}
-
-function ConditionalLink({
-  children,
-  condition,
-  handleClick,
-  href,
-  ...props
-}: ConditionalLinkProps): React.ReactElement {
-  return condition ? (
-    <Link href={href} onClick={handleClick} {...props}>
-      {children}
-    </Link>
-  ) : (
-    // biome-ignore lint/complexity/noUselessFragments: you're wrong, biome
-    <>{children}</>
+          Next →
+        </Link>
+      ) : (
+        <span aria-disabled="true" className={`${edgeClass} opacity-50`}>
+          Next →
+        </span>
+      )}
+    </nav>
   );
 }

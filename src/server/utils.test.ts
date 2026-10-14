@@ -1,9 +1,6 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { MDXRemote } from "next-mdx-remote";
-import { createElement } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
 import {
   afterAll,
   afterEach,
@@ -14,6 +11,7 @@ import {
   it,
   vi,
 } from "vitest";
+import { defaultFeedQuery, getFeedPage } from "@/lib/changelog-feed";
 import {
   _CategoryToChangelog,
   type CategoryModel,
@@ -62,7 +60,7 @@ function databaseEntry(slug: string, fields: Partial<Entry> = {}): Entry {
   };
 }
 
-function createQuery() {
+function createQuery(selection?: Record<string, unknown>) {
   let rows: unknown[] = [];
   const query = Object.assign(
     Promise.resolve().then(() => rows),
@@ -76,8 +74,15 @@ function createQuery() {
                   category,
                 })),
               )
-            : databaseEntries.map(
-                ({ categories: _categories, ...entry }) => entry,
+            : databaseEntries.map(({ categories: _categories, ...entry }) =>
+                selection
+                  ? Object.fromEntries(
+                      Object.keys(selection).map((key) => [
+                        key,
+                        entry[key as keyof typeof entry],
+                      ]),
+                    )
+                  : entry,
               );
         return query;
       }),
@@ -147,7 +152,7 @@ afterAll(async () => {
 });
 
 describe("branch changelog previews", () => {
-  it("shows a new Markdown entry in the list, detail, and rendered summary before database sync", async () => {
+  it("shows branch content in the list, detail, and searchable summary before database sync", async () => {
     await writeEntry("new-mcp-tools", {
       title: "New MCP tools",
       summary: "Inspect **MCP tools** and [read more](https://example.com).",
@@ -175,12 +180,9 @@ describe("branch changelog previews", () => {
       slug: "new-mcp-tools",
       title: "New MCP tools",
     });
-    const html = renderToStaticMarkup(
-      createElement(MDXRemote, summaries[0].mdxSummary),
-    );
-    expect(html).toContain("<strong>MCP tools</strong>");
-    expect(html).toContain("<span>read more</span>");
-    expect(html).not.toContain("<a");
+    expect(summaries[0].summary).toContain("**MCP tools**");
+    expect(summaries[0].searchText).toContain("inspect");
+    expect(summaries[0]).not.toHaveProperty("mdxSummary");
   });
 
   it("replaces file-managed content by slug and reuses database category identity", async () => {
@@ -273,7 +275,7 @@ describe("branch changelog previews", () => {
     await writeEntry("removed", { deleted: true }, "");
 
     expect(await utils.getChangelogs()).toEqual([]);
-    expect(await utils.getRecentChangelogs("unrelated")).toEqual([]);
+    expect(await utils.getRecentChangelogs()).toEqual([]);
     expect(await utils.getChangelog("draft")).toMatchObject({
       published: false,
       title: "Branch draft",
@@ -281,7 +283,7 @@ describe("branch changelog previews", () => {
     expect(await utils.getChangelog("removed")).toBeNull();
   });
 
-  it("sorts merged dates before excluding and limiting recent entries", async () => {
+  it("returns four recent metadata candidates sorted by merged publication dates", async () => {
     databaseEntries = [
       databaseEntry("old"),
       databaseEntry("database-recent", { publishedAt: new Date("2026-10-04") }),
@@ -298,8 +300,8 @@ describe("branch changelog previews", () => {
       "old",
     ]);
     expect(
-      (await utils.getRecentChangelogs("current")).map((entry) => entry.slug),
-    ).toEqual(["newest", "database-recent", "third"]);
+      (await utils.getRecentChangelogs()).map((entry) => entry.slug),
+    ).toEqual(["newest", "current", "database-recent", "third"]);
   });
 
   it("preserves existing publication dates when a file does not specify a date", async () => {
@@ -343,8 +345,13 @@ describe("branch changelog previews", () => {
     expect(await utils.getChangelog("database-only")).toEqual(
       databaseEntries[0],
     );
-    expect(await utils.getRecentChangelogs("unrelated")).toEqual(
-      databaseEntries,
+    expect(await utils.getRecentChangelogs()).toEqual(
+      databaseEntries.map(({ slug, title, image, publishedAt }) => ({
+        slug,
+        title,
+        image,
+        publishedAt,
+      })),
     );
   });
 
@@ -354,9 +361,7 @@ describe("branch changelog previews", () => {
 
     await expect(utils.getChangelogs()).rejects.toThrow(/title/);
     await expect(utils.getChangelog("invalid")).rejects.toThrow(/title/);
-    await expect(utils.getRecentChangelogs("unrelated")).rejects.toThrow(
-      /title/,
-    );
+    await expect(utils.getRecentChangelogs()).rejects.toThrow(/title/);
   });
 
   it("propagates database outages instead of caching an article as missing", async () => {
@@ -424,5 +429,50 @@ describe("branch changelog previews", () => {
 
     expect(await index.text()).not.toContain("hidden-entry");
     expect(detail.status).toBe(404);
+  });
+});
+
+describe("feed filtering and page boundaries", () => {
+  it("searches summary text without matching missing summaries as undefined", async () => {
+    await writeEntry("summary-search", {
+      summary: "A unique breadcrumbneedle detail",
+    });
+    await writeEntry("empty-summary");
+    const entries = await utils.getChangelogSummaries();
+    expect(
+      getFeedPage(entries, {
+        ...defaultFeedQuery,
+        search: "breadcrumbneedle",
+      }).entries.map(({ slug }) => slug),
+    ).toEqual(["summary-search"]);
+    expect(
+      getFeedPage(entries, { ...defaultFeedQuery, search: "undefined" })
+        .entries,
+    ).toEqual([]);
+  });
+
+  it("clamps invalid pages and keeps matching month options in publication order", async () => {
+    for (let i = 0; i < 12; i++)
+      await writeEntry(`entry-${i}`, {
+        date: i < 2 ? "2026-10-05" : "2026-09-05",
+      });
+    const entries = await utils.getChangelogSummaries();
+    for (const page of [0, -1, NaN]) {
+      expect(getFeedPage(entries, { ...defaultFeedQuery, page }).page).toBe(1);
+      expect(
+        getFeedPage(entries, { ...defaultFeedQuery, page }).entries,
+      ).toHaveLength(10);
+    }
+    expect(
+      getFeedPage(entries, { ...defaultFeedQuery, page: 999 }).entries,
+    ).toHaveLength(2);
+    const october = getFeedPage(entries, {
+      ...defaultFeedQuery,
+      month: "October 2026",
+      page: 99,
+    });
+    expect(october.page).toBe(1);
+    expect(october.entries).toHaveLength(2);
+    expect(october.months).toEqual(["October 2026", "September 2026"]);
   });
 });

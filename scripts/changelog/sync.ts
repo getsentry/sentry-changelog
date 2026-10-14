@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { eq, inArray, sql } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { drizzle, type NodePgTransaction } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import {
@@ -41,10 +41,7 @@ type ChangelogFileEntry = {
   content: string;
 };
 
-type LockedChangelogRow = {
-  publishedAt: Date | null;
-  adminManaged: boolean | null;
-};
+type LockedChangelogRow = typeof Changelog.$inferSelect;
 
 /**
  * Upserts every file in content/changelog/ into the Changelog table, keyed by
@@ -60,6 +57,7 @@ async function syncEntry(
 ): Promise<{
   slug: string;
   skipped?: boolean;
+  unchanged?: boolean;
   published?: boolean;
   deleted?: boolean;
 }> {
@@ -70,13 +68,12 @@ async function syncEntry(
   // either committed before this lock (so we read adminManaged=true and skip)
   // or blocks until this sync commits and then applies on top — so a UI edit
   // is never silently overwritten.
-  const lockedRows = await tx.execute(sql`
-    SELECT "publishedAt", "adminManaged"
-    FROM "Changelog"
-    WHERE "slug" = ${slug}
-    FOR UPDATE
-  `);
-  const existing = lockedRows.rows[0] as LockedChangelogRow | undefined;
+  const [existing] = await tx
+    .select()
+    .from(Changelog)
+    .where(eq(Changelog.slug, slug))
+    .limit(1)
+    .for("update");
 
   // Once an entry has been touched in the admin UI it is owned by the UI;
   // never overwrite it from its file.
@@ -164,6 +161,27 @@ async function syncEntry(
     broadcastCategory,
   };
 
+  if (existing) {
+    const oldCategories = await tx
+      .select({ name: Category.name })
+      .from(_CategoryToChangelog)
+      .innerJoin(Category, eq(_CategoryToChangelog.A, Category.id))
+      .where(eq(_CategoryToChangelog.B, existing.id));
+    const values = {
+      ...common,
+      authorId: authorId ?? (clearAuthorOnUpdate ? null : existing.authorId),
+    };
+    const unchanged =
+      Object.entries(values).every(
+        ([key, value]) =>
+          JSON.stringify(existing[key as keyof LockedChangelogRow]) ===
+          JSON.stringify(value),
+      ) &&
+      JSON.stringify([...new Set(categoryNames)].sort()) ===
+        JSON.stringify(oldCategories.map(({ name }) => name).sort());
+    if (unchanged) return { slug, published, deleted, unchanged: true };
+  }
+
   const [changelog] = await tx
     .insert(Changelog)
     .values({
@@ -216,7 +234,8 @@ async function syncEntry(
  * instead POSTs to the app's /api/revalidate hook. No-op (with a warning) when
  * the env vars are unset, e.g. local runs.
  */
-async function revalidateSite() {
+async function revalidateSite(slugs: string[]) {
+  if (slugs.length === 0) return;
   const url = process.env.SITE_REVALIDATE_URL;
   const secret = process.env.REVALIDATE_SECRET;
 
@@ -230,7 +249,11 @@ async function revalidateSite() {
   try {
     const response = await fetch(url, {
       method: "POST",
-      headers: { "x-revalidate-secret": secret },
+      headers: {
+        "x-revalidate-secret": secret,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ slugs }),
     });
     if (!response.ok) {
       throw new Error(`${response.status} ${response.statusText}`);
@@ -269,6 +292,7 @@ async function main() {
     const out: Array<{
       slug: string;
       skipped?: boolean;
+      unchanged?: boolean;
       published?: boolean;
       deleted?: boolean;
     }> = [];
@@ -293,7 +317,11 @@ async function main() {
   }
   console.log("Done.");
 
-  await revalidateSite();
+  await revalidateSite(
+    results
+      .filter((result) => !result.skipped && !result.unchanged)
+      .map(({ slug }) => slug),
+  );
 }
 
 main()

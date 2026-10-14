@@ -1,375 +1,168 @@
 "use client";
 
-import Link from "next/link";
-import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
-import {
-  parseAsArrayOf,
-  parseAsInteger,
-  parseAsString,
-  useQueryState,
-} from "nuqs";
-import { Fragment, Suspense } from "react";
-import type { CategoryModel as Category } from "@/server/db/schema";
-import { Article } from "./article";
+import { debounce, useQueryStates } from "nuqs";
+import { Suspense, useTransition } from "react";
+import { type FeedQuery, feedParsers } from "@/lib/changelog-feed";
 import { Pagination } from "./pagination";
 
-const ENTRIES_PER_PAGE = 10;
+type FilterProps = { query: FeedQuery; months: string[]; mobile?: boolean };
 
-export type ChangelogEntry = {
-  id: string;
-  title: string;
-  slug: string;
-  summary?: string;
-  image?: string | null | undefined;
-  publishedAt: string; // Dates are passed to client components serialized as strings
-  categories: Category[];
-  mdxSummary: MDXRemoteSerializeResult;
-};
-
-function changelogEntryPublishDateToAddressableTag(date: Date) {
-  return date.toLocaleString("en-EN", {
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}
-
-export function ChangelogList({
-  changelogs,
-}: {
-  changelogs: ChangelogEntry[];
-}) {
-  // The default feed is real HTML in the prerendered shell. Only the URL-aware
-  // enhancement suspends, so visiting or returning never replaces articles
-  // with loading placeholders while Next resolves search params.
+export function ChangelogFilters(props: FilterProps) {
   return (
-    <Suspense fallback={<FilteredChangelogList changelogs={changelogs} />}>
-      <QueryChangelogList changelogs={changelogs} />
+    <Suspense fallback={<FilterFields {...props} />}>
+      <QueryFilters {...props} />
     </Suspense>
   );
 }
 
-function QueryChangelogList({ changelogs }: { changelogs: ChangelogEntry[] }) {
-  const [searchValue, setSearchValue] = useQueryState("search", parseAsString);
-  const [monthAndYearParam, setMonthParam] = useQueryState("month");
-  const [selectedCategoriesIds] = useQueryState(
-    "categories",
-    parseAsArrayOf(parseAsString)
-      .withDefault([])
-      .withOptions({ clearOnDefault: true }),
-  );
-  const [pageParam, setPageParam] = useQueryState(
-    "page",
-    parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
-  );
+function QueryFilters(props: FilterProps) {
+  const [isPending, startTransition] = useTransition();
+  const [query, setQuery] = useQueryStates(feedParsers, {
+    shallow: false,
+    startTransition,
+  });
   return (
-    <FilteredChangelogList
-      changelogs={changelogs}
-      searchValue={searchValue}
-      monthAndYearParam={monthAndYearParam}
-      selectedCategoriesIds={selectedCategoriesIds}
-      pageParam={pageParam}
-      setSearchValue={setSearchValue}
-      setMonthParam={setMonthParam}
-      setPageParam={setPageParam}
+    <FilterFields
+      {...props}
+      query={query}
+      isPending={isPending}
+      onSearch={(search) => {
+        void setQuery(
+          { search, page: 1 },
+          { limitUrlUpdates: search ? debounce(250) : undefined },
+        );
+      }}
+      onMonth={(month) => {
+        void setQuery({ month, page: 1 });
+      }}
     />
   );
 }
 
-function FilteredChangelogList({
-  changelogs,
-  searchValue = null,
-  monthAndYearParam = null,
-  selectedCategoriesIds = [],
-  pageParam = 1,
-  setSearchValue = () => {},
-  setMonthParam = () => {},
-  setPageParam = () => {},
-}: {
-  changelogs: ChangelogEntry[];
-  searchValue?: string | null;
-  monthAndYearParam?: string | null;
-  selectedCategoriesIds?: string[];
-  pageParam?: number;
-  setSearchValue?: (value: string | null) => void;
-  setMonthParam?: (value: string | null) => void;
-  setPageParam?: (value: number | null, options?: { history: "push" }) => void;
+function FilterFields({
+  query,
+  months,
+  mobile,
+  isPending = false,
+  onSearch = () => {},
+  onMonth = () => {},
+}: FilterProps & {
+  isPending?: boolean;
+  onSearch?: (value: string | null) => void;
+  onMonth?: (value: string | null) => void;
 }) {
-  const selectedPage = pageParam === null ? 1 : pageParam;
-
-  const filteredChangelogsWithoutMonthFilter = changelogs
-    .filter((changelog) => {
-      if (selectedCategoriesIds.length === 0) return true;
-      return changelog.categories.some((changelogCategory) =>
-        selectedCategoriesIds.includes(changelogCategory.id),
-      );
-    })
-    .filter((changelog) => {
-      if (searchValue === null) return true;
-      const addressableDate = changelogEntryPublishDateToAddressableTag(
-        new Date(changelog.publishedAt),
-      );
-      const concatenatedCategories = changelog.categories
-        .map((category: Category) => category.name)
-        .join(" ");
-      const searchableContent =
-        changelog.title +
-        changelog.summary +
-        concatenatedCategories +
-        addressableDate;
-      return searchableContent
-        .toLowerCase()
-        .includes(searchValue.toLowerCase());
-    })
-    .sort(
-      (a, b) =>
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
-    );
-
-  const filteredChangelogs = filteredChangelogsWithoutMonthFilter.filter(
-    (changelog) => {
-      if (monthAndYearParam == null) return true;
-      const addressableDate = changelogEntryPublishDateToAddressableTag(
-        new Date(changelog.publishedAt),
-      );
-      return monthAndYearParam === addressableDate;
-    },
-  );
-
-  const allChangelogCategories: Record<string, Category> = {};
-  for (const changelog of changelogs) {
-    for (const category of changelog.categories) {
-      allChangelogCategories[category.id] = category;
-    }
-  }
-
-  const datesGroupedByMonthAndYear = new Set<string>();
-  for (const changelog of changelogs) {
-    if (changelog.publishedAt === null) {
-      throw new Error("invariant");
-    }
-    datesGroupedByMonthAndYear.add(
-      changelogEntryPublishDateToAddressableTag(
-        new Date(changelog.publishedAt),
-      ),
-    );
-  }
-
-  const sortedDatesGroupedByMonthAndYear = [...datesGroupedByMonthAndYear].sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime(),
-  );
-
-  const numberOfPages = Math.ceil(filteredChangelogs.length / ENTRIES_PER_PAGE);
-
-  const paginatedChangelogs = filteredChangelogs
-    .slice(
-      ENTRIES_PER_PAGE * (selectedPage - 1),
-      ENTRIES_PER_PAGE * selectedPage,
-    )
-    .map((changelog, i, arr) => {
-      const monthYear = changelogEntryPublishDateToAddressableTag(
-        new Date(changelog.publishedAt),
-      );
-
-      const prevChangelog: ChangelogEntry | undefined = arr[i - 1];
-      const prevChangelogHasDifferentMonth =
-        !prevChangelog ||
-        changelogEntryPublishDateToAddressableTag(
-          new Date(prevChangelog.publishedAt),
-        ) !==
-          changelogEntryPublishDateToAddressableTag(
-            new Date(changelog.publishedAt),
-          );
-
-      return (
-        <Fragment key={changelog.id}>
-          {prevChangelogHasDifferentMonth && (
-            <div className="flex items-center gap-3 mt-8 mb-4">
-              <span className="text-xs font-semibold uppercase tracking-widest text-white/40 whitespace-nowrap">
-                {monthYear}
-              </span>
-              <div className="flex-1 h-px bg-white/10" />
-            </div>
-          )}
-          <Link href={`/changelog/${changelog.slug}`} className="block group">
-            <Article
-              key={changelog.id}
-              slug={changelog.slug}
-              date={changelog.publishedAt}
-              title={changelog.title}
-              tags={[]}
-              image={changelog.image}
-            >
-              <MDXRemote {...changelog.mdxSummary} />
-            </Article>
-          </Link>
-        </Fragment>
-      );
-    });
-
-  const visibleMonths = sortedDatesGroupedByMonthAndYear.filter(
-    (monthAndYear) =>
-      filteredChangelogsWithoutMonthFilter.some(
-        (changelog) =>
-          changelogEntryPublishDateToAddressableTag(
-            new Date(changelog.publishedAt),
-          ) === monthAndYear,
-      ),
-  );
-
   return (
-    <main className="w-full bg-darkPurple min-h-screen">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        {/* Mobile search + month dropdown */}
-        <div className="py-4 border-b border-white/10 sm:hidden flex flex-col gap-3">
-          <div className="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none"
-              aria-hidden="true"
-            >
-              <path
-                fillRule="evenodd"
-                d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <input
-              aria-label="Search..."
-              type="text"
-              value={searchValue ?? ""}
-              onChange={(e) => {
-                setPageParam(null);
-                const newSearchValue = e.target.value ? e.target.value : null;
-                setSearchValue(newSearchValue);
-              }}
-              placeholder="Search..."
-              className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0]"
-            />
-          </div>
-          {visibleMonths.length > 0 && (
+    <div aria-busy={isPending}>
+      <div className={`relative ${mobile ? "" : "mb-6"}`}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none"
+          aria-hidden="true"
+        >
+          <path
+            fillRule="evenodd"
+            d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+            clipRule="evenodd"
+          />
+        </svg>
+        <input
+          aria-label="Search..."
+          type="search"
+          value={query.search ?? ""}
+          onChange={(event) => onSearch(event.target.value || null)}
+          placeholder="Search..."
+          className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0]"
+        />
+      </div>
+      {mobile
+        ? months.length > 0 && (
             <select
-              value={monthAndYearParam ?? ""}
-              onChange={(e) => {
-                setMonthParam(e.target.value || null);
-                setPageParam(null);
-              }}
-              className="w-full text-xs rounded-lg border border-white/25 bg-white/10 text-white px-2 py-1.5 focus:outline-none focus:border-[#fd44b0] appearance-none"
+              aria-label="Filter by month"
+              value={query.month ?? ""}
+              onChange={(event) => onMonth(event.target.value || null)}
+              className="mt-3 w-full text-xs rounded-lg border border-white/25 bg-white/10 text-white px-2 py-1.5 focus:outline-none focus:border-[#fd44b0] appearance-none"
             >
               <option value="" className="bg-darkPurple text-white">
                 All months
               </option>
-              {visibleMonths.map((monthAndYear) => (
+              {months.map((month) => (
                 <option
-                  key={monthAndYear}
-                  value={monthAndYear}
+                  key={month}
+                  value={month}
                   className="bg-darkPurple text-white"
                 >
-                  {monthAndYear}
+                  {month}
                 </option>
               ))}
             </select>
+          )
+        : months.length > 0 && (
+            <>
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
+                Jump to
+              </span>
+              <div className="mt-3 flex flex-col gap-2">
+                {months.map((month) => (
+                  <button
+                    key={month}
+                    type="button"
+                    onClick={() =>
+                      onMonth(query.month === month ? null : month)
+                    }
+                    className={`text-left text-xs transition-colors duration-150 ${query.month === month ? "text-[#fd44b0] font-semibold" : "text-white/65 hover:text-white"}`}
+                  >
+                    {month}
+                  </button>
+                ))}
+              </div>
+            </>
           )}
-        </div>
+    </div>
+  );
+}
 
-        {/* Two-column layout on desktop */}
-        <div className="sm:flex sm:gap-10">
-          {/* Feed */}
-          <div className="flex-1 min-w-0 pb-10">
-            {paginatedChangelogs}
+type PaginationProps = { query: FeedQuery; totalPages: number };
 
-            {paginatedChangelogs.length === 0 && (
-              <div className="flex items-center gap-3 my-10">
-                <div className="flex-1 h-px bg-white/10" />
-                <span className="text-sm text-white/40">No posts found.</span>
-                <div className="flex-1 h-px bg-white/10" />
-              </div>
-            )}
+export function FeedPagination(props: PaginationProps) {
+  return (
+    <Suspense fallback={<PageLinks {...props} />}>
+      <QueryPagination {...props} />
+    </Suspense>
+  );
+}
 
-            {numberOfPages > 1 && (
-              <div className="mt-8">
-                <Pagination
-                  currentPage={selectedPage}
-                  totalPages={numberOfPages}
-                  onPageNumberChange={(pageNumber) => {
-                    setPageParam(pageNumber, { history: "push" });
-                  }}
-                  search={searchValue}
-                  selectedMonth={monthAndYearParam}
-                  selectedCategoriesIds={selectedCategoriesIds}
-                />
-              </div>
-            )}
-          </div>
+function QueryPagination(props: PaginationProps) {
+  const [, startTransition] = useTransition();
+  const [query, setQuery] = useQueryStates(feedParsers, {
+    shallow: false,
+    startTransition,
+  });
+  return (
+    <PageLinks
+      {...props}
+      query={{ ...query, page: props.query.page }}
+      onPage={(page) => {
+        void setQuery({ page }, { history: "push" });
+      }}
+    />
+  );
+}
 
-          {/* Right sidebar — search + date navigator, desktop only */}
-          <div className="hidden sm:block w-40 flex-shrink-0">
-            <div className="sticky top-[7rem] pt-6">
-              <div className="relative mb-6">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <input
-                  aria-label="Search..."
-                  type="text"
-                  value={searchValue ?? ""}
-                  onChange={(e) => {
-                    setPageParam(null);
-                    const newSearchValue = e.target.value
-                      ? e.target.value
-                      : null;
-                    setSearchValue(newSearchValue);
-                  }}
-                  placeholder="Search..."
-                  className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0]"
-                />
-              </div>
-              {visibleMonths.length > 0 && (
-                <>
-                  <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
-                    Jump to
-                  </span>
-                  <div className="mt-3 flex flex-col gap-2">
-                    {visibleMonths.map((monthAndYear) => (
-                      <button
-                        key={monthAndYear}
-                        type="button"
-                        onClick={() => {
-                          if (monthAndYearParam === monthAndYear) {
-                            setMonthParam(null);
-                          } else {
-                            setMonthParam(monthAndYear);
-                          }
-                          setPageParam(null);
-                        }}
-                        className={`text-left text-xs transition-colors duration-150 ${
-                          monthAndYearParam === monthAndYear
-                            ? "text-[#fd44b0] font-semibold"
-                            : "text-white/65 hover:text-white"
-                        }`}
-                      >
-                        {monthAndYear}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
+function PageLinks({
+  query,
+  totalPages,
+  onPage,
+}: PaginationProps & { onPage?: (page: number) => void }) {
+  return (
+    <Pagination
+      currentPage={query.page}
+      totalPages={totalPages}
+      search={query.search}
+      selectedMonth={query.month}
+      selectedCategoriesIds={query.categories}
+      onPageNumberChange={onPage}
+    />
   );
 }

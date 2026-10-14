@@ -1,13 +1,10 @@
 "use cache";
 
 import * as Sentry from "@sentry/nextjs";
-import { and, desc, eq, inArray, not } from "drizzle-orm";
-import type { Element } from "hast";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { cacheTag } from "next/cache";
-import { serialize } from "next-mdx-remote/serialize";
-import type { Plugin } from "unified";
-import { visit } from "unist-util-visit";
-import type { ChangelogEntry } from "@/client/components/list";
+import type { ChangelogSummary } from "@/lib/changelog-feed";
+import { changelogTag } from "@/server/changelog-cache";
 import { db } from "@/server/db";
 import { _CategoryToChangelog, Category, Changelog } from "@/server/db/schema";
 import {
@@ -88,55 +85,70 @@ export async function getChangelogs(): Promise<ChangelogWithCategories[]> {
   }
 }
 
-export async function getChangelogSummaries(): Promise<ChangelogEntry[]> {
+export async function getChangelogSummaries(): Promise<ChangelogSummary[]> {
   cacheTag("changelogs");
-  const changelogs = await getChangelogs();
-
-  const entries = await Promise.all(
-    changelogs
-      .filter((changelog) => changelog.publishedAt !== null)
-      .map(async (changelog): Promise<ChangelogEntry | null> => {
-        try {
-          const mdxSummary = await serialize(
-            changelog.summary || "",
-            {
-              mdxOptions: {
-                rehypePlugins: [
-                  // @ts-expect-error
-                  stripLinks,
-                ],
-              },
-            },
-            true,
-          );
-          return {
-            id: changelog.id,
-            title: changelog.title,
-            slug: changelog.slug,
-            publishedAt: new Date(changelog.publishedAt!).toUTCString(),
-            categories: changelog.categories,
-            mdxSummary,
-          };
-        } catch (e) {
-          // A single entry with malformed MDX should not crash the whole list.
-          // Report the real compile error (with the offending slug) to Sentry
-          // instead of letting it bubble up as the opaque digest error.
-          Sentry.captureException(e, {
-            tags: { changelog_stage: "getChangelogSummaries" },
-            extra: { changelogId: changelog.id, slug: changelog.slug },
-          });
-          return null;
-        }
-      }),
-  );
-
-  return entries.filter((entry): entry is ChangelogEntry => entry !== null);
+  try {
+    const preview =
+      process.env.VERCEL_ENV === "preview" ? await getChangelogs() : null;
+    const rows = preview
+      ? preview
+      : await db
+          .select({
+            id: Changelog.id,
+            title: Changelog.title,
+            slug: Changelog.slug,
+            summary: Changelog.summary,
+            publishedAt: Changelog.publishedAt,
+          })
+          .from(Changelog)
+          .where(
+            and(eq(Changelog.published, true), eq(Changelog.deleted, false)),
+          )
+          .orderBy(desc(Changelog.publishedAt), desc(Changelog.id));
+    const categoryMap = preview
+      ? new Map(preview.map((row) => [row.id, row.categories]))
+      : await getChangelogCategoryMap(rows.map(({ id }) => id));
+    return rows.flatMap((row) => {
+      if (!row.publishedAt) return [];
+      const categories = categoryMap.get(row.id) ?? [];
+      const month = row.publishedAt.toLocaleString("en-EN", {
+        month: "long",
+        year: "numeric",
+        timeZone: "UTC",
+      });
+      const summary = row.summary ?? "";
+      return [
+        {
+          id: row.id,
+          title: row.title,
+          slug: row.slug,
+          summary,
+          publishedAt: row.publishedAt.toISOString(),
+          categories,
+          month,
+          searchText: [
+            row.title,
+            summary,
+            ...categories.map(({ name }) => name),
+            month,
+          ]
+            .join(" ")
+            .toLowerCase(),
+        },
+      ];
+    });
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: { changelog_stage: "getChangelogSummaries" },
+    });
+    throw error;
+  }
 }
 
 export async function getChangelog(
   slug: string,
 ): Promise<ChangelogWithCategories | null> {
-  cacheTag("changelog-detail");
+  cacheTag("changelog-detail", changelogTag(slug));
   if (process.env.VERCEL_ENV === "preview") {
     return (
       (await getPreviewChangelogs()).find(
@@ -172,51 +184,38 @@ export async function getChangelog(
   }
 }
 
-export async function getRecentChangelogs(excludeSlug: string) {
-  cacheTag("changelogs");
+// One bounded metadata query shared by every article, rather than a full-body
+// query and category join for each excludeSlug during prerendering.
+export async function getRecentChangelogs() {
+  cacheTag("changelog-recent");
+  const fields = {
+    slug: Changelog.slug,
+    title: Changelog.title,
+    image: Changelog.image,
+    publishedAt: Changelog.publishedAt,
+  };
   if (process.env.VERCEL_ENV === "preview") {
-    return (await getChangelogs())
-      .filter((changelog) => changelog.slug !== excludeSlug)
-      .slice(0, 3);
+    return (await getPreviewChangelogs())
+      .filter((entry) => entry.published && !entry.deleted)
+      .slice(0, 4)
+      .map(({ slug, title, image, publishedAt }) => ({
+        slug,
+        title,
+        image,
+        publishedAt,
+      }));
   }
-
   try {
-    const changelogs = await db
-      .select()
+    return await db
+      .select(fields)
       .from(Changelog)
-      .where(
-        and(
-          eq(Changelog.published, true),
-          eq(Changelog.deleted, false),
-          not(eq(Changelog.slug, excludeSlug)),
-        ),
-      )
-      .orderBy(desc(Changelog.publishedAt))
-      .limit(3);
-
-    const categoryMap = await getChangelogCategoryMap(
-      changelogs.map((row) => row.id),
-    );
-
-    return changelogs.map((changelog) => ({
-      ...changelog,
-      categories: categoryMap.get(changelog.id) ?? [],
-    }));
-  } catch (_e) {
+      .where(and(eq(Changelog.published, true), eq(Changelog.deleted, false)))
+      .orderBy(desc(Changelog.publishedAt), desc(Changelog.id))
+      .limit(4);
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: { changelog_stage: "getRecentChangelogs" },
+    });
     return [];
   }
 }
-
-const stripLinks: Plugin = () => {
-  return (tree) => {
-    return visit(tree, "element", (node: Element) => {
-      if (node.tagName === "a") {
-        node.tagName = "span";
-        if (node.properties) {
-          node.properties.href = undefined;
-          node.properties.class = undefined;
-        }
-      }
-    });
-  };
-};
