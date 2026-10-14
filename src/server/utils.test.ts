@@ -359,6 +359,16 @@ describe("branch changelog previews", () => {
     );
   });
 
+  it("propagates database outages instead of caching an article as missing", async () => {
+    vi.stubEnv("VERCEL_ENV", "production");
+    mockedDb.select.mockImplementationOnce(() => {
+      throw new Error("Database unavailable");
+    });
+    await expect(utils.getChangelog("existing-entry")).rejects.toThrow(
+      "Database unavailable",
+    );
+  });
+
   it("ignores README and template files with no frontmatter", async () => {
     await writeFile(
       path.join(contentDirectory, "README.md"),

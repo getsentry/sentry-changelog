@@ -163,8 +163,12 @@ export async function getChangelog(
       ...changelog,
       categories: categoryMap.get(changelog.id) ?? [],
     };
-  } catch (_e) {
-    return null;
+  } catch (error) {
+    // A temporary database failure must not become a cached static 404.
+    Sentry.captureException(error, {
+      tags: { changelog_stage: "getChangelog" },
+    });
+    throw error;
   }
 }
 

@@ -13,6 +13,23 @@ jobs:
   lint-and-build:
     name: Lint and Build
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: changelog_test
+          POSTGRES_DB: changelog_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NEON_DATABASE_URL: postgresql://postgres:changelog_test@localhost:5432/changelog_test
+      NEXTAUTH_SECRET: ci-test-secret
+      NEXTAUTH_URL: http://localhost:3033
 
     steps:
       - name: Checkout code
@@ -38,6 +55,11 @@ jobs:
 
       - name: Run tests
         run: pnpm test:run
+
+      - name: Prepare isolated build database
+        run: |
+          pnpm exec drizzle-kit push --force
+          pnpm db:seed
 
       - name: Run build
         run: pnpm build

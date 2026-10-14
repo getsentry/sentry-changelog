@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
 import type { Metadata, ResolvingMetadata } from "next";
+import { cacheLife, cacheTag } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth/next";
@@ -13,7 +14,20 @@ import { ShareButtons } from "@/client/components/shareButtons";
 import { authOptions } from "@/server/authOptions";
 import type { ChangelogModel as Changelog } from "@/server/db/schema";
 import { mdxOptions } from "@/server/mdxOptions";
-import { getChangelog, getRecentChangelogs } from "@/server/utils";
+import {
+  getChangelog,
+  getChangelogs,
+  getRecentChangelogs,
+} from "@/server/utils";
+
+// Newly published slugs remain available on demand after this build.
+export async function generateStaticParams() {
+  const changelogs = await getChangelogs();
+  // Cache Components needs one validation path even for an empty database.
+  return changelogs.length
+    ? changelogs.map(({ slug }) => ({ slug }))
+    : [{ slug: "__empty_changelog__" }];
+}
 
 export async function generateMetadata(
   props: { params: Promise<{ slug: string }> },
@@ -24,6 +38,14 @@ export async function generateMetadata(
   try {
     changelog = await getChangelog(params.slug);
   } catch (_e) {
+    return { title: (await parent).title };
+  }
+
+  if (
+    changelog &&
+    !changelog.published &&
+    !(await getServerSession(authOptions))
+  ) {
     return { title: (await parent).title };
   }
 
@@ -66,6 +88,22 @@ export default async function ChangelogEntry(props: {
     }
   }
 
+  return (
+    <ChangelogArticle changelog={changelog} relatedEntries={relatedEntries} />
+  );
+}
+
+async function ChangelogArticle({
+  changelog,
+  relatedEntries,
+}: {
+  changelog: NonNullable<Awaited<ReturnType<typeof getChangelog>>>;
+  relatedEntries: Awaited<ReturnType<typeof getRecentChangelogs>>;
+}) {
+  "use cache";
+  cacheLife("max");
+  cacheTag("changelogs", "changelog-detail");
+
   const readTime = estimateReadTime(changelog.content);
 
   // Pre-compile the MDX so a malformed entry reports the real underlying error
@@ -78,7 +116,7 @@ export default async function ChangelogEntry(props: {
   } catch (e) {
     Sentry.captureException(e, {
       tags: { changelog_stage: "changelogDetailMdx" },
-      extra: { slug: params.slug },
+      extra: { slug: changelog.slug },
     });
     mdxIsValid = false;
   }
@@ -98,6 +136,7 @@ export default async function ChangelogEntry(props: {
         <div className="flex items-center justify-between mb-6">
           <Link
             href="/changelog/"
+            prefetch={true}
             className="inline-flex items-center gap-1.5 text-sm text-blog-muted hover:text-blog-accent transition-colors duration-150"
           >
             <svg

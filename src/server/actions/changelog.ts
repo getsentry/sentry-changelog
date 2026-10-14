@@ -1,7 +1,7 @@
 "use server";
 
 import { eq, inArray } from "drizzle-orm";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { isValidPlatform } from "@/lib/platforms";
@@ -97,9 +97,9 @@ export async function unpublishChangelog(
     return { message: "Unable to unpublish changelog", success: false };
   }
 
-  revalidateTag("changelogs", "max");
-  revalidateTag("changelog-detail", "max");
-  revalidatePath("/changelog/_admin");
+  updateTag("changelogs");
+  updateTag("changelog-detail");
+  revalidatePath("/changelog", "layout");
   return { success: true };
 }
 
@@ -138,9 +138,9 @@ export async function publishChangelog(
     return { message: "Unable to publish changelog", success: false };
   }
 
-  revalidateTag("changelogs", "max");
-  revalidateTag("changelog-detail", "max");
-  revalidatePath("/changelog/_admin");
+  updateTag("changelogs");
+  updateTag("changelog-detail");
+  revalidatePath("/changelog", "layout");
   return { success: true };
 }
 
@@ -199,6 +199,9 @@ export async function createChangelog(
 
   await syncChangelogCategories(changelog.id, categoryNames);
 
+  updateTag("changelogs");
+  updateTag("changelog-detail");
+  revalidatePath("/changelog", "layout");
   return redirect("/changelog/_admin");
 }
 
@@ -249,8 +252,9 @@ export async function editChangelog(
     return { message: (error as Error).message, success: false };
   }
 
-  revalidateTag("changelogs", "max");
-  revalidateTag("changelog-detail", "max");
+  updateTag("changelogs");
+  updateTag("changelog-detail");
+  revalidatePath("/changelog", "layout");
   return redirect("/changelog/_admin");
 }
 
@@ -281,9 +285,9 @@ export async function deleteChangelog(
     return { message: "Unable to delete changelog", success: false };
   }
 
-  revalidateTag("changelogs", "max");
-  revalidateTag("changelog-detail", "max");
-  revalidatePath("/changelog/_admin");
+  updateTag("changelogs");
+  updateTag("changelog-detail");
+  revalidatePath("/changelog", "layout");
   return {
     success: true,
   };

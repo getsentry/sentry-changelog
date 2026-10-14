@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 const TAGS = ["changelogs", "changelog-detail"] as const;
@@ -18,8 +18,9 @@ export async function POST(request: Request) {
   }
 
   for (const tag of TAGS) {
-    revalidateTag(tag, "max");
+    revalidateTag(tag, { expire: 0 });
   }
+  revalidatePath("/changelog", "layout");
 
   return NextResponse.json({ revalidated: true, tags: TAGS });
 }
