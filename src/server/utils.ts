@@ -115,6 +115,7 @@ export async function getChangelogSummaries(): Promise<ChangelogEntry[]> {
             slug: changelog.slug,
             publishedAt: new Date(changelog.publishedAt!).toUTCString(),
             categories: changelog.categories,
+            summary: changelog.summary ?? "",
             mdxSummary,
           };
         } catch (e) {
@@ -163,8 +164,12 @@ export async function getChangelog(
       ...changelog,
       categories: categoryMap.get(changelog.id) ?? [],
     };
-  } catch (_e) {
-    return null;
+  } catch (error) {
+    // A temporary database failure must not become a cached static 404.
+    Sentry.captureException(error, {
+      tags: { changelog_stage: "getChangelog" },
+    });
+    throw error;
   }
 }
 

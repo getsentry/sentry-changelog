@@ -8,7 +8,7 @@ import {
   parseAsString,
   useQueryState,
 } from "nuqs";
-import { Fragment, useState } from "react";
+import { Fragment, Suspense } from "react";
 import type { CategoryModel as Category } from "@/server/db/schema";
 import { Article } from "./article";
 import { Pagination } from "./pagination";
@@ -39,9 +39,18 @@ export function ChangelogList({
 }: {
   changelogs: ChangelogEntry[];
 }) {
-  const [searchValue, setSearchValue] = useState<string | null>("");
-  const [, setQuerySearchValue] = useQueryState("search", parseAsString);
+  // The default feed is real HTML in the prerendered shell. Only the URL-aware
+  // enhancement suspends, so visiting or returning never replaces articles
+  // with loading placeholders while Next resolves search params.
+  return (
+    <Suspense fallback={<FilteredChangelogList changelogs={changelogs} />}>
+      <QueryChangelogList changelogs={changelogs} />
+    </Suspense>
+  );
+}
 
+function QueryChangelogList({ changelogs }: { changelogs: ChangelogEntry[] }) {
+  const [searchValue, setSearchValue] = useQueryState("search", parseAsString);
   const [monthAndYearParam, setMonthParam] = useQueryState("month");
   const [selectedCategoriesIds] = useQueryState(
     "categories",
@@ -53,7 +62,39 @@ export function ChangelogList({
     "page",
     parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
   );
+  return (
+    <FilteredChangelogList
+      changelogs={changelogs}
+      searchValue={searchValue}
+      monthAndYearParam={monthAndYearParam}
+      selectedCategoriesIds={selectedCategoriesIds}
+      pageParam={pageParam}
+      setSearchValue={setSearchValue}
+      setMonthParam={setMonthParam}
+      setPageParam={setPageParam}
+    />
+  );
+}
 
+function FilteredChangelogList({
+  changelogs,
+  searchValue = null,
+  monthAndYearParam = null,
+  selectedCategoriesIds = [],
+  pageParam = 1,
+  setSearchValue = () => {},
+  setMonthParam = () => {},
+  setPageParam = () => {},
+}: {
+  changelogs: ChangelogEntry[];
+  searchValue?: string | null;
+  monthAndYearParam?: string | null;
+  selectedCategoriesIds?: string[];
+  pageParam?: number;
+  setSearchValue?: (value: string | null) => void;
+  setMonthParam?: (value: string | null) => void;
+  setPageParam?: (value: number | null, options?: { history: "push" }) => void;
+}) {
   const selectedPage = pageParam === null ? 1 : pageParam;
 
   const filteredChangelogsWithoutMonthFilter = changelogs
@@ -73,7 +114,7 @@ export function ChangelogList({
         .join(" ");
       const searchableContent =
         changelog.title +
-        changelog.summary +
+        (changelog.summary ?? "") +
         concatenatedCategories +
         addressableDate;
       return searchableContent
@@ -203,7 +244,6 @@ export function ChangelogList({
                 setPageParam(null);
                 const newSearchValue = e.target.value ? e.target.value : null;
                 setSearchValue(newSearchValue);
-                setQuerySearchValue(newSearchValue);
               }}
               placeholder="Search..."
               className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0]"
@@ -291,7 +331,6 @@ export function ChangelogList({
                       ? e.target.value
                       : null;
                     setSearchValue(newSearchValue);
-                    setQuerySearchValue(newSearchValue);
                   }}
                   placeholder="Search..."
                   className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0]"

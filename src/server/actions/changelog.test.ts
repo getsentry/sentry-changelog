@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
   revalidateTag: vi.fn(),
+  updateTag: vi.fn(),
 }));
 vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
 vi.mock("next-auth/next", () => ({ getServerSession: vi.fn() }));
@@ -51,8 +52,15 @@ vi.mock("../db", () => {
   };
 });
 
+import { updateTag } from "next/cache";
 import { getServerSession } from "next-auth/next";
-import { createChangelog, editChangelog } from "./changelog";
+import {
+  createChangelog,
+  deleteChangelog,
+  editChangelog,
+  publishChangelog,
+  unpublishChangelog,
+} from "./changelog";
 
 function buildFormData(fields: Record<string, string | string[]>): FormData {
   const fd = new FormData();
@@ -108,6 +116,45 @@ describe("createChangelog platform persistence", () => {
     await createChangelog({}, formData);
 
     expect(capturedChangelogInsert?.platform).toEqual([]);
+  });
+});
+
+describe("immediate article cache invalidation", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { email: "test.user@sentry.io" },
+    } as never);
+  });
+
+  it.each([
+    ["create", createChangelog],
+    ["edit", editChangelog],
+    ["publish", publishChangelog],
+    ["unpublish", unpublishChangelog],
+    ["delete", deleteChangelog],
+  ] as const)("%s expires the feed and article output after saving", async (_name, action) => {
+    await action(
+      {},
+      buildFormData({
+        id: "cl-1",
+        title: "Updated",
+        slug: "updated",
+        summary: "Summary",
+        content: "Body",
+      }),
+    );
+    expect(updateTag).toHaveBeenCalledWith("changelogs");
+    expect(updateTag).toHaveBeenCalledWith("changelog-detail");
+  });
+
+  it("does not invalidate public content for a rejected write", async () => {
+    vi.mocked(getServerSession).mockResolvedValue(null);
+    expect(await publishChangelog({}, buildFormData({ id: "cl-1" }))).toEqual({
+      success: false,
+      message: "Unauthorized",
+    });
+    expect(updateTag).not.toHaveBeenCalled();
   });
 });
 

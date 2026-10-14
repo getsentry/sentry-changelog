@@ -21,7 +21,7 @@ import {
 } from "@/server/db/schema";
 
 vi.mock("@sentry/nextjs", () => ({ captureException: vi.fn() }));
-vi.mock("next/cache", () => ({ cacheTag: vi.fn() }));
+vi.mock("next/cache", () => ({ cacheTag: vi.fn(), cacheLife: vi.fn() }));
 vi.mock("next/server", async (importOriginal) => ({
   ...(await importOriginal<typeof import("next/server")>()),
   connection: vi.fn(),
@@ -174,6 +174,7 @@ describe("branch changelog previews", () => {
     expect(summaries[0]).toMatchObject({
       slug: "new-mcp-tools",
       title: "New MCP tools",
+      summary: "Inspect **MCP tools** and [read more](https://example.com).",
     });
     const html = renderToStaticMarkup(
       createElement(MDXRemote, summaries[0].mdxSummary),
@@ -356,6 +357,16 @@ describe("branch changelog previews", () => {
     await expect(utils.getChangelog("invalid")).rejects.toThrow(/title/);
     await expect(utils.getRecentChangelogs("unrelated")).rejects.toThrow(
       /title/,
+    );
+  });
+
+  it("propagates database outages instead of caching an article as missing", async () => {
+    vi.stubEnv("VERCEL_ENV", "production");
+    mockedDb.select.mockImplementationOnce(() => {
+      throw new Error("Database unavailable");
+    });
+    await expect(utils.getChangelog("existing-entry")).rejects.toThrow(
+      "Database unavailable",
     );
   });
 

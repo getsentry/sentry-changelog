@@ -75,6 +75,27 @@ the same serverless Postgres used in production — so there's no Docker to mana
 
 The application will be available at [http://localhost:3000](http://localhost:3000).
 
+## Public page caching
+
+Production builds read the database and prerender the changelog homepage and
+every published article. Builds therefore need `NEON_DATABASE_URL`. Drafts
+are excluded from the generated article paths and still require sign-in.
+Newly published articles can be generated on demand without another deployment.
+
+The homepage includes the first ten articles in its static HTML. Search, month,
+category, and page filters apply from the URL after hydration; their JavaScript
+and article summaries still need to download on a first visit. The article's
+Changelog link prefetches the homepage for fast return navigation.
+
+Admin creates, edits, publishes, unpublishes, and deletes immediately expire the
+`changelogs` and `changelog-detail` cache tags. The file sync does the same via
+`POST /api/revalidate`, authenticated with `REVALIDATE_SECRET`. Configure
+`SITE_REVALIDATE_URL` and the matching secret in the sync job for changes to
+appear promptly. The existing timed data revalidation remains as a fallback.
+The next request regenerates invalidated output; later
+visitors receive cached HTML. Existing open browser tabs can retain their
+previous content until refreshed or their client cache expires.
+
 ## API
 
 ### GET /api/changelogs
@@ -144,6 +165,26 @@ pnpm test
 # Run tests once
 pnpm test:run
 ```
+
+CI also builds against a disposable PostgreSQL database and runs
+`pnpm test:static`. This checks generated HTML, then starts a production server
+and tests edits, publishing new slugs, slug changes, draft privacy, and removal
+of unpublished/deleted articles. It modifies fixture data and refuses remote
+databases or database names that do not end in `_test`.
+
+To run it locally with an empty disposable database:
+
+```bash
+export NEON_DATABASE_URL=postgresql://postgres:changelog_test@localhost:5432/changelog_test
+export NEXTAUTH_SECRET=local-test-secret
+pnpm db:push
+pnpm db:seed
+pnpm test:static --prepare
+pnpm build
+pnpm test:static
+```
+
+Rebuild before each run: revalidation replaces the generated HTML during the test.
 
 ## Contributing
 
