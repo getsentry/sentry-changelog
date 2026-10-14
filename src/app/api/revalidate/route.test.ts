@@ -1,8 +1,11 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { POST } from "./route";
 
-vi.mock("next/cache", () => ({ revalidateTag: vi.fn() }));
+vi.mock("next/cache", () => ({
+  revalidatePath: vi.fn(),
+  revalidateTag: vi.fn(),
+}));
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -23,6 +26,7 @@ describe("content sync revalidation", () => {
     expect(revalidateTag).toHaveBeenCalledWith("changelog-detail", {
       expire: 0,
     });
+    expect(revalidatePath).toHaveBeenCalledWith("/changelog", "layout");
   });
 
   it.each([

@@ -99,7 +99,7 @@ export async function unpublishChangelog(
 
   updateTag("changelogs");
   updateTag("changelog-detail");
-  revalidatePath("/changelog/_admin");
+  revalidatePath("/changelog", "layout");
   return { success: true };
 }
 
@@ -140,7 +140,7 @@ export async function publishChangelog(
 
   updateTag("changelogs");
   updateTag("changelog-detail");
-  revalidatePath("/changelog/_admin");
+  revalidatePath("/changelog", "layout");
   return { success: true };
 }
 
@@ -201,6 +201,7 @@ export async function createChangelog(
 
   updateTag("changelogs");
   updateTag("changelog-detail");
+  revalidatePath("/changelog", "layout");
   return redirect("/changelog/_admin");
 }
 
@@ -253,6 +254,7 @@ export async function editChangelog(
 
   updateTag("changelogs");
   updateTag("changelog-detail");
+  revalidatePath("/changelog", "layout");
   return redirect("/changelog/_admin");
 }
 
@@ -285,7 +287,7 @@ export async function deleteChangelog(
 
   updateTag("changelogs");
   updateTag("changelog-detail");
-  revalidatePath("/changelog/_admin");
+  revalidatePath("/changelog", "layout");
   return {
     success: true,
   };

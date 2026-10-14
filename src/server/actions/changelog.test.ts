@@ -52,7 +52,7 @@ vi.mock("../db", () => {
   };
 });
 
-import { updateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { getServerSession } from "next-auth/next";
 import {
   createChangelog,
@@ -146,6 +146,7 @@ describe("immediate article cache invalidation", () => {
     );
     expect(updateTag).toHaveBeenCalledWith("changelogs");
     expect(updateTag).toHaveBeenCalledWith("changelog-detail");
+    expect(revalidatePath).toHaveBeenCalledWith("/changelog", "layout");
   });
 
   it("does not invalidate public content for a rejected write", async () => {

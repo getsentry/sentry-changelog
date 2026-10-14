@@ -114,7 +114,7 @@ function FilteredChangelogList({
         .join(" ");
       const searchableContent =
         changelog.title +
-        (changelog.summary ?? "") +
+        changelog.summary +
         concatenatedCategories +
         addressableDate;
       return searchableContent

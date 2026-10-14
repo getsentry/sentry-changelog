@@ -115,7 +115,6 @@ export async function getChangelogSummaries(): Promise<ChangelogEntry[]> {
             slug: changelog.slug,
             publishedAt: new Date(changelog.publishedAt!).toUTCString(),
             categories: changelog.categories,
-            summary: changelog.summary ?? "",
             mdxSummary,
           };
         } catch (e) {
