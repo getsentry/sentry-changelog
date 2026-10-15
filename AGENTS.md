@@ -11,12 +11,6 @@ Use **pnpm** (v10.27.0, Node 22.x via Volta)
 | `pnpm lint` | Lint with Biome |
 | `pnpm lint:fix` | Autofix lint issues |
 
-## Commit Attribution
-AI commits MUST include:
-```
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
-```
-
 ## Commit Convention
 Follow conventional commits matching existing history:
 - `feat:` / `fix:` / `build:` / `ci:` / `fix(deps):` / `build(deps):`
