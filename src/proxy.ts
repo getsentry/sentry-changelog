@@ -15,7 +15,18 @@ function referrerSource(request: NextRequest): string {
   }
 }
 
+function isPrefetch(request: NextRequest): boolean {
+  return (
+    request.headers.has("next-router-prefetch") ||
+    request.headers.has("next-router-segment-prefetch")
+  );
+}
+
 export function proxy(request: NextRequest) {
+  // The router prefetches every visible link, so one view of the feed would
+  // otherwise count as a visit to each article on screen.
+  if (isPrefetch(request)) return NextResponse.next();
+
   const { isBot, browser, device, os, engine } = userAgent(request);
 
   // Metric attributes must be primitives; drop any field we couldn't resolve
@@ -56,8 +67,9 @@ export function proxy(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Only count visits to real pages — skip Next.js internals, API routes and
-// static assets so the metric reflects actual visitors.
+// Only count visits to real pages — skip Next.js internals, API routes, the
+// Sentry tunnel and any path with a dot (fonts, images, feed.xml, robots.txt).
+// Page slugs are kebab-case, so no page path contains a dot.
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|sentry-tunnel|.*\\..*).*)"],
 };
