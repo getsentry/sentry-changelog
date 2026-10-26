@@ -16,6 +16,8 @@ The Sentry Apple SDK **9.X.Y** adds flame graph attachments for MetricKit hang d
 
 The SDK sends the sampled call tree as a `flamegraph.json` attachment instead of flattening it into event stack frames. This keeps the graph out of ordinary event stack trace trimming. Sentry symbolicates the attachment using your app's debug symbols and displays it in the event's **Flamegraph** section.
 
+Sentry applies a culprit identification algorithm to the sampled call tree to identify the call path most likely responsible for the hang, weighing sample counts, stack depth, and application frames. The selected path becomes the event's exception stack trace, which Sentry uses for issue grouping. The flame graph remains available to investigate the broader context beyond this likely culprit.
+
 Add these options to your existing SDK initialization:
 
 ```swift
