@@ -9,7 +9,7 @@ platform:
   - apple-ios
   - apple-macos
 broadcastCategory: sdk_update
-published: false
+published: true
 ---
 
 The Sentry Apple SDK **9.X.Y** adds flame graph attachments for MetricKit hang diagnostics. Inspect the call paths sampled by Apple's operating system to investigate work that leaves your app unresponsive.
