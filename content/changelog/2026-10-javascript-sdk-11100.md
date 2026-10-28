@@ -27,7 +27,7 @@ Version 11.10.0 of the Sentry JavaScript SDKs records Cloudflare Clairic calls a
 
 ## Clairic calls as extraction spans
 
-Calls to the Cloudflare Clairic model (`@cf/cloudflare/clairic`) through Workers AI now create `gen_ai.extract` spans instead of chat spans. Each span records the input and output, the response model, and token usage.
+Calls to the Cloudflare Clairic model (`@cf/cloudflare/clairic`) through Workers AI now create `gen_ai.extract` spans. Each span records the input and output, the response model, and token usage. In the trace view, the Extraction tab highlights each extracted value in the source text. Hover a value to see the field it belongs to.
 
 ![A gen_ai.extract span for Cloudflare Clairic in the Sentry trace view, with the source text and the extracted invoice fields](/img/changelog/2026-10-javascript-sdk-11100-clairic.jpeg)
 
