@@ -1,5 +1,5 @@
 ---
-title: "JavaScript SDK 11.10.0: Clairic spans and managed tunnel"
+title: "JavaScript SDK 11.10.0: Cloudflare Clairic spans and managed tunnel"
 slug: javascript-sdk-11100-managed-tunnel-clairic
 summary: The JavaScript SDKs now record Cloudflare Clairic calls as extraction spans, and send events through a tunnel path derived from your DSN.
 categories:
@@ -28,6 +28,8 @@ Version 11.10.0 of the Sentry JavaScript SDKs records Cloudflare Clairic calls a
 ## Clairic calls as extraction spans
 
 Calls to the Cloudflare Clairic model (`@cf/cloudflare/clairic`) through Workers AI now create `gen_ai.extract` spans instead of chat spans. Each span records the input and output, the response model, and token usage.
+
+![A gen_ai.extract span for Cloudflare Clairic in the Sentry trace view, with the source text and the extracted invoice fields](/img/changelog/2026-10-javascript-sdk-11100-clairic.jpeg)
 
 `@sentry/cloudflare` instruments the Workers AI binding automatically, so you do not need to change your code.
 
