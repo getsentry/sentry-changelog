@@ -35,9 +35,9 @@ Calls to the Cloudflare Clairic model (`@cf/cloudflare/clairic`) through Workers
 
 ## Send events through your own server with `tunnel: true`
 
-Ad blockers often block requests to Sentry, so you lose errors and traces from some of your users. A tunnel sends the events through your own server first. Before this release, you had to choose a fixed tunnel path, and fixed paths can end up on ad block lists.
+Ad blockers often block requests to Sentry, so you lose errors and traces from some of your users. A tunnel sends the events through your own server first.
 
-Now set `tunnel: true` in the browser SDK. The SDK derives the tunnel path from your DSN, so your browser and server builds always agree on the path, also during a deploy.
+Set `tunnel: true` in the browser SDK. The SDK derives the tunnel path from your DSN, so your browser and server builds always agree on the path, also during a deploy.
 
 ```ts
 // browser
