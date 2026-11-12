@@ -5,7 +5,7 @@ summary: The endpoint that lists and creates issue views now accepts tokens with
 categories:
   - API
 broadcastCategory: announcement
-published: false
+published: true
 author: dominik.buszowiecki@sentry.io
 ---
 
