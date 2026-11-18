@@ -12,7 +12,6 @@ platform:
 broadcastCategory: sdk_update
 published: true
 date: 2026-11-18
-author: johannes.daxboeck@sentry.io
 ---
 
 [Bref](https://bref.sh) runs PHP applications on AWS Lambda. Version [1.0.0](https://github.com/getsentry/sentry-bref/releases/tag/1.0.0) of the new [`sentry/sentry-bref`](https://github.com/getsentry/sentry-bref) integration reports what the Sentry SDK can't see on AWS Lambda:
