@@ -33,6 +33,8 @@ In `GET /api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/autofix
 
 Continuing a run one step at a time (`POST` to the same endpoint with `step` and `run_id` or `sentry_run_id`) doesn't work for runs on the new flow. To control how far a run goes, set `stopping_point` when you start it.
 
+Runs started without a `stopping_point` now go as far as code changes (without opening a PR), instead of stopping at the root cause. Set `stopping_point` to `root_cause` to keep the old behavior.
+
 ## CLI and MCP
 
 - `sentry issue plan` no longer works, since runs have no plan step.
