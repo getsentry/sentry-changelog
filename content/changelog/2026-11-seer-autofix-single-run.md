@@ -1,7 +1,7 @@
 ---
-title: "Seer Autofix is moving to a single run: upcoming changes to webhooks and the API"
+title: "Seer Autofix is moving to a single run"
 slug: seer-autofix-single-run
-summary: Autofix will find the root cause, write the fix and open a PR in a single run instead of separate steps. Over the coming weeks, organizations move to the new flow, which changes some Seer webhooks, the Autofix API and the "Plan" setting.
+summary: Autofix will find the root cause, write the fix and open a PR in one run instead of separate steps. If you use Seer webhooks, the Autofix API or the CLI, some fields and events change.
 categories:
   - AI
   - API
@@ -11,35 +11,30 @@ published: true
 date: 2026-11-18
 ---
 
-Over the coming weeks, organizations will be gradually moved to a new Autofix flow. Instead of separate root cause, plan and code steps, a single run finds the root cause and, if your settings allow, writes the fix and opens a PR. When it isn't confident, it stops early and explains why.
+Over the coming weeks, we'll move organizations to a new Autofix flow. Instead of separate root cause, plan and code steps, one run finds the root cause and, if your settings allow it, writes the fix and opens a PR. When it isn't confident, it stops early and says why.
 
-If you only use Autofix in Sentry, there's nothing to do. If you integrate with Autofix through webhooks, the API or the CLI, here's what changes once your organization is moved.
+If you only use Autofix in Sentry, there's nothing to do. If you build on it, here's what changes once your organization moves.
 
 ## Webhooks
 
 - `seer.solution_started`, `seer.solution_completed` and `seer.coding_started` are no longer sent.
-- In `seer.root_cause_completed`, `five_whys` and `reproduction_steps` are empty arrays and `relevant_repo` is omitted. A new `headline` field is added, and `one_line_description` is still sent.
-- A run that stops before finding a root cause sends no `seer.root_cause_completed`.
+- `seer.root_cause_completed` adds a `headline` field. `one_line_description` now holds the cause, `five_whys` and `reproduction_steps` are empty, and `relevant_repo` is omitted.
+- A run that stops before finding a root cause doesn't send `seer.root_cause_completed`.
 - A run that opens a PR sends both `seer.coding_completed` and `seer.pr_created`.
-
-## Settings and automations
-
-- Projects whose Autofix automation stops at "Plan" now stop at the root cause.
-- The "Planning completed" automation trigger no longer fires.
 
 ## Autofix API
 
-In `GET /api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/autofix/`, the root cause has `headline` and `cause` instead of `one_line_description`, `five_whys` and `reproduction_steps`, and there is no plan. The `?llmFormat=markdown` export no longer includes the five whys, reproduction steps or plan, and is the most stable way to read a run.
+For `/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/autofix/`:
 
-Continuing a run one step at a time (`POST` to the same endpoint with `step` and `run_id` or `sentry_run_id`) doesn't work for runs on the new flow. To control how far a run goes, set `stopping_point` when you start it.
+- **Reading a run:** the root cause has `headline` and `cause` instead of `one_line_description`, `five_whys` and `reproduction_steps`, and there's no plan. The `?llmFormat=markdown` export changes the same way.
+- **Starting a run:** without a `stopping_point`, a run now goes as far as code changes (without opening a PR) instead of stopping at the root cause. Pass `stopping_point: root_cause` to keep the old behavior.
+- **Continuing a run step by step** (`step` with `run_id` or `sentry_run_id`) no longer works. Set `stopping_point` when you start the run instead.
 
-Runs started without a `stopping_point` now go as far as code changes (without opening a PR), instead of stopping at the root cause. Set `stopping_point` to `root_cause` to keep the old behavior.
+## Settings and the CLI
 
-## CLI and MCP
+- Projects with Autofix automation set to stop at "Plan" now stop at the root cause.
+- `sentry issue plan` no longer works. The Sentry MCP server needs no changes.
 
-- `sentry issue plan` no longer works, since runs have no plan step.
-- The Sentry MCP server needs no changes.
+## Coming later
 
-## Later: removing deprecated fields
-
-`five_whys` and `reproduction_steps` will later be removed from the `seer.root_cause_completed` payload. We'll post the date here at least 30 days in advance.
+We'll remove `five_whys` and `reproduction_steps` from `seer.root_cause_completed`, and post the date here at least 30 days in advance.
