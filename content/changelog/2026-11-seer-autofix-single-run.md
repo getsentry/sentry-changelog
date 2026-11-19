@@ -18,7 +18,7 @@ If you only use Autofix in Sentry, there's nothing to do. If you build on it, he
 ## Webhooks
 
 - `seer.solution_started`, `seer.solution_completed` and `seer.coding_started` are no longer sent.
-- `seer.root_cause_completed` adds `headline` and `cause` fields. `one_line_description` now holds the headline, `five_whys` and `reproduction_steps` are empty, and `relevant_repo` is omitted.
+- `seer.root_cause_completed` adds a `cause` field. `one_line_description` now holds the same text as `headline`, `five_whys` and `reproduction_steps` are empty, and `relevant_repo` is omitted.
 - A run that stops before finding a root cause doesn't send `seer.root_cause_completed`.
 - A run that opens a PR sends both `seer.coding_completed` and `seer.pr_created`.
 
@@ -37,4 +37,4 @@ For `/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/autofix/`:
 
 ## Coming later
 
-We'll remove `five_whys` and `reproduction_steps` from `seer.root_cause_completed`, and post the date here at least 30 days in advance.
+We'll remove `one_line_description`, `five_whys` and `reproduction_steps` from `seer.root_cause_completed` (use `headline` and `cause` instead), and post the date here at least 30 days in advance.
