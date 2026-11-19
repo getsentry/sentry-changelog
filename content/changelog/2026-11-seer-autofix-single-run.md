@@ -22,6 +22,28 @@ If you only use Autofix in Sentry, there's nothing to do. If you build on it, he
 - A run that stops before finding a root cause doesn't send `seer.root_cause_completed`.
 - A run that opens a PR sends both `seer.coding_completed` and `seer.pr_created`.
 
+For example, the `root_cause` object in `seer.root_cause_completed`:
+
+```json
+// Before
+"root_cause": {
+  "headline": "Checkout crashes when the cart is empty",
+  "one_line_description": "cart.total is read before the cart is loaded",
+  "five_whys": ["...", "..."],
+  "reproduction_steps": ["...", "..."],
+  "relevant_repo": "acme/web"
+}
+
+// After
+"root_cause": {
+  "headline": "Checkout crashes when the cart is empty",
+  "cause": "cart.total is read in render() before loadCart() resolves, so ...",
+  "one_line_description": "Checkout crashes when the cart is empty",
+  "five_whys": [],
+  "reproduction_steps": []
+}
+```
+
 ## Autofix API
 
 For `/api/0/organizations/{organization_id_or_slug}/issues/{issue_id}/autofix/`:
