@@ -1,6 +1,6 @@
 ---
 title: "Bedrock tracing in the Python and JavaScript SDKs"
-slug: python-sdk-2750-bedrock-tracing
+slug: bedrock-tracing-python-javascript
 summary: The Python and JavaScript SDKs now trace Amazon Bedrock calls, with model, token usage, prompts and responses.
 categories:
   - SDK
