@@ -17,13 +17,13 @@ If you use Autofix only in Sentry, you don't need to do anything. If you use See
 ## Webhooks
 
 - `seer.solution_started`, `seer.solution_completed`, and `seer.coding_started` are no longer sent.
-- `one_line_description`, `five_whys`, and `reproduction_steps` in `seer.root_cause_completed` are deprecated. `five_whys` and `reproduction_steps` are sent empty.
+- `one_line_description`, `five_whys`, and `reproduction_steps` in `seer.root_cause_completed` will be deprecated. `five_whys` and `reproduction_steps` are sent empty.
 - `seer.root_cause_completed` adds `cause`, which explains the root cause, and no longer sends `relevant_repo`.
 - `seer.root_cause_completed` can be sent more than once per run. Treat the latest one as current.
 - A run that stops before it finds a root cause doesn't send `seer.root_cause_completed`. Check [`seer.stopped`](https://docs.sentry.io/integrations/integration-platform/webhooks/seer/#stopped) for why.
 - A run that opens a PR sends both `seer.coding_completed` and `seer.pr_created`.
 
-For example, the `root_cause` object in `seer.root_cause_completed` today:
+Today, `root_cause` in `seer.root_cause_completed` sends:
 
 ```json
 "root_cause": {
@@ -35,7 +35,7 @@ For example, the `root_cause` object in `seer.root_cause_completed` today:
 }
 ```
 
-And after your organization moves, without the deprecated fields:
+After the change, this will be:
 
 ```json
 "root_cause": {
