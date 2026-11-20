@@ -1,14 +1,14 @@
 ---
-title: "Drop noisy data with custom inbound filters"
+title: "Drop noisy data with the new custom inbound filters"
 slug: custom-inbound-filters
-summary: "Build your own inbound filters to drop errors, logs, metrics, and spans before they count toward your quota."
+summary: "Build your own custom inbound filters using more flexible conditions to drop incoming data before it counts toward your quota."
 categories:
   - Data Management
 broadcastCategory: feature
 published: true
 ---
 
-Build your own inbound filters to drop errors, logs, metrics, and spans before they count toward your quota.
+Build your own inbound filters to drop errors, logs, metrics, and spans before they count toward your quota, combining different and new conditions.
 
 In **Project Settings > Inbound Filters**, click **Add Filter** and type your conditions. Sentry drops anything that matches all of them at ingest. For example:
 
@@ -16,4 +16,4 @@ In **Project Settings > Inbound Filters**, click **Add Filter** and type your co
 - `log_message:*DEBUG*` drops debug logs
 - `ip_address:10.0.0.0/8` drops internal traffic
 
-Custom inbound filters are available on Business plans. Learn more in our [docs](https://docs.sentry.io/concepts/data-management/filtering/#custom-filters).
+Custom inbound filters are available on Business and Enterprise plans. Learn more in our [docs](https://docs.sentry.io/concepts/data-management/filtering/#custom-filters).
