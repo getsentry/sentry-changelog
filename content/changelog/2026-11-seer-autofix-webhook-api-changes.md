@@ -10,7 +10,7 @@ broadcastCategory: announcement
 published: true
 ---
 
-We're moving organizations to a new Autofix flow. Instead of separate root cause, plan, and code steps, one run finds the root cause. If **Enable Code Generation** is on, the same run writes the fix and can open a PR. When it isn't confident, it stops early and says why.
+We're moving organizations to a new Autofix flow. Instead of separate root cause, plan, and code steps, one run finds the root cause. If **Enable Code Generation** is on, the same run writes the fix and can open a PR. When Autofix isn't confident, it stops early and says why.
 
 If you use Autofix only in Sentry, you don't need to do anything. If you use Seer webhooks, the Autofix API, or the Sentry CLI, here's what changes once your organization moves.
 
