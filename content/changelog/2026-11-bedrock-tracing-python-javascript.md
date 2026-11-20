@@ -25,7 +25,7 @@ The Boto3 integration is enabled automatically when `boto3` is installed.
 
 ## JavaScript
 
-Version 11.13.0 of the Sentry JavaScript SDK records prompts, system instructions, tool definitions and responses on Bedrock spans, as the other AI integrations do. This applies to the `Converse`, `ConverseStream`, `InvokeModel` and `InvokeModelWithResponseStream` commands.
+Version 11.13.0 of the Sentry JavaScript SDK records prompts, system instructions, tool definitions and responses on Bedrock spans. This applies to the `Converse`, `ConverseStream`, `InvokeModel` and `InvokeModelWithResponseStream` commands.
 
 The `awsIntegration` is enabled automatically when `@aws-sdk/client-bedrock-runtime` is used. To stop recording prompts or responses only for Bedrock, set its options:
 
