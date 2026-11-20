@@ -22,6 +22,15 @@ The Sentry Python and JavaScript SDKs now trace Amazon Bedrock calls. Each call 
 Version 2.75.0 of the Sentry Python SDK traces Bedrock `Converse` and `ConverseStream` calls made with `boto3`. Each call generates a `gen_ai.chat` span.
 
 The Boto3 integration is enabled automatically when `boto3` is installed.
+To also record prompts and responses on Bedrock spans, set `send_default_pii`:
+
+```python
+sentry_sdk.init(
+    dsn="...",
+    traces_sample_rate=1.0,
+    send_default_pii=True,
+)
+```
 
 ## JavaScript
 
