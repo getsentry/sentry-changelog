@@ -27,6 +27,7 @@ This is a major release with breaking changes. Read the [migration guide](https:
 - The organically-grown custom tracing API [has changed](https://docs.sentry.io/platforms/python/migration/2.x-to-3.x#tracing). There is no `start_transaction` or `start_child` anymore. Everything can be done via the `start_span` API.
 - We've [removed most extras](https://docs.sentry.io/platforms/python/migration/2.x-to-3.x#installation-extras). Install `sentry-sdk` instead of `sentry-sdk[fastapi]`, for example. The extras that we removed didn't have any effect.
 - Our logging integrations (standard library logging and Loguru) are [not enabled by default anymore, and their options have changed](https://docs.sentry.io/platforms/python/migration/2.x-to-3.x#logging-and-loguru).
+- For more breaking changes, see the [2.x to 3.x migration guide](https://docs.sentry.io/platforms/python/migration/2.x-to-3.x/).
 
 ## How to Upgrade
 
