@@ -1,5 +1,5 @@
 ---
-title: "Drop data with more precision using Custom Inbound Filters"
+title: "Filter data with more precision using Custom Inbound Filters"
 slug: custom-inbound-filters
 summary: "Build your own custom inbound filters using more flexible conditions to drop incoming data before it counts toward your quota."
 categories:
