@@ -7,7 +7,7 @@ categories:
 platform:
   - python
 broadcastCategory: sdk_update
-published: false
+published: true
 date: 2026-11-23
 author: ivana.kellyer@sentry.io
 ---
