@@ -6,7 +6,7 @@ categories:
   - Data Management
 broadcastCategory: feature
 published: true
-date: 2026-11-20
+date: 2026-11-23
 ---
 
 Build your own inbound filters to drop errors, logs, metrics, and spans before they count toward your quota, combining different and new conditions.
