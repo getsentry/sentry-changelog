@@ -11,6 +11,8 @@ date: 2026-11-20
 
 Build your own inbound filters to drop errors, logs, metrics, and spans before they count toward your quota, combining different and new conditions.
 
+![The Custom Inbound Filters table in the project settings, with the conditions of each filter and the amount of data it dropped](/img/changelog/2026-11-custom-inbound-filters.png)
+
 In **Project Settings > Inbound Filters**, click **Add Filter** and type your conditions. Sentry drops anything that matches all of them at ingest. For example:
 
 - `error_type:TypeError release:<2.0.0` drops one TypeError from old releases
