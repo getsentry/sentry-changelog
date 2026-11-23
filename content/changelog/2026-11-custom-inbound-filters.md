@@ -13,10 +13,16 @@ Build your own inbound filters to drop errors, logs, metrics, and spans before t
 
 ![The Custom Inbound Filters table in the project settings, with the conditions of each filter and the amount of data it dropped](/img/changelog/2026-11-custom-inbound-filters.png)
 
+The built-in inbound filters cover the common cases: browser extensions, web crawlers, legacy browsers. Your noise is usually more specific than that. It is one flaky error on a release you stopped supporting, a health check that writes the same log line all day, or a metric someone added for a debug session and forgot. A custom filter describes that data exactly.
+
 In **Project Settings > Inbound Filters**, click **Add Filter** and type your conditions. Sentry drops anything that matches all of them at ingest. For example:
 
 - `error_type:TypeError release:<2.0.0` drops one TypeError from old releases
 - `log_message:*DEBUG*` drops debug logs
 - `ip_address:10.0.0.0/8` drops internal traffic
+
+Conditions match on error message, error type, country, log message, metric name, release, and IP address. Text conditions take wildcards and operators such as `contains` or `does not start with`. Release conditions compare versions, so `release:<2.0.0` covers every release before 2.0.0 (and not only the ones you remembered to list). IP address conditions take CIDR ranges.
+
+Each filter shows how much data it dropped in the last 30 days, so you can see if it does what you intended. If it drops too much, switch it off; the filter stays in the table until you need it again.
 
 Custom inbound filters are available on Business and Enterprise plans. Learn more in our [docs](https://docs.sentry.io/concepts/data-management/filtering/#custom-filters).
