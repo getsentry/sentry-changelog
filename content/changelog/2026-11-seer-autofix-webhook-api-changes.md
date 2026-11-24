@@ -60,4 +60,3 @@ We'll remove these items:
 - The `seer.solution_started` and `seer.solution_completed` event types
 - The **Stop after Plan** option
 
-We'll announce the dates in a new changelog post at least 30 days before we remove them.
