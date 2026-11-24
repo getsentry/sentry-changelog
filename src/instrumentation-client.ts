@@ -14,6 +14,7 @@ Sentry.init({
       filterKeys: ["sentry-changelog"],
       behaviour: "apply-tag-if-contains-third-party-frames",
     }),
+    Sentry.experimentalReportSdkConfigIntegration(),
   ],
   spotlight: process.env.NODE_ENV === "development",
 });

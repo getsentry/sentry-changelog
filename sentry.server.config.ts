@@ -7,6 +7,9 @@ Sentry.init({
   tracesSampleRate: 1,
   environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV,
   dataCollection,
-  integrations: [Sentry.nodeRuntimeMetricsIntegration()],
+  integrations: [
+    Sentry.nodeRuntimeMetricsIntegration(),
+    Sentry.experimentalReportSdkConfigIntegration(),
+  ],
   spotlight: process.env.NODE_ENV === 'development',
 });
