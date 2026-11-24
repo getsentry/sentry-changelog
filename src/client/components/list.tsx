@@ -53,7 +53,7 @@ function FilterFields({
 }) {
   return (
     <div aria-busy={isPending}>
-      <div className={`relative ${mobile ? "" : "mb-6"}`}>
+      <search className={`block relative ${mobile ? "" : "mb-6"}`}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
@@ -68,14 +68,14 @@ function FilterFields({
           />
         </svg>
         <input
-          aria-label="Search..."
+          aria-label="Search changelog"
           type="search"
           value={query.search ?? ""}
           onChange={(event) => onSearch(event.target.value || null)}
           placeholder="Search..."
           className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg border border-white/25 bg-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-[#fd44b0]"
         />
-      </div>
+      </search>
       {mobile
         ? months.length > 0 && (
             <select
@@ -100,7 +100,7 @@ function FilterFields({
           )
         : months.length > 0 && (
             <>
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-white/60">
+              <span className="text-xs font-semibold uppercase tracking-widest text-white/60">
                 Jump to
               </span>
               <div className="mt-3 flex flex-col gap-2">
