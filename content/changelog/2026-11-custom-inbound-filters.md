@@ -13,7 +13,7 @@ Build your own inbound filters to drop errors, logs, metrics, and spans before t
 
 ![The Custom Inbound Filters table in the project settings, with the conditions of each filter and the amount of data it dropped](/img/changelog/2026-11-custom-inbound-filters.png)
 
-The built-in inbound filters cover the common cases: browser extensions, web crawlers, legacy browsers, but noise can come from different sources. Flaky errors on an old release, traffic from your own load tests, or a metric someone added for a debug session and forgot. Custom filters allow you to specify these with more precision, and filter out just what you don't need. 
+The built-in inbound filters cover the common cases: browser extensions, web crawlers, legacy browsers, but noise can come from different sources. Flaky errors on an old release, health checks, or a metric someone added for a debug session and forgot. Custom filters allow you to specify these with more precision, and filter out just what you don't need. 
 
 In **Project Settings > Inbound Filters**, click **Add Filter** and specify your conditions. Sentry drops anything that matches all of them at ingest. For example:
 
