@@ -34,6 +34,9 @@ describe("proxy matcher", () => {
     "/favicon.ico",
     "/sentry-tunnel",
     "/sentry-tunnel/?o=1&p=4507657212592128&r=us",
+    "/changelog/sentry-tunnel",
+    "/changelog/sentry-tunnel/?o=1&p=4507657212592128&r=us",
+    "/changelog/img/changelog/2026-11-custom-inbound-filters.png",
     "/api/changelogs",
     "/_next/static/chunks/main.js",
   ])("skips non-page %s", (url) => {
