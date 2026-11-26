@@ -28,7 +28,7 @@ describe("proxy matcher", () => {
 
   it.each([
     "/fonts/rubik-latin-500.woff2",
-    "/nav-icons/intro-demo.png",
+    "/changelog/nav-icons/intro-demo.png",
     "/changelog/feed.xml",
     "/robots.txt",
     "/favicon.ico",

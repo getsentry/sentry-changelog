@@ -16,7 +16,7 @@ export const metadata: Metadata = {
         : "/favicon_localhost.png",
   },
   openGraph: {
-    images: "/img/hero.png",
+    images: "/changelog/img/hero.png",
   },
   other: {
     "zd-site-verification": "ocu6mswx6pke3c6qvozr2e",

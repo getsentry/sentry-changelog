@@ -11,7 +11,9 @@ slug: my-changelog-entry
 # search, RSS, and social previews.
 summary: A short description of what changed and why it matters.
 
-# Optional. Absolute URL or path to the hero image.
+# Optional. Absolute URL or path to the hero image. Put local images in
+# public/changelog/img/ and reference them as /changelog/img/<file>, since
+# sentry.io only routes /changelog/* to this app.
 image: https://example.com/hero.png
 
 # Optional. Category tags. Created automatically if they don't exist yet.

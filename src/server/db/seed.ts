@@ -22,7 +22,7 @@ const changelogs = [
     summary: "Changelog 1 summary",
     published: true,
     deleted: false,
-    image: "/img/hero.png",
+    image: "/changelog/img/hero.png",
   },
   {
     id: "2",
@@ -35,7 +35,7 @@ const changelogs = [
     summary: "Changelog 2 summary",
     published: true,
     deleted: false,
-    image: "/img/hero.png",
+    image: "/changelog/img/hero.png",
   },
   {
     id: "3",
@@ -50,7 +50,7 @@ const changelogs = [
       "Changelog 3 summary with [markdown content](https://de.wikipedia.org/wiki/Markdown)",
     published: true,
     deleted: false,
-    image: "/img/hero.png",
+    image: "/changelog/img/hero.png",
   },
 ];
 

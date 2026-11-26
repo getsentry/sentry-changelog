@@ -11,7 +11,7 @@ date: 2026-11-23
 
 Build your own inbound filters to drop errors, logs, metrics, and spans before they count toward your quota, combining different and new conditions.
 
-![The Custom Inbound Filters table in the project settings, with the conditions of each filter and the amount of data it dropped](/img/changelog/2026-11-custom-inbound-filters.png)
+![The Custom Inbound Filters table in the project settings, with the conditions of each filter and the amount of data it dropped](/changelog/img/changelog/2026-11-custom-inbound-filters.png)
 
 The built-in inbound filters cover the common cases: browser extensions, web crawlers, legacy browsers, but noise can come from different sources. Flaky errors on an old release, health checks, or a metric someone added for a debug session and forgot. Custom filters allow you to specify these with more precision, and filter out just what you don't need. 
 

@@ -2,7 +2,7 @@
 title: Agent Tracing improvements for JavaScript SDKs
 slug: javascript-agent-tracing-improvements
 summary: The JavaScript SDKs now trace more AI frameworks, providers, and classifiers across Node.js, Bun, Cloudflare, and Deno, with more consistent data in traces.
-image: /img/changelog/2026-10-agent-tracing-javascript.jpeg
+image: /changelog/img/changelog/2026-10-agent-tracing-javascript.jpeg
 categories:
   - AI
   - SDK

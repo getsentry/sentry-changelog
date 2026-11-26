@@ -9,7 +9,7 @@ import { getHeaderMenuItems } from "@/lib/navigation";
 export const metadata: Metadata = {
   title: { template: "%s | Sentry Changelog", default: "Changelog" },
   openGraph: {
-    images: "/img/hero.png",
+    images: "/changelog/img/hero.png",
   },
 };
 
