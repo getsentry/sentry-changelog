@@ -10,10 +10,11 @@ vi.mock("@sentry/nextjs/config", () => ({
 
 const { default: nextConfig } = await import("./next.config.mjs");
 
-async function redirectFor(url: string) {
+async function redirectFor(url: string, cookies?: Record<string, string>) {
   const response = await unstable_getResponseFromNextConfig({
     url,
     nextConfig,
+    cookies,
   });
   return response.status === 200 ? null : getRedirectUrl(response);
 }
@@ -48,5 +49,21 @@ describe("changelog.sentry.dev redirects", () => {
     expect(
       await redirectFor("https://sentry-changelog.sentry.dev/changelog/"),
     ).toBeNull();
+  });
+
+  it.each([
+    "__Secure-next-auth.session-token",
+    "__Secure-next-auth.session-token.0",
+  ])("keeps admins signed in with %s on changelog.sentry.dev", async (cookie) => {
+    const cookies = { [cookie]: "token" };
+    expect(
+      await redirectFor(
+        "https://changelog.sentry.dev/changelog/unpublished-draft/",
+        cookies,
+      ),
+    ).toBeNull();
+    expect(await redirectFor("https://changelog.sentry.dev/", cookies)).toBe(
+      "https://changelog.sentry.dev/changelog",
+    );
   });
 });
