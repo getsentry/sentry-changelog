@@ -23,6 +23,11 @@ const nextConfig = {
       ].map((hostname) => ({ protocol: "https", hostname })),
     ],
   },
+  // sentry.io only proxies /changelog/ to this app, so entry images in
+  // public/img need a path under it. See src/server/rehype-changelog-asset-paths.ts.
+  async rewrites() {
+    return [{ source: "/changelog/img/:path*", destination: "/img/:path*" }];
+  },
   async redirects() {
     return [
       // sentry.io/changelog/ is the canonical URL, so send pages on
@@ -61,8 +66,9 @@ export default withSentryConfig(nextConfig, {
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
 
-  // Route Sentry events through the server to avoid ad blockers
-  tunnelRoute: "/sentry-tunnel",
+  // Route Sentry events through the server to avoid ad blockers. The path must
+  // be under /changelog/, the only prefix sentry.io proxies to this app.
+  tunnelRoute: "/changelog/sentry-tunnel",
 
   // Marks first-party code for `thirdPartyErrorFilterIntegration`
   applicationKey: "sentry-changelog",

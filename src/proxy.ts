@@ -71,5 +71,7 @@ export function proxy(request: NextRequest) {
 // Sentry tunnel and any path with a dot (fonts, images, feed.xml, robots.txt).
 // Page slugs are kebab-case, so no page path contains a dot.
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|sentry-tunnel|.*\\..*).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|sentry-tunnel|changelog/sentry-tunnel|.*\\..*).*)",
+  ],
 };
