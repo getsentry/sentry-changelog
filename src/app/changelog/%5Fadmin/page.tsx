@@ -188,7 +188,7 @@ export default async function ChangelogsListPage() {
               <td className="px-4 py-2">
                 <div className="flex h-full justify-end">
                   <Link
-                    href={`/changelog/${changelog.slug}`}
+                    href={`/changelog/_admin/preview/${changelog.slug}`}
                     className="text-indigo-600 hover:bg-indigo-100 rounded-md px-1 py-2 text-xs whitespace-nowrap"
                   >
                     👀 Show

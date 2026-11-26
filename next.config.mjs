@@ -25,6 +25,23 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // sentry.io/changelog/ is the canonical URL, so send pages on
+      // changelog.sentry.dev there. sentry.io proxies to this app through
+      // sentry-changelog.sentry.dev, which keeps serving pages. The API, admin,
+      // auth and static files stay on changelog.sentry.dev: getsentry,
+      // NextAuth and sentry.io pages load them from there.
+      {
+        source: "/",
+        has: [{ type: "host", value: "changelog.sentry.dev" }],
+        destination: "https://sentry.io/changelog/",
+        permanent: true,
+      },
+      {
+        source: "/changelog/:path((?!_admin).*)",
+        has: [{ type: "host", value: "changelog.sentry.dev" }],
+        destination: "https://sentry.io/changelog/:path",
+        permanent: true,
+      },
       {
         source: "/",
         destination: "/changelog",
