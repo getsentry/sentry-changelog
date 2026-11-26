@@ -78,7 +78,7 @@ export function proxy(request: NextRequest) {
   const ua = request.headers.get("user-agent");
   if (isAiAgent(ua)) reportToProfound(request);
 
-  const markdownRoute = markdownRouteFor(request.nextUrl.pathname);
+  const markdownRoute = markdownRouteFor(request.nextUrl);
   if (!markdownRoute || !prefersMarkdown(request.headers.get("accept"), ua)) {
     return NextResponse.next();
   }

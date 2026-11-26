@@ -10,12 +10,14 @@ export const MARKDOWN_VARY = "Accept, User-Agent";
 // Markdown version. Paths keep their trailing slash (trailingSlash: true).
 //   /changelog/        -> /api/changelog/markdown/
 //   /changelog/<slug>/ -> /api/changelog/<slug>/markdown/
-// Admin pages (/changelog/_admin/...) and deeper paths have none.
-export function markdownRouteFor(pathname: string): string | null {
-  if (pathname === "/changelog/" || pathname === "/changelog") {
-    return "/api/changelog/markdown/";
+// The Markdown index is the unfiltered first page, so a filtered or paginated
+// index (?page=2, ?search=…) has none. Neither do admin pages
+// (/changelog/_admin/...) or deeper paths.
+export function markdownRouteFor(url: URL): string | null {
+  if (url.pathname === "/changelog/") {
+    return url.search ? null : "/api/changelog/markdown/";
   }
-  const slug = /^\/changelog\/([^/]+)\/?$/.exec(pathname)?.[1];
+  const slug = /^\/changelog\/([^/]+)\/$/.exec(url.pathname)?.[1];
   if (!slug || slug.startsWith("_")) return null;
   return `/api/changelog/${slug}/markdown/`;
 }

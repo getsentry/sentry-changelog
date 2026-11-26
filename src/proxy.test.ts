@@ -146,10 +146,11 @@ describe("proxy Markdown negotiation", () => {
     );
   });
 
-  it("keeps HTML for an AI agent on a page without Markdown", () => {
-    const response = proxy(
-      viaSentryIo("/changelog/_admin/", { "user-agent": BOT_UA }),
-    );
+  it.each([
+    "/changelog/_admin/",
+    "/changelog/?page=2",
+  ])("keeps HTML for an AI agent on %s, which has no Markdown", (path) => {
+    const response = proxy(viaSentryIo(path, { "user-agent": BOT_UA }));
     expect(rewrittenTo(response)).toBeNull();
   });
 });
