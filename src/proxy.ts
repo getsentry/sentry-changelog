@@ -1,5 +1,12 @@
 import * as Sentry from "@sentry/nextjs";
 import { after, type NextRequest, NextResponse, userAgent } from "next/server";
+import { isAiAgent } from "@/lib/agent-detection";
+import {
+  MARKDOWN_VARY,
+  markdownRouteFor,
+  prefersMarkdown,
+} from "@/lib/markdown-negotiation";
+import { reportToProfound } from "@/lib/profound";
 
 // Reduce a Referer URL to just its hostname so it stays low-cardinality
 // ("github.com", "google.com", …). Same-origin and empty referers count as
@@ -64,7 +71,23 @@ export function proxy(request: NextRequest) {
   // flush them after the response has been sent.
   after(() => Sentry.flush(2000));
 
-  return NextResponse.next();
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    return NextResponse.next();
+  }
+
+  const ua = request.headers.get("user-agent");
+  if (isAiAgent(ua)) reportToProfound(request);
+
+  const markdownRoute = markdownRouteFor(request.nextUrl.pathname);
+  if (!markdownRoute || !prefersMarkdown(request.headers.get("accept"), ua)) {
+    return NextResponse.next();
+  }
+
+  // Rewrite rather than redirect, so the agent keeps the page URL and gets the
+  // Markdown in one request.
+  const response = NextResponse.rewrite(new URL(markdownRoute, request.url));
+  response.headers.set("Vary", MARKDOWN_VARY);
+  return response;
 }
 
 // Only count visits to real pages — skip Next.js internals, API routes, the
