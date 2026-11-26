@@ -10,11 +10,10 @@ vi.mock("@sentry/nextjs/config", () => ({
 
 const { default: nextConfig } = await import("./next.config.mjs");
 
-async function redirectFor(url: string, cookies?: Record<string, string>) {
+async function redirectFor(url: string) {
   const response = await unstable_getResponseFromNextConfig({
     url,
     nextConfig,
-    cookies,
   });
   return response.status === 200 ? null : getRedirectUrl(response);
 }
@@ -37,6 +36,7 @@ describe("changelog.sentry.dev redirects", () => {
 
   it.each([
     "https://changelog.sentry.dev/changelog/_admin/",
+    "https://changelog.sentry.dev/changelog/_admin/preview/unpublished-draft/",
     "https://changelog.sentry.dev/api/changelogs/",
     "https://changelog.sentry.dev/api/auth/session/",
     "https://changelog.sentry.dev/fonts/rubik-latin-regular.woff2",
@@ -49,21 +49,5 @@ describe("changelog.sentry.dev redirects", () => {
     expect(
       await redirectFor("https://sentry-changelog.sentry.dev/changelog/"),
     ).toBeNull();
-  });
-
-  it.each([
-    "__Secure-next-auth.session-token",
-    "__Secure-next-auth.session-token.0",
-  ])("keeps admins signed in with %s on changelog.sentry.dev", async (cookie) => {
-    const cookies = { [cookie]: "token" };
-    expect(
-      await redirectFor(
-        "https://changelog.sentry.dev/changelog/unpublished-draft/",
-        cookies,
-      ),
-    ).toBeNull();
-    expect(await redirectFor("https://changelog.sentry.dev/", cookies)).toBe(
-      "https://changelog.sentry.dev/changelog",
-    );
   });
 });

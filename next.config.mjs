@@ -1,13 +1,5 @@
 import { withSentryConfig } from "@sentry/nextjs/config";
 
-// Signed-in admins stay on changelog.sentry.dev: their NextAuth session cookie
-// only exists there, and they need it to preview unpublished entries. NextAuth
-// splits large sessions into `.0`, `.1`, ... cookies.
-const withoutAdminSession = [
-  { type: "cookie", key: "__Secure-next-auth.session-token" },
-  { type: "cookie", key: "__Secure-next-auth.session-token.0" },
-];
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   cacheComponents: true,
@@ -41,14 +33,12 @@ const nextConfig = {
       {
         source: "/",
         has: [{ type: "host", value: "changelog.sentry.dev" }],
-        missing: withoutAdminSession,
         destination: "https://sentry.io/changelog/",
         permanent: true,
       },
       {
         source: "/changelog/:path((?!_admin).*)",
         has: [{ type: "host", value: "changelog.sentry.dev" }],
-        missing: withoutAdminSession,
         destination: "https://sentry.io/changelog/:path",
         permanent: true,
       },
