@@ -1,4 +1,5 @@
 import { isAiAgent } from "./agent-detection";
+import { feedParsers } from "./changelog-feed";
 
 // A Markdown response depends on these request headers. sentry.io's nginx
 // cache honours Vary, so this keeps a cached Markdown copy from being served to
@@ -11,11 +12,15 @@ export const MARKDOWN_VARY = "Accept, User-Agent";
 //   /changelog/        -> /api/changelog/markdown/
 //   /changelog/<slug>/ -> /api/changelog/<slug>/markdown/
 // The Markdown index is the unfiltered first page, so a filtered or paginated
-// index (?page=2, ?search=…) has none. Neither do admin pages
-// (/changelog/_admin/...) or deeper paths.
+// index (?page=2, ?search=…) has none; other params such as utm_source don't
+// change the page. Admin pages (/changelog/_admin/...) and deeper paths have
+// none either.
 export function markdownRouteFor(url: URL): string | null {
   if (url.pathname === "/changelog/") {
-    return url.search ? null : "/api/changelog/markdown/";
+    const filtered = Object.keys(feedParsers).some((key) =>
+      url.searchParams.has(key),
+    );
+    return filtered ? null : "/api/changelog/markdown/";
   }
   const slug = /^\/changelog\/([^/]+)\/$/.exec(url.pathname)?.[1];
   if (!slug || slug.startsWith("_")) return null;

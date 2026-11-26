@@ -119,7 +119,9 @@ describe("proxy Markdown negotiation", () => {
 
   it("serves an AI agent the Markdown of the index", () => {
     const response = proxy(
-      viaSentryIo("/changelog/", { "user-agent": "ClaudeBot/1.0" }),
+      viaSentryIo("/changelog/?utm_source=chatgpt.com", {
+        "user-agent": "ClaudeBot/1.0",
+      }),
     );
     expect(rewrittenTo(response)).toBe("/api/changelog/markdown/");
   });
