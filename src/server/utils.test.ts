@@ -475,4 +475,21 @@ describe("feed filtering and page boundaries", () => {
     expect(october.entries).toHaveLength(2);
     expect(october.months).toEqual(["October 2026", "September 2026"]);
   });
+
+  it("keeps the selected month listed when the search has no match in it", async () => {
+    await writeEntry("november", { date: "2026-11-05" });
+    await writeEntry("october", { date: "2026-10-05" });
+    await writeEntry("september", {
+      date: "2026-09-05",
+      summary: "A unique breadcrumbneedle detail",
+    });
+    const entries = await utils.getChangelogSummaries();
+    const result = getFeedPage(entries, {
+      ...defaultFeedQuery,
+      month: "October 2026",
+      search: "breadcrumbneedle",
+    });
+    expect(result.entries).toEqual([]);
+    expect(result.months).toEqual(["October 2026", "September 2026"]);
+  });
 });

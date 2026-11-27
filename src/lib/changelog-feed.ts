@@ -46,6 +46,8 @@ export function getFeedPage(entries: ChangelogSummary[], query: FeedQuery) {
   const search = (query.search ?? "").toLowerCase();
   const months = new Set<string>();
   const matches = entries.filter((entry) => {
+    // Keep the selected month listed so it can still be cleared.
+    if (entry.month === query.month) months.add(entry.month);
     if (
       query.categories.length > 0 &&
       !entry.categories.some(({ id }) => query.categories.includes(id))
